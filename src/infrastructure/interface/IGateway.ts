@@ -42,7 +42,7 @@ export class IGateway<T, D> {
     return this.model.findById(id, projection, options);
   }
 
-  async updateById(id: string, data: T): Promise<T> {
+  async updateById(id: string, data: Partial<D> & D): Promise<T> {
     return this.model.findByIdAndUpdate(id, data);
   }
 
@@ -56,14 +56,14 @@ export class IGateway<T, D> {
 
   async updateOne(
     filter: FilterQuery<T>,
-    update: T,
+    update: Partial<T>,
   ): Promise<UpdateWriteOpResult> {
     return this.model.updateOne(filter, update);
   }
 
   async updateMany(
     filter: FilterQuery<T>,
-    update: T,
+    update: Partial<T>,
   ): Promise<UpdateWriteOpResult> {
     return this.model.updateMany(filter, update);
   }

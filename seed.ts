@@ -56,8 +56,11 @@ async function seed() {
       Key: 'horarios.json',
     };
 
-    const subjects = await getSubjects(client, subjectsInput);
-    const schedules = await getSchedules(client, schedulesInput);
+    const subjects: Subject[] = await getSubjects(client, subjectsInput);
+    const schedules: SubjectGroup[] = await getSchedules(
+      client,
+      schedulesInput,
+    );
 
     const subjectModel = mongoose.model(Subject.name, SubjectSchema);
 
@@ -65,9 +68,11 @@ async function seed() {
       const _subject: SubjectDocument = await subjectModel.findOne({
         sku: subject['codigo'],
       });
+
       if (_subject) {
         continue;
       }
+
       await subjectModel.create({
         sku: subject['codigo'],
         name: subject['nombre'],
@@ -92,8 +97,8 @@ async function seed() {
             }
             subject.groups.push({
               sku: group['grupo'],
-              capacity: 0,
-              enrolled: 0,
+              capacity: group['capacidad'],
+              enrolled: group['matriculados'],
               schedule: group['horario'] ?? [],
             });
           }

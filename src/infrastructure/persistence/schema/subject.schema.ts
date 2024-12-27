@@ -79,7 +79,7 @@ export class Subject {
     required: false,
     default: [],
   })
-  requirements: string[];
+  requirements?: string[];
   @Prop({
     type: Number,
     required: true,
@@ -95,7 +95,7 @@ export class Subject {
     required: false,
     default: [],
   })
-  groups: SubjectGroup[];
+  groups?: SubjectGroup[];
 }
 
 export const SubjectSchema = SchemaFactory.createForClass(Subject);
