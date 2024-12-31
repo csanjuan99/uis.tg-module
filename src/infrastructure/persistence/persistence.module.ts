@@ -4,19 +4,25 @@ import { User, UserSchema } from './schema/user.schema';
 import { UserGateway } from './gateway/user.gateway';
 import { Subject, SubjectSchema } from './schema/subject.schema';
 import { SubjectGateway } from './gateway/subject.gateway';
+import { Appeal, AppealSchema } from './schema/appeal.schema';
+import { AppealGateway } from './gateway/appeal.gateway';
 
-const SERVICES = [UserGateway, SubjectGateway];
+const SERVICES = [AppealGateway, UserGateway, SubjectGateway];
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       {
-        name: User.name,
-        schema: UserSchema,
+        name: Appeal.name,
+        schema: AppealSchema,
       },
       {
         name: Subject.name,
         schema: SubjectSchema,
+      },
+      {
+        name: User.name,
+        schema: UserSchema,
       },
     ]),
   ],

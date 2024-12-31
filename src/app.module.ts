@@ -11,12 +11,15 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './application-core/abstract/auth/strategy/jwt.strategy';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { PermissionGuard } from './application-core/abstract/auth/guards/permission.guard';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import AwsConfig from './infrastructure/config/aws.config';
 
 @Module({
   imports: [
+    EventEmitterModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [DatabaseConfig, JwtConfig],
+      load: [DatabaseConfig, JwtConfig, AwsConfig],
     }),
     JwtModule.registerAsync({
       global: true,

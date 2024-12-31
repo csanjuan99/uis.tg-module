@@ -34,6 +34,7 @@ export class LoginInteractor {
       sub: user.id,
       username: user.username,
       permissions: user.permissions,
+      kind: user.kind,
     });
 
     return {

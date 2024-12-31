@@ -9,6 +9,7 @@ import {
   Query,
 } from '@nestjs/common';
 import {
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -18,12 +19,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { FindSubjectsInteractor } from '../../application-core/subject/use-cases/findSubjects.interactor';
-import { Public } from '../../application-core/abstract/auth/decorator/public.decorator';
 import { FindSubjectBySkuInteractor } from '../../application-core/subject/use-cases/findSubjectBySku.interactor';
-import {
-  Subject,
-  SubjectDocument,
-} from '../../infrastructure/persistence/schema/subject.schema';
+import { SubjectDocument } from '../../infrastructure/persistence/schema/subject.schema';
 import {
   CreateSubjectRequest,
   SubjectResponse,
@@ -33,6 +30,7 @@ import { CreateSubjectInteractor } from '../../application-core/subject/use-case
 import { UpdateSubjectBySkuInteractor } from '../../application-core/subject/use-cases/updateSubjectBySku.interactor';
 import { UpdateWriteOpResult } from 'mongoose';
 import { DeleteSubjectBySkuInteractor } from '../../application-core/subject/use-cases/deleteSubjectBySku.interactor';
+import { Permission } from '../../application-core/abstract/auth/decorator/permission.decorator';
 
 @ApiTags('Materias')
 @Controller('subjects')
@@ -46,7 +44,6 @@ export class SubjectController {
   ) {}
 
   @Get('/')
-  @Public()
   @ApiOperation({ summary: 'Listar y filtrar todas las materias' })
   @ApiOkResponse({
     type: SubjectResponse,
@@ -57,6 +54,8 @@ export class SubjectController {
   @ApiQuery({ name: 'skip', required: false, example: 0 })
   @ApiQuery({ name: 'sort', required: false, example: 'asc' })
   @ApiQuery({ name: 'sortBy', required: false, example: 'createdAt' })
+  @ApiBearerAuth()
+  @Permission('*', 'read:subject')
   async find(
     @Query('filter') filter: string,
     @Query('limit') limit: number = 10,
@@ -76,13 +75,14 @@ export class SubjectController {
   }
 
   @Get(':sku')
-  @Public()
   @ApiOperation({ summary: 'Obtener una materia por su código' })
   @ApiOkResponse({
     type: SubjectResponse,
   })
   @ApiNotFoundResponse({ description: 'Materia no encontrada' })
   @ApiParam({ name: 'sku', required: true, example: '20252' })
+  @ApiBearerAuth()
+  @Permission('*', 'read:subject')
   async findBySku(@Param('sku') sku: string): Promise<SubjectDocument> {
     return this.findSubjectBySkuInteractor.execute(sku);
   }
@@ -92,6 +92,8 @@ export class SubjectController {
   @ApiCreatedResponse({
     type: SubjectResponse,
   })
+  @ApiBearerAuth()
+  @Permission('*')
   async create(
     @Body() payload: CreateSubjectRequest,
   ): Promise<SubjectDocument> {
@@ -102,6 +104,8 @@ export class SubjectController {
   @ApiOperation({ summary: 'Actualizar una materia por su código' })
   @ApiNotFoundResponse({ description: 'Materia no encontrada' })
   @ApiParam({ name: 'sku', required: true, example: '20252' })
+  @ApiBearerAuth()
+  @Permission('*')
   async updateBySku(
     @Param('sku') sku: string,
     @Body() payload: UpdateSubjectRequest,
@@ -113,6 +117,8 @@ export class SubjectController {
   @ApiOperation({ summary: 'Eliminar una materia por su código' })
   @ApiNotFoundResponse({ description: 'Materia no encontrada' })
   @ApiParam({ name: 'sku', required: true, example: '20252' })
+  @ApiBearerAuth()
+  @Permission('*')
   async deleteBySku(@Param('sku') sku: string) {
     return this.deleteSubjectBySkuInteractor.execute(sku);
   }

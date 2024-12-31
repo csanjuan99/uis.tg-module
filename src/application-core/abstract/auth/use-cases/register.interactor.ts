@@ -3,12 +3,17 @@ import { UserGateway } from '../../../../infrastructure/persistence/gateway/user
 import { UserDocument } from '../../../../infrastructure/persistence/schema/user.schema';
 import { RegisterRequest } from '../dto/register.dto';
 import { genSaltSync, hashSync } from 'bcryptjs';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { Request } from 'express';
 
 @Injectable()
 export class RegisterInteractor {
-  constructor(private readonly userGateway: UserGateway) {}
+  constructor(
+    private readonly eventEmitter: EventEmitter2,
+    private readonly userGateway: UserGateway,
+  ) {}
 
-  async execute(payload: RegisterRequest): Promise<UserDocument> {
+  async execute(payload: RegisterRequest, req: Request): Promise<UserDocument> {
     const user: UserDocument = await this.userGateway.findOne({
       username: payload.email,
     });
@@ -22,11 +27,20 @@ export class RegisterInteractor {
     const salt: string = genSaltSync(10);
     const hash: string = hashSync(payload.password, salt);
 
-    return await this.userGateway.create({
+    const student: UserDocument = await this.userGateway.create({
       username: payload.email,
       password: hash,
       kind: 'STUDENT',
-      permissions: [],
+      permissions: [
+        'write:appeal',
+        'read:appeal',
+        'delete:appeal',
+        'read:subject',
+      ],
     });
+
+    this.eventEmitter.emit('onVerify', req, student);
+
+    return student;
   }
 }
