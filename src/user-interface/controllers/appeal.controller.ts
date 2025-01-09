@@ -48,7 +48,7 @@ export class AppealController {
   })
   @ApiOperation({ summary: 'Crear una solicitud de cambio en el horario' })
   @ApiBearerAuth()
-  @Permission('create:appeal')
+  @Permission('write:appeal')
   @Post('/')
   async create(@Body() payload: CreateAppealRequest) {
     return this.createAppealInteractor.execute(payload);
