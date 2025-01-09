@@ -3,60 +3,61 @@ import {
   AppealStatus,
 } from '../../../infrastructure/persistence/schema/appeal.schema';
 import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
-import { IsNotEmpty, IsNotEmptyObject } from 'class-validator';
+import { IsNotEmpty, IsNotEmptyObject, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
+
+export class AppealRequestChangeRequest {
+  @ApiProperty({
+    description: 'Grupo de la materia',
+    example: 'A',
+  })
+  @IsNotEmpty({
+    message: 'El grupo de la materia es requerido',
+  })
+  group: string;
+
+  @ApiProperty({
+    description: 'Código de la materia',
+    example: '225421',
+  })
+  @IsNotEmpty({
+    message: 'El código de la materia es requerido',
+  })
+  sku: string;
+}
 
 export class AppealRequestRequest {
   @ApiProperty({
-    properties: {
-      group: {
-        type: 'string',
-        example: 'A',
-      },
-      sku: {
-        type: 'string',
-        example: '1234',
-      },
-    },
     nullable: true,
+    type: AppealRequestChangeRequest,
   })
-  @IsNotEmptyObject({
-    nullable: true,
-  })
-  from: {
-    group: string;
-    sku: string;
-  };
+  @IsNotEmptyObject()
+  @ValidateNested()
+  @Type(() => AppealRequestChangeRequest)
+  from: AppealRequestChangeRequest;
+
   @ApiProperty({
     nullable: true,
-    properties: {
-      group: {
-        type: 'string',
-        example: 'A',
-      },
-      sku: {
-        type: 'string',
-        example: '1234',
-      },
-    },
   })
-  @IsNotEmptyObject({
-    nullable: true,
-  })
-  to: {
-    group: string;
-    sku: string;
-  };
+  @IsNotEmptyObject()
+  @ValidateNested()
+  @Type(() => AppealRequestChangeRequest)
+  to: AppealRequestChangeRequest;
 }
 
 export class CreateAppealRequest {
   @ApiProperty({
     description: 'Peticiones de la apelación',
     type: AppealRequestRequest,
+    isArray: true,
   })
   @IsNotEmpty({
     message: 'Las peticiones de apelación son requeridas',
   })
-  requests: AppealRequest[];
+  @ValidateNested({ each: true })
+  @Type(() => AppealRequestRequest)
+  requests: AppealRequestRequest[];
+
   @ApiProperty({
     description: 'Nombre de usuario del estudiante',
     example: 'john.doe@correo.uis.edu.co',
@@ -73,11 +74,15 @@ export class AppealResponse {
     example: '5f7c0b7b9f6d7a001f5e0e1b',
   })
   studentId: string;
+
   @ApiProperty({
     description: 'Peticiones de la apelación',
     type: AppealRequestRequest,
   })
+  @ValidateNested({ each: true })
+  @Type(() => AppealRequestRequest)
   requests: AppealRequest[];
+
   @ApiPropertyOptional({
     description: 'Registros de actividad',
     type: 'array',
@@ -86,6 +91,7 @@ export class AppealResponse {
     },
   })
   logs?: Record<string, any>[];
+
   @ApiProperty({
     description: 'Estado de la apelación',
     example: AppealStatus.PENDING,

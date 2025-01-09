@@ -60,7 +60,6 @@ export class Appeal {
   @Prop({
     required: true,
     type: [AppealRequest],
-    default: [],
   })
   requests: AppealRequest[];
   @Prop(raw({}))
