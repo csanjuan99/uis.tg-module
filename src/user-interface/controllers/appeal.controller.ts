@@ -31,6 +31,7 @@ import { AppealDocument } from '../../infrastructure/persistence/schema/appeal.s
 import { FindAppealByIdInteractor } from '../../application-core/appeal/use-cases/findAppealById.interactor';
 import { UpdateAppealByIdInteractor } from '../../application-core/appeal/use-cases/updateAppealById.interactor';
 import { DeleteAppealByIdInteractor } from '../../application-core/appeal/use-cases/deleteAppealById.interactor';
+import { CountAppealInteractor } from '../../application-core/appeal/use-cases/countAppeal.interactor';
 
 @ApiTags('Solicitudes')
 @Controller('appeal')
@@ -41,6 +42,7 @@ export class AppealController {
     private readonly findAppealByIdInteractor: FindAppealByIdInteractor,
     private readonly updateAppealByIdInteractor: UpdateAppealByIdInteractor,
     private readonly deleteAppealByIdInteractor: DeleteAppealByIdInteractor,
+    private readonly countAppealInteractor: CountAppealInteractor,
   ) {}
 
   @ApiCreatedResponse({
@@ -83,6 +85,20 @@ export class AppealController {
         sort: { [sortBy]: sort },
       },
     );
+  }
+
+  @ApiOperation({ summary: 'Contar todas las solicitudes' })
+  @ApiOkResponse({
+    type: Number,
+  })
+  @ApiBearerAuth()
+  @ApiQuery({ name: 'filter', required: false, example: '{}' })
+  @Permission('*')
+  @Get('/count')
+  async count(@Query('filter') filter: string): Promise<number> {
+    return this.countAppealInteractor.execute({
+      ...JSON.parse(filter || '{}'),
+    });
   }
 
   @ApiBearerAuth()

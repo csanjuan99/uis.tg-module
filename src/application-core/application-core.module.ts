@@ -16,6 +16,7 @@ import { FindAppealByIdInteractor } from './appeal/use-cases/findAppealById.inte
 import { FindAppealsInteractor } from './appeal/use-cases/findAppeals.interactor';
 import { UpdateAppealByIdInteractor } from './appeal/use-cases/updateAppealById.interactor';
 import { DeleteAppealByIdInteractor } from './appeal/use-cases/deleteAppealById.interactor';
+import { CountAppealInteractor } from './appeal/use-cases/countAppeal.interactor';
 
 const SERVICES = [
   //AUTH
@@ -38,6 +39,7 @@ const SERVICES = [
   FindAppealsInteractor,
   UpdateAppealByIdInteractor,
   DeleteAppealByIdInteractor,
+  CountAppealInteractor,
 ];
 
 @Module({

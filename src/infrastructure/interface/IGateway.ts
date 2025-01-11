@@ -79,4 +79,8 @@ export class IGateway<T, D> {
   async aggregate(pipeline: PipelineStage[]): Promise<any> {
     return this.model.aggregate(pipeline);
   }
+
+  async count(filter: FilterQuery<T>): Promise<number> {
+    return this.model.countDocuments(filter);
+  }
 }
