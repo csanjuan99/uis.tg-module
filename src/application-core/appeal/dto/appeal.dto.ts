@@ -3,7 +3,12 @@ import {
   AppealStatus,
 } from '../../../infrastructure/persistence/schema/appeal.schema';
 import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
-import { IsNotEmpty, IsNotEmptyObject, ValidateNested } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNotEmptyObject,
+  IsOptional,
+  ValidateNested,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class AppealRequestChangeRequest {
@@ -31,6 +36,7 @@ export class AppealRequestRequest {
     nullable: true,
     type: AppealRequestChangeRequest,
   })
+  @IsOptional()
   @IsNotEmptyObject()
   @ValidateNested()
   @Type(() => AppealRequestChangeRequest)
@@ -39,6 +45,7 @@ export class AppealRequestRequest {
   @ApiProperty({
     nullable: true,
   })
+  @IsOptional()
   @IsNotEmptyObject()
   @ValidateNested()
   @Type(() => AppealRequestChangeRequest)
