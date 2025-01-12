@@ -17,6 +17,13 @@ import { FindAppealsInteractor } from './appeal/use-cases/findAppeals.interactor
 import { UpdateAppealByIdInteractor } from './appeal/use-cases/updateAppealById.interactor';
 import { DeleteAppealByIdInteractor } from './appeal/use-cases/deleteAppealById.interactor';
 import { CountAppealInteractor } from './appeal/use-cases/countAppeal.interactor';
+import { CountSubjectsInteractor } from './subject/use-cases/countSubjects.interactor';
+import { FindUsersInteractor } from './user/use-cases/findUsers.interactor';
+import { CountUsersInteractor } from './user/use-cases/countUsers.interactor';
+import { DeleteUserByIdInteractor } from './user/use-cases/deleteUserById.interactor';
+import { FindUserByIdInteractor } from './user/use-cases/findUserById.interactor';
+import { CreateUserInteractor } from './user/use-cases/createUser.interactor';
+import { UpdateUserByIdInteractor } from './user/use-cases/updateUserById.interactor';
 
 const SERVICES = [
   //AUTH
@@ -33,6 +40,7 @@ const SERVICES = [
   CreateSubjectInteractor,
   UpdateSubjectBySkuInteractor,
   DeleteSubjectBySkuInteractor,
+  CountSubjectsInteractor,
   //APPEAL
   CreateAppealInteractor,
   FindAppealByIdInteractor,
@@ -40,6 +48,13 @@ const SERVICES = [
   UpdateAppealByIdInteractor,
   DeleteAppealByIdInteractor,
   CountAppealInteractor,
+  //USER
+  FindUsersInteractor,
+  CountUsersInteractor,
+  DeleteUserByIdInteractor,
+  FindUserByIdInteractor,
+  CreateUserInteractor,
+  UpdateUserByIdInteractor,
 ];
 
 @Module({

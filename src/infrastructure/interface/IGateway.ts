@@ -14,7 +14,7 @@ export class IGateway<T, D> {
     this.model = model;
   }
 
-  async create(data: D): Promise<T> {
+  async create(data: D | D[]): Promise<T> {
     return await this.model.create(data);
   }
 
@@ -27,7 +27,7 @@ export class IGateway<T, D> {
   }
 
   async findOne(
-    payload: FilterQuery<T>,
+    payload?: FilterQuery<T>,
     projection?: ProjectionFields<T>,
     options?: QueryOptions,
   ): Promise<T> {
@@ -42,8 +42,8 @@ export class IGateway<T, D> {
     return this.model.findById(id, projection, options);
   }
 
-  async updateById(id: string, data: Partial<D> & D): Promise<T> {
-    return this.model.findByIdAndUpdate(id, data);
+  async updateById(id: string, data: Partial<T>) {
+    return this.model.findByIdAndUpdate(id, data, { new: true }).exec();
   }
 
   async deleteById(id: string): Promise<T> {
@@ -80,7 +80,7 @@ export class IGateway<T, D> {
     return this.model.aggregate(pipeline);
   }
 
-  async count(filter: FilterQuery<T>): Promise<number> {
-    return this.model.countDocuments(filter);
+  async count(payload: FilterQuery<T>): Promise<number> {
+    return this.model.countDocuments(payload);
   }
 }

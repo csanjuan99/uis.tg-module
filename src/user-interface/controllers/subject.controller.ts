@@ -31,6 +31,7 @@ import { UpdateSubjectBySkuInteractor } from '../../application-core/subject/use
 import { UpdateWriteOpResult } from 'mongoose';
 import { DeleteSubjectBySkuInteractor } from '../../application-core/subject/use-cases/deleteSubjectBySku.interactor';
 import { Permission } from '../../application-core/abstract/auth/decorator/permission.decorator';
+import { CountSubjectsInteractor } from '../../application-core/subject/use-cases/countSubjects.interactor';
 
 @ApiTags('Materias')
 @Controller('subjects')
@@ -41,6 +42,7 @@ export class SubjectController {
     private readonly createSubjectInteractor: CreateSubjectInteractor,
     private readonly updateSubjectBySkuInteractor: UpdateSubjectBySkuInteractor,
     private readonly deleteSubjectBySkuInteractor: DeleteSubjectBySkuInteractor,
+    private readonly countSubjectsInteractor: CountSubjectsInteractor,
   ) {}
 
   @Get('/')
@@ -72,6 +74,20 @@ export class SubjectController {
         sort: { [sortBy]: sort },
       },
     );
+  }
+
+  @ApiOperation({ summary: 'Contar todas las materias' })
+  @ApiOkResponse({
+    type: Number,
+  })
+  @ApiBearerAuth()
+  @ApiQuery({ name: 'filter', required: false, example: '{}' })
+  @Permission('*')
+  @Get('/count')
+  async count(@Query('filter') filter: string): Promise<number> {
+    return this.countSubjectsInteractor.execute({
+      ...JSON.parse(filter || '{}'),
+    });
   }
 
   @Get(':sku')
