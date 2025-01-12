@@ -2,6 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { UserGateway } from '../../../../infrastructure/persistence/gateway/user.gateway';
 import { AppealGateway } from '../../../../infrastructure/persistence/gateway/appeal.gateway';
 import { UserDocument } from '../../../../infrastructure/persistence/schema/user.schema';
+import { FilterQuery } from 'mongoose';
+import { Appeal } from '../../../../infrastructure/persistence/schema/appeal.schema';
 
 @Injectable()
 export class FindAppealsByStudentInteractor {
@@ -10,17 +12,18 @@ export class FindAppealsByStudentInteractor {
     private readonly appealGateway: AppealGateway,
   ) {}
 
-  async execute(payload: Express.User) {
-    const user: UserDocument = await this.userGateway.findById(
-      (payload as UserDocument).id,
+  async execute(user: Express.User, payload: FilterQuery<Appeal>) {
+    const student: UserDocument = await this.userGateway.findById(
+      (user as UserDocument).id,
     );
 
-    if (!user) {
+    if (!student) {
       throw new NotFoundException('No pudimos encontrar el usuario');
     }
 
     return await this.appealGateway.find({
-      studentId: user.id,
+      studentId: student.id,
+      ...payload,
     });
   }
 }
