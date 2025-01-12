@@ -1,7 +1,5 @@
 import { Prop, raw, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { User } from './user.schema';
-import mongoose, { HydratedDocument } from 'mongoose';
-import * as stream from 'node:stream';
+import { HydratedDocument } from 'mongoose';
 
 export type AppealDocument = HydratedDocument<Appeal>;
 
@@ -15,6 +13,7 @@ export enum AppealStatus {
 export enum AppealRequestStatus {
   APPROVED = 'APPROVED',
   REJECTED = 'REJECTED',
+  PENDING = 'PENDING',
 }
 
 @Schema()
@@ -29,6 +28,7 @@ export class AppealRequestChange {
   sku: string;
 }
 
+@Schema()
 export class AppealRequest {
   @Prop(AppealRequestChange)
   from?: AppealRequestChange;
@@ -41,9 +41,13 @@ export class AppealRequest {
   })
   reason?: string;
   @Prop({
-    required: false,
-    enum: AppealRequestStatus,
-    default: null,
+    required: true,
+    enum: [
+      AppealRequestStatus.PENDING,
+      AppealRequestStatus.APPROVED,
+      AppealRequestStatus.REJECTED,
+    ],
+    default: AppealRequestStatus.PENDING,
   })
   status?: AppealRequestStatus;
 }
@@ -57,16 +61,18 @@ export class Appeal {
     type: String,
   })
   studentId: string;
-  @Prop({
-    required: true,
-    type: [AppealRequest],
-  })
+  @Prop([AppealRequest])
   requests: AppealRequest[];
   @Prop(raw({}))
   logs?: Record<string, any>[];
   @Prop({
     required: true,
-    enum: AppealStatus,
+    enum: [
+      AppealStatus.PENDING,
+      AppealStatus.APPROVED,
+      AppealStatus.REJECTED,
+      AppealStatus.PARTIAL_REJECTED,
+    ],
     default: AppealStatus.PENDING,
   })
   status: AppealStatus;

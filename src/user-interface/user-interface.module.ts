@@ -4,12 +4,14 @@ import { ApplicationCoreModule } from '../application-core/application-core.modu
 import { SubjectController } from './controllers/subject.controller';
 import { AppealController } from './controllers/appeal.controller';
 import { UserController } from './controllers/user.controller';
+import { StudentController } from './controllers/student.controller';
 
 @Module({
   imports: [ApplicationCoreModule],
   controllers: [
     AppealController,
     AuthController,
+    StudentController,
     SubjectController,
     UserController,
   ],

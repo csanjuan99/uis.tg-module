@@ -33,7 +33,7 @@ import { UpdateAppealByIdInteractor } from '../../application-core/appeal/use-ca
 import { DeleteAppealByIdInteractor } from '../../application-core/appeal/use-cases/deleteAppealById.interactor';
 import { CountAppealInteractor } from '../../application-core/appeal/use-cases/countAppeal.interactor';
 
-@ApiTags('Solicitudes')
+@ApiTags('Solicitudes - Administrador')
 @Controller('appeal')
 export class AppealController {
   constructor(

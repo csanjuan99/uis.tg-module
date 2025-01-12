@@ -33,7 +33,7 @@ import { DeleteSubjectBySkuInteractor } from '../../application-core/subject/use
 import { Permission } from '../../application-core/abstract/auth/decorator/permission.decorator';
 import { CountSubjectsInteractor } from '../../application-core/subject/use-cases/countSubjects.interactor';
 
-@ApiTags('Materias')
+@ApiTags('Materias - Administrador')
 @Controller('subjects')
 export class SubjectController {
   constructor(
