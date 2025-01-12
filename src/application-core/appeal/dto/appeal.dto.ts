@@ -29,6 +29,15 @@ export class AppealRequestChangeRequest {
     message: 'El código de la materia es requerido',
   })
   sku: string;
+
+  @ApiProperty({
+    description: 'Nombre de la materia',
+    example: 'Cálculo I',
+  })
+  @IsNotEmpty({
+    message: 'El nombre de la materia es requerido',
+  })
+  name: string;
 }
 
 export class AppealRequestRequest {

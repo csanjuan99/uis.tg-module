@@ -26,6 +26,10 @@ export class AppealRequestChange {
     required: true,
   })
   sku: string;
+  @Prop({
+    required: true,
+  })
+  name: string;
 }
 
 @Schema()

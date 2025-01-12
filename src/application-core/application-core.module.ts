@@ -26,6 +26,7 @@ import { CreateUserInteractor } from './user/use-cases/createUser.interactor';
 import { UpdateUserByIdInteractor } from './user/use-cases/updateUserById.interactor';
 import { FindAppealsByStudentInteractor } from './abstract/student/use-cases/findAppealsByStudent.interactor';
 import { CountAppealsByStudentInteractor } from './abstract/student/use-cases/countAppealsByStudent.interactor';
+import { FindStudentAppealByIdInteractor } from './abstract/student/use-cases/findStudentAppealById.interactor';
 
 const SERVICES = [
   //AUTH
@@ -59,6 +60,7 @@ const SERVICES = [
   UpdateUserByIdInteractor,
   //STUDENT
   FindAppealsByStudentInteractor,
+  FindStudentAppealByIdInteractor,
   CountAppealsByStudentInteractor,
 ];
 
