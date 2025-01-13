@@ -82,7 +82,7 @@ export class SubjectController {
   })
   @ApiBearerAuth()
   @ApiQuery({ name: 'filter', required: false, example: '{}' })
-  @Permission('*')
+  @Permission('*', 'read:subject')
   @Get('/count')
   async count(@Query('filter') filter: string): Promise<number> {
     return this.countSubjectsInteractor.execute({
