@@ -56,15 +56,33 @@ export class AppealRequest {
   status?: AppealRequestStatus;
 }
 
+@Schema()
+export class AppealStudent {
+  @Prop({
+    required: true,
+  })
+  name: string;
+  @Prop({
+    required: true,
+  })
+  lastname: string;
+  @Prop({
+    required: true,
+  })
+  username: string;
+  @Prop({
+    required: true,
+  })
+  identification: string;
+}
+
 @Schema({
   collection: 'appeals',
   timestamps: true,
 })
 export class Appeal {
-  @Prop({
-    type: String,
-  })
-  studentId: string;
+  @Prop(AppealStudent)
+  student: AppealStudent;
   @Prop([AppealRequest])
   requests: AppealRequest[];
   @Prop(raw({}))

@@ -52,6 +52,7 @@ export class SubjectController {
     isArray: true,
   })
   @ApiQuery({ name: 'filter', required: false, example: '{}' })
+  @ApiQuery({ name: 'projection', required: false, example: '{}' })
   @ApiQuery({ name: 'limit', required: false, example: 10 })
   @ApiQuery({ name: 'skip', required: false, example: 0 })
   @ApiQuery({ name: 'sort', required: false, example: 'asc' })
@@ -60,6 +61,7 @@ export class SubjectController {
   @Permission('*', 'read:subject')
   async find(
     @Query('filter') filter: string,
+    @Query('projection') projection: string,
     @Query('limit') limit: number = 10,
     @Query('skip') skip: number = 0,
     @Query('sort') sort: 'asc' | 'desc' = 'asc',
@@ -67,7 +69,7 @@ export class SubjectController {
   ): Promise<SubjectDocument[]> {
     return this.findSubjectsInteractor.execute(
       JSON.parse(filter || '{}'),
-      {},
+      JSON.parse(projection || '{}'),
       {
         limit,
         skip,

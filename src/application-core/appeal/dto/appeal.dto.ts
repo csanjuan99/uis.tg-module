@@ -74,14 +74,10 @@ export class CreateAppealRequest {
   @Type(() => AppealRequestRequest)
   requests: AppealRequestRequest[];
 
-  @ApiProperty({
-    description: 'Nombre de usuario del estudiante',
-    example: 'john.doe@correo.uis.edu.co',
-  })
   @IsNotEmpty({
-    message: 'El nombre de usuario del estudiante es requerido',
+    message: 'El estudiante es requerido',
   })
-  username: string;
+  user: Record<string, string>;
 }
 
 export class AppealResponse {

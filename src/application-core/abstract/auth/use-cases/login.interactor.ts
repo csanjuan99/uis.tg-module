@@ -32,6 +32,9 @@ export class LoginInteractor {
 
     const access_token: string = this.jwtService.sign({
       sub: user.id,
+      name: user.name,
+      lastname: user.lastname,
+      identification: user.identification,
       username: user.username,
       permissions: user.permissions,
       kind: user.kind,

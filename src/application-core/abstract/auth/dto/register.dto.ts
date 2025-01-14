@@ -73,4 +73,15 @@ export class RegisterRequest {
     message: 'El apellido es requerido',
   })
   lastname: string;
+  @ApiProperty({
+    example: '225421',
+    required: true,
+  })
+  @IsString({
+    message: 'El código del estudiante es una cadena de texto',
+  })
+  @IsNotEmpty({
+    message: 'El código del estudiante es requerido',
+  })
+  identification: string;
 }

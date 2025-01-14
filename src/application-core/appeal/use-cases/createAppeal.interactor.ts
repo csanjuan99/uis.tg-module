@@ -17,7 +17,7 @@ export class CreateAppealInteractor {
 
   async execute(payload: CreateAppealRequest) {
     const user: UserDocument = await this.userGateway.findOne({
-      username: payload.username,
+      username: payload.user.username,
     });
 
     if (!user) {
@@ -33,7 +33,7 @@ export class CreateAppealInteractor {
     }
 
     const _appeal: AppealDocument = await this.appealGateway.findOne({
-      studentId: user.id,
+      'student.username': user.username,
       status: AppealStatus.PENDING,
     });
 
@@ -44,7 +44,12 @@ export class CreateAppealInteractor {
     const appeal: AppealDocument = await this.appealGateway.create({
       requests: payload.requests,
       status: AppealStatus.PENDING,
-      studentId: user.id,
+      student: {
+        username: user.username,
+        identification: user.identification,
+        name: user.name,
+        lastname: user.lastname,
+      },
     });
 
     return appeal;

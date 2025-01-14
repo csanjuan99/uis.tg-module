@@ -28,6 +28,9 @@ export class RegisterInteractor {
     const hash: string = hashSync(payload.password, salt);
 
     const student: UserDocument = await this.userGateway.create({
+      name: payload.name,
+      lastname: payload.lastname,
+      identification: payload.identification,
       username: payload.email,
       password: hash,
       kind: 'STUDENT',

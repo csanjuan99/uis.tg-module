@@ -8,8 +8,21 @@ export type UserDocument = HydratedDocument<User>;
   timestamps: true,
 })
 export class User {
+  @Prop({
+    required: true,
+  })
+  name: string;
+  @Prop({
+    required: true,
+  })
+  lastname: string;
   @Prop({ required: true, unique: true })
   username: string;
+  @Prop({
+    required: false,
+    unique: true,
+  })
+  identification?: string;
   @Prop({ required: true })
   kind: 'STUDENT' | 'ADMIN' | 'ROOT';
   @Prop({ required: true })
