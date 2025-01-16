@@ -16,7 +16,6 @@ export class OnSendVerifyInteractor {
   ) {}
 
   async execute(req: Request, payload: { username: string }): Promise<void> {
-    console.log(req.headers);
     const t: string = this.jwtService.sign(
       {
         username: payload.username,

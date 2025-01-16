@@ -1,12 +1,16 @@
 import {
-  AppealRequest,
+  AppealLog,
+  AppealRequestStatus,
   AppealStatus,
+  AppealStudent,
 } from '../../../infrastructure/persistence/schema/appeal.schema';
-import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
+  IsArray,
   IsNotEmpty,
   IsNotEmptyObject,
   IsOptional,
+  IsString,
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
@@ -53,12 +57,81 @@ export class AppealRequestRequest {
 
   @ApiProperty({
     nullable: true,
+    type: AppealRequestChangeRequest,
+    isArray: true,
   })
   @IsOptional()
-  @IsNotEmptyObject()
-  @ValidateNested()
+  @IsArray({
+    message: 'Las peticiones de cambio deben ser un listo',
+  })
+  @ValidateNested({ each: true })
   @Type(() => AppealRequestChangeRequest)
-  to: AppealRequestChangeRequest;
+  to: AppealRequestChangeRequest[];
+
+  @ApiProperty({
+    description: 'Razón de la solicitud',
+    example: 'El horario no es compatible con mis otras materias',
+  })
+  @IsOptional()
+  reason?: string;
+
+  @ApiProperty({
+    description: 'Estado de la solicitud',
+    example: AppealStatus.PENDING,
+  })
+  @IsOptional()
+  status?: AppealRequestStatus;
+}
+
+export class AppealStudentRequest implements AppealStudent {
+  @ApiProperty({
+    required: true,
+    description: 'Nombre del estudiante',
+    example: 'Juan',
+  })
+  @IsNotEmpty({
+    message: 'El nombre del estudiante es requerido',
+  })
+  @IsString({
+    message: 'El nombre del estudiante debe ser un texto',
+  })
+  name: string;
+  @ApiProperty({
+    required: true,
+    description: 'Apellido del estudiante',
+    example: 'Doe',
+  })
+  @IsNotEmpty({
+    message: 'El apellido del estudiante es requerido',
+  })
+  @IsString({
+    message: 'El apellido del estudiante debe ser un texto',
+  })
+  lastname: string;
+  @ApiProperty({
+    required: true,
+    description: 'Nombre de usuario del estudiante',
+    example: 'john.doe@correo.uis.edu.co',
+  })
+  @IsNotEmpty({
+    message: 'El nombre de usuario del estudiante es requerido',
+  })
+  @IsString({
+    message: 'El nombre de usuario del estudiante debe ser un texto',
+  })
+  username: string;
+  @ApiProperty({
+    required: true,
+    description: 'Identificación del estudiante',
+    example: '217xxxx',
+  })
+  @IsNotEmpty({
+    message: 'La identificación del estudiante es requerida',
+  })
+  @IsString({
+    message: 'La identificación del estudiante debe ser un texto',
+  })
+  identification: string;
 }
 
 export class CreateAppealRequest {
@@ -77,10 +150,42 @@ export class CreateAppealRequest {
   @IsNotEmpty({
     message: 'El estudiante es requerido',
   })
-  user: Record<string, string>;
+  user: AppealStudentRequest;
+}
+
+export class AppealStudentResponse implements AppealStudent {
+  @ApiProperty({
+    description: 'Nombre del estudiante',
+    example: 'Juan',
+  })
+  name: string;
+  @ApiProperty({
+    description: 'Apellido del estudiante',
+    example: 'Doe',
+  })
+  lastname: string;
+  @ApiProperty({
+    description: 'Nombre de usuario del estudiante',
+    example: 'john.doe@correo.uis.edu.co',
+  })
+  username: string;
+  @ApiProperty({
+    description: 'Identificación del estudiante',
+    example: '217xxxx',
+  })
+  identification: string;
 }
 
 export class AppealResponse {
+  @ApiProperty({
+    description: 'Estudiante de la solicitud',
+  })
+  student: AppealStudentResponse;
+  @ApiPropertyOptional({
+    description: 'Observaciones de la solicitud',
+    example: 'El estudiante necesita cambiar de horario',
+  })
+  observation?: string;
   @ApiProperty({
     description: 'Identificador del estudiante',
     example: '5f7c0b7b9f6d7a001f5e0e1b',
@@ -93,7 +198,7 @@ export class AppealResponse {
   })
   @ValidateNested({ each: true })
   @Type(() => AppealRequestRequest)
-  requests: AppealRequest[];
+  requests: AppealRequestRequest[];
 
   @ApiPropertyOptional({
     description: 'Registros de actividad',
@@ -111,8 +216,23 @@ export class AppealResponse {
   status: AppealStatus;
 }
 
-export class UpdateAppealRequest extends PartialType(AppealResponse) {
-  studentId: string;
-  requests: AppealRequest[];
-  status: AppealStatus;
+export class UpdateAppealRequest {
+  @ApiPropertyOptional({})
+  @IsOptional()
+  @IsNotEmptyObject()
+  student: AppealStudentRequest;
+  @ApiPropertyOptional({})
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => AppealRequestRequest)
+  requests: AppealRequestRequest[];
+  @ApiPropertyOptional({})
+  @IsOptional()
+  logs?: AppealLog[];
+  @ApiPropertyOptional({})
+  @IsOptional()
+  observation?: string;
+  @ApiPropertyOptional({})
+  @IsOptional()
+  status: string;
 }

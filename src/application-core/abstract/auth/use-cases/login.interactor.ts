@@ -40,6 +40,8 @@ export class LoginInteractor {
       kind: user.kind,
     });
 
+    // TODO: Ejecutar evento de asignar solicitud
+
     return {
       access_token,
     };

@@ -1,5 +1,6 @@
-import { Prop, raw, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
+import * as crypto from 'node:crypto';
 
 export type AppealDocument = HydratedDocument<Appeal>;
 
@@ -36,8 +37,8 @@ export class AppealRequestChange {
 export class AppealRequest {
   @Prop(AppealRequestChange)
   from?: AppealRequestChange;
-  @Prop(AppealRequestChange)
-  to?: AppealRequestChange;
+  @Prop([AppealRequestChange])
+  to?: AppealRequestChange[];
   @Prop({
     required: false,
     type: String,
@@ -54,6 +55,11 @@ export class AppealRequest {
     default: AppealRequestStatus.PENDING,
   })
   status?: AppealRequestStatus;
+  @Prop({
+    required: false,
+    default: null,
+  })
+  attendedBy?: string;
 }
 
 @Schema()
@@ -76,6 +82,8 @@ export class AppealStudent {
   identification: string;
 }
 
+export class AppealLog {}
+
 @Schema({
   collection: 'appeals',
   timestamps: true,
@@ -85,8 +93,17 @@ export class Appeal {
   student: AppealStudent;
   @Prop([AppealRequest])
   requests: AppealRequest[];
-  @Prop(raw({}))
-  logs?: Record<string, any>[];
+  @Prop({
+    required: false,
+    default: [],
+    type: [AppealLog],
+  })
+  logs?: AppealLog[];
+  @Prop({
+    required: false,
+    default: null,
+  })
+  observation?: string;
   @Prop({
     required: true,
     enum: [
@@ -97,7 +114,7 @@ export class Appeal {
     ],
     default: AppealStatus.PENDING,
   })
-  status: AppealStatus;
+  status: string;
 }
 
 export const AppealSchema = SchemaFactory.createForClass(Appeal);
