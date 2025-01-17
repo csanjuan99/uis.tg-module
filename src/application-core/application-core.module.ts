@@ -24,6 +24,12 @@ import { DeleteUserByIdInteractor } from './user/use-cases/deleteUserById.intera
 import { FindUserByIdInteractor } from './user/use-cases/findUserById.interactor';
 import { CreateUserInteractor } from './user/use-cases/createUser.interactor';
 import { UpdateUserByIdInteractor } from './user/use-cases/updateUserById.interactor';
+import { FindScheduleInteractor } from './schedule/use-cases/findSchedule.interactor';
+import { FindScheduleByIdInteractor } from './schedule/use-cases/findScheduleById.interactor';
+import { CreateScheduleInteractor } from './schedule/use-cases/createSchedule.interactor';
+import { DeleteScheduleByIdInteractor } from './schedule/use-cases/deleteScheduleById.interactor';
+import { CountSchedulesInteractor } from './schedule/use-cases/countSchedules.interactor';
+import { UpdateScheduleByIdInteractor } from './schedule/use-cases/updateScheduleById.interactor';
 
 const SERVICES = [
   //AUTH
@@ -55,6 +61,13 @@ const SERVICES = [
   FindUserByIdInteractor,
   CreateUserInteractor,
   UpdateUserByIdInteractor,
+  //SCHEDULE
+  FindScheduleInteractor,
+  FindScheduleByIdInteractor,
+  CreateScheduleInteractor,
+  DeleteScheduleByIdInteractor,
+  CountSchedulesInteractor,
+  UpdateScheduleByIdInteractor,
 ];
 
 @Module({

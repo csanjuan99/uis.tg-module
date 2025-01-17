@@ -5,12 +5,14 @@ import { SubjectController } from './controllers/subject.controller';
 import { AppealController } from './controllers/appeal.controller';
 import { UserController } from './controllers/user.controller';
 import { StudentController } from './controllers/student.controller';
+import { ScheduleController } from './controllers/schedule.controller';
 
 @Module({
   imports: [ApplicationCoreModule],
   controllers: [
     AppealController,
     AuthController,
+    ScheduleController,
     StudentController,
     SubjectController,
     UserController,

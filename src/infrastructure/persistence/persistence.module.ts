@@ -7,8 +7,9 @@ import { SubjectGateway } from './gateway/subject.gateway';
 import { Appeal, AppealSchema } from './schema/appeal.schema';
 import { AppealGateway } from './gateway/appeal.gateway';
 import { Schedule, ScheduleSchema } from './schema/schedule.schema';
+import { ScheduleGateway } from './gateway/shedule.gateway';
 
-const SERVICES = [AppealGateway, UserGateway, SubjectGateway];
+const SERVICES = [AppealGateway, UserGateway, SubjectGateway, ScheduleGateway];
 
 @Module({
   imports: [
