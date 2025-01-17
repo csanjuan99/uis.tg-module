@@ -1,4 +1,3 @@
-import { User } from '../../../infrastructure/persistence/schema/user.schema';
 import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 

@@ -20,7 +20,6 @@ export class User {
   username: string;
   @Prop({
     required: false,
-    sparse: true,
   })
   identification?: string;
   @Prop({ required: true })

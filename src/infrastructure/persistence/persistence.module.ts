@@ -6,6 +6,7 @@ import { Subject, SubjectSchema } from './schema/subject.schema';
 import { SubjectGateway } from './gateway/subject.gateway';
 import { Appeal, AppealSchema } from './schema/appeal.schema';
 import { AppealGateway } from './gateway/appeal.gateway';
+import { Schedule, ScheduleSchema } from './schema/schedule.schema';
 
 const SERVICES = [AppealGateway, UserGateway, SubjectGateway];
 
@@ -15,6 +16,10 @@ const SERVICES = [AppealGateway, UserGateway, SubjectGateway];
       {
         name: Appeal.name,
         schema: AppealSchema,
+      },
+      {
+        name: Schedule.name,
+        schema: ScheduleSchema,
       },
       {
         name: Subject.name,
