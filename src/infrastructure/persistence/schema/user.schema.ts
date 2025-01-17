@@ -20,7 +20,7 @@ export class User {
   username: string;
   @Prop({
     required: false,
-    unique: true,
+    sparse: true,
   })
   identification?: string;
   @Prop({ required: true })
@@ -34,3 +34,10 @@ export class User {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+UserSchema.index(
+  { identification: 1 },
+  {
+    unique: true,
+    partialFilterExpression: { identification: { $exists: true, $ne: null } },
+  },
+);
