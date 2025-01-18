@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
-import * as crypto from 'node:crypto';
+import { StudentShift } from './user.schema';
 
 export type AppealDocument = HydratedDocument<Appeal>;
 
@@ -9,6 +9,7 @@ export enum AppealStatus {
   APPROVED = 'APPROVED',
   REJECTED = 'REJECTED',
   PARTIAL_REJECTED = 'PARTIAL_REJECTED',
+  REVIEW = 'REVIEW',
 }
 
 export enum AppealRequestStatus {
@@ -55,11 +56,6 @@ export class AppealRequest {
     default: AppealRequestStatus.PENDING,
   })
   status?: AppealRequestStatus;
-  @Prop({
-    required: false,
-    default: null,
-  })
-  attendedBy?: string;
 }
 
 @Schema()
@@ -80,6 +76,8 @@ export class AppealStudent {
     required: true,
   })
   identification: string;
+  @Prop(StudentShift)
+  shift?: StudentShift;
 }
 
 export class AppealLog {}
@@ -111,10 +109,16 @@ export class Appeal {
       AppealStatus.APPROVED,
       AppealStatus.REJECTED,
       AppealStatus.PARTIAL_REJECTED,
+      AppealStatus.REVIEW,
     ],
     default: AppealStatus.PENDING,
   })
   status: string;
+  @Prop({
+    required: false,
+    default: null,
+  })
+  attendedBy?: string;
 }
 
 export const AppealSchema = SchemaFactory.createForClass(Appeal);

@@ -4,6 +4,23 @@ import { HydratedDocument } from 'mongoose';
 export type UserDocument = HydratedDocument<User>;
 
 @Schema({
+  _id: false,
+  timestamps: false,
+})
+export class StudentShift {
+  @Prop({
+    required: true,
+    enum: ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'],
+  })
+  day: string;
+  @Prop({
+    required: true,
+    enum: ['AM', 'PM'],
+  })
+  time: string;
+}
+
+@Schema({
   collection: 'users',
   timestamps: true,
 })
@@ -16,19 +33,34 @@ export class User {
     required: true,
   })
   lastname: string;
-  @Prop({ required: true, unique: true })
+  @Prop({
+    required: true,
+    unique: true,
+  })
   username: string;
   @Prop({
     required: false,
+    default: null,
   })
   identification?: string;
-  @Prop({ required: true })
+  @Prop(StudentShift)
+  shift?: StudentShift;
+  @Prop({
+    required: true,
+  })
   kind: 'STUDENT' | 'ADMIN' | 'ROOT';
-  @Prop({ required: true })
+  @Prop({
+    required: true,
+  })
   password: string;
-  @Prop({ required: false, default: false })
+  @Prop({
+    required: false,
+    default: false,
+  })
   verified?: boolean;
-  @Prop({ required: true })
+  @Prop({
+    required: true,
+  })
   permissions: string[];
 }
 

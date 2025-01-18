@@ -111,7 +111,7 @@ export class SubjectController {
     type: SubjectResponse,
   })
   @ApiBearerAuth()
-  @Permission('*')
+  @Permission('*', 'write:subject')
   async create(
     @Body() payload: CreateSubjectRequest,
   ): Promise<SubjectDocument> {
@@ -123,7 +123,7 @@ export class SubjectController {
   @ApiNotFoundResponse({ description: 'Materia no encontrada' })
   @ApiParam({ name: 'sku', required: true, example: '20252' })
   @ApiBearerAuth()
-  @Permission('*')
+  @Permission('*', 'write:subject')
   async updateBySku(
     @Param('sku') sku: string,
     @Body() payload: UpdateSubjectRequest,
@@ -136,7 +136,7 @@ export class SubjectController {
   @ApiNotFoundResponse({ description: 'Materia no encontrada' })
   @ApiParam({ name: 'sku', required: true, example: '20252' })
   @ApiBearerAuth()
-  @Permission('*')
+  @Permission('*', 'delete:subject')
   async deleteBySku(@Param('sku') sku: string) {
     return this.deleteSubjectBySkuInteractor.execute(sku);
   }

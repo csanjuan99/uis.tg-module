@@ -34,10 +34,9 @@ import { FindAppealByIdInteractor } from '../../application-core/appeal/use-case
 import { UpdateAppealByIdInteractor } from '../../application-core/appeal/use-cases/updateAppealById.interactor';
 import { DeleteAppealByIdInteractor } from '../../application-core/appeal/use-cases/deleteAppealById.interactor';
 import { CountAppealInteractor } from '../../application-core/appeal/use-cases/countAppeal.interactor';
-import { Request } from 'express';
 import { StudentInterceptor } from '../inteceptors/student.interceptor';
 
-@ApiTags('Solicitudes - Administrador')
+@ApiTags('Solicitudes')
 @Controller('appeal')
 export class AppealController {
   constructor(
@@ -58,7 +57,6 @@ export class AppealController {
   @Permission('write:appeal')
   @Post('/')
   async create(
-    @Req() req: Request,
     @Body()
     payload: CreateAppealRequest,
   ) {
