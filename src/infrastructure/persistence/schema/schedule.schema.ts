@@ -49,42 +49,8 @@ export class ScheduleSubject {
   timestamps: true,
 })
 export class Schedule {
-  @Prop({
-    required: false,
-    default: [],
-    type: [ScheduleSubject],
-  })
-  monday: ScheduleSubject[];
-  @Prop({
-    required: false,
-    default: [],
-    type: [ScheduleSubject],
-  })
-  tuesday: ScheduleSubject[];
-  @Prop({
-    required: false,
-    default: [],
-    type: [ScheduleSubject],
-  })
-  wednesday: ScheduleSubject[];
-  @Prop({
-    required: false,
-    default: [],
-    type: [ScheduleSubject],
-  })
-  thursday: ScheduleSubject[];
-  @Prop({
-    required: false,
-    default: [],
-    type: [ScheduleSubject],
-  })
-  friday: ScheduleSubject[];
-  @Prop({
-    required: false,
-    default: [],
-    type: [ScheduleSubject],
-  })
-  saturday: ScheduleSubject[];
+  @Prop([ScheduleSubject])
+  subjects: ScheduleSubject[];
   @Prop({
     required: true,
     unique: true,

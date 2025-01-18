@@ -90,49 +90,9 @@ export class CreateScheduleRequest {
     isArray: true,
   })
   @IsNotEmpty({
-    message: 'La lista de materias del lunes es requerida',
+    message: 'La lista de materias es requerida',
   })
-  monday: ScheduleSubjectRequest[];
-  @ApiProperty({
-    type: ScheduleSubjectRequest,
-    isArray: true,
-  })
-  @IsNotEmpty({
-    message: 'La lista de materias del martes es requerida',
-  })
-  tuesday: ScheduleSubjectRequest[];
-  @ApiProperty({
-    type: ScheduleSubjectRequest,
-    isArray: true,
-  })
-  @IsNotEmpty({
-    message: 'La lista de materias del miércoles es requerida',
-  })
-  wednesday: ScheduleSubjectRequest[];
-  @ApiProperty({
-    type: ScheduleSubjectRequest,
-    isArray: true,
-  })
-  @IsNotEmpty({
-    message: 'La lista de materias del jueves es requerida',
-  })
-  thursday: ScheduleSubjectRequest[];
-  @ApiProperty({
-    type: ScheduleSubjectRequest,
-    isArray: true,
-  })
-  @IsNotEmpty({
-    message: 'La lista de materias del viernes es requerida',
-  })
-  friday: ScheduleSubjectRequest[];
-  @ApiProperty({
-    type: ScheduleSubjectRequest,
-    isArray: true,
-  })
-  @IsNotEmpty({
-    message: 'La lista de materias del sábado es requerida',
-  })
-  saturday: ScheduleSubjectRequest[];
+  subjects: ScheduleSubjectRequest[];
   @ApiProperty({
     description: 'Identificador del estudiante',
   })
@@ -189,32 +149,7 @@ export class ScheduleResponse {
     type: ScheduleSubjectResponse,
     isArray: true,
   })
-  monday: ScheduleSubjectResponse[];
-  @ApiProperty({
-    type: ScheduleSubjectResponse,
-    isArray: true,
-  })
-  tuesday: ScheduleSubjectResponse[];
-  @ApiProperty({
-    type: ScheduleSubjectResponse,
-    isArray: true,
-  })
-  wednesday: ScheduleSubjectResponse[];
-  @ApiProperty({
-    type: ScheduleSubjectResponse,
-    isArray: true,
-  })
-  thursday: ScheduleSubjectResponse[];
-  @ApiProperty({
-    type: ScheduleSubjectResponse,
-    isArray: true,
-  })
-  friday: ScheduleSubjectResponse[];
-  @ApiProperty({
-    type: ScheduleSubjectResponse,
-    isArray: true,
-  })
-  saturday: ScheduleSubjectResponse[];
+  subjects: ScheduleSubjectResponse[];
   @ApiProperty({
     description: 'Identificador del estudiante',
   })

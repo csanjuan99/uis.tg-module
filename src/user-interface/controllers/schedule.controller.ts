@@ -11,7 +11,12 @@ import {
 import { CreateScheduleInteractor } from '../../application-core/schedule/use-cases/createSchedule.interactor';
 import { FindScheduleInteractor } from '../../application-core/schedule/use-cases/findSchedule.interactor';
 import { FindScheduleByIdInteractor } from '../../application-core/schedule/use-cases/findScheduleById.interactor';
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOkResponse,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import {
   CreateScheduleRequest,
   ScheduleResponse,
@@ -41,6 +46,16 @@ export class ScheduleController {
     type: ScheduleResponse,
     isArray: true,
   })
+  @ApiQuery({
+    name: 'filter',
+    required: false,
+    type: String,
+  })
+  @ApiQuery({
+    name: 'projection',
+    required: false,
+    type: String,
+  })
   @Permission('*')
   @Get()
   async find(
@@ -62,6 +77,11 @@ export class ScheduleController {
   })
   @ApiOkResponse({
     type: Number,
+  })
+  @ApiQuery({
+    name: 'filter',
+    required: false,
+    type: String,
   })
   @Permission('*')
   @Get('/count')
