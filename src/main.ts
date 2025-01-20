@@ -15,7 +15,7 @@ async function bootstrap() {
   app.enableCors({
     origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    allowedHeaders: 'Content-Type, Accept, Authorization, X-Id-Manager',
+    allowedHeaders: 'Content-Type, Accept, Authorization, X-Resource-Id',
   });
 
   app.useBodyParser('json', { limit: '16mb' });

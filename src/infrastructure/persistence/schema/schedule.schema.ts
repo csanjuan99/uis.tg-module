@@ -24,6 +24,11 @@ export class ScheduleSubjectGroup {
 export class ScheduleSubject {
   @Prop({
     required: true,
+    type: String,
+  })
+  _id: string;
+  @Prop({
+    required: true,
   })
   group: ScheduleSubjectGroup;
   @Prop({
