@@ -93,7 +93,7 @@ export class UserController {
   @ApiBearerAuth()
   @Permission('*')
   @Get(':id')
-  async findById(@Query('id') id: string): Promise<UserDocument> {
+  async findById(@Param('id') id: string): Promise<UserDocument> {
     return this.findUserByIdInteractor.execute(id, {
       password: 0,
     });
@@ -104,7 +104,7 @@ export class UserController {
   @ApiBearerAuth()
   @Permission('*')
   @Delete(':id')
-  async deleteById(@Query('id') id: string): Promise<UserDocument> {
+  async deleteById(@Param('id') id: string): Promise<UserDocument> {
     return this.deleteUserByIdInteractor.execute(id);
   }
 
