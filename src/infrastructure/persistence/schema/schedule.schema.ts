@@ -1,14 +1,27 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
+import { SubjectGroupSchedule } from './subject.schema';
 
 export type ScheduleDocument = HydratedDocument<Schedule>;
+
+@Schema()
+export class ScheduleSubjectGroup {
+  @Prop({
+    required: true,
+  })
+  sku: string;
+  @Prop({
+    required: true,
+  })
+  schedule: SubjectGroupSchedule[];
+}
 
 @Schema()
 export class ScheduleSubject {
   @Prop({
     required: true,
   })
-  group: string;
+  group: ScheduleSubjectGroup;
   @Prop({
     required: true,
   })
@@ -17,31 +30,6 @@ export class ScheduleSubject {
     required: true,
   })
   name: string;
-  @Prop({
-    type: String,
-    required: true,
-  })
-  day: string;
-  @Prop({
-    type: String,
-    required: true,
-  })
-  time: string;
-  @Prop({
-    type: String,
-    required: true,
-  })
-  building: string;
-  @Prop({
-    type: String,
-    required: true,
-  })
-  room: string;
-  @Prop({
-    type: String,
-    required: true,
-  })
-  professor: string;
 }
 
 @Schema({

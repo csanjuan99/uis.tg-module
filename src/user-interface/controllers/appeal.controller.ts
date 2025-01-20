@@ -11,7 +11,6 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { CreateAppealInteractor } from '../../application-core/appeal/use-cases/createAppeal.interactor';
-import { Public } from '../../application-core/abstract/auth/decorator/public.decorator';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
@@ -35,6 +34,8 @@ import { UpdateAppealByIdInteractor } from '../../application-core/appeal/use-ca
 import { DeleteAppealByIdInteractor } from '../../application-core/appeal/use-cases/deleteAppealById.interactor';
 import { CountAppealInteractor } from '../../application-core/appeal/use-cases/countAppeal.interactor';
 import { StudentInterceptor } from '../inteceptors/student.interceptor';
+import { OwnerInterceptor } from '../inteceptors/owner.interceptor';
+import { Request } from 'express';
 
 @ApiTags('Solicitudes')
 @Controller('appeal')
@@ -70,22 +71,31 @@ export class AppealController {
     isArray: true,
   })
   @ApiQuery({ name: 'filter', required: false, example: '{}' })
+  @ApiQuery({ name: 'projection', required: false, example: '{}' })
   @ApiQuery({ name: 'limit', required: false, example: 10 })
   @ApiQuery({ name: 'skip', required: false, example: 0 })
   @ApiQuery({ name: 'sort', required: false, example: 'asc' })
   @ApiQuery({ name: 'sortBy', required: false, example: 'createdAt' })
   @ApiBearerAuth()
-  @Permission('*')
+  @UseInterceptors(OwnerInterceptor)
+  @Permission('*', 'read:appeal')
   async find(
     @Query('filter') filter: string,
+    @Query('projection') projection: string,
     @Query('limit') limit: number = 10,
     @Query('skip') skip: number = 0,
     @Query('sort') sort: 'asc' | 'desc' = 'asc',
     @Query('sortBy') sortBy: string = 'createdAt',
+    @Req() req: Request,
   ): Promise<AppealDocument[]> {
     return this.findAppealsInteractor.execute(
-      JSON.parse(filter || '{}'),
-      {},
+      {
+        ...JSON.parse(filter || '{}'),
+        'student.identification': req.user['identification'],
+      },
+      {
+        ...JSON.parse(projection || '{}'),
+      },
       {
         limit,
         skip,
@@ -100,11 +110,16 @@ export class AppealController {
   })
   @ApiBearerAuth()
   @ApiQuery({ name: 'filter', required: false, example: '{}' })
-  @Permission('*')
+  @Permission('*', 'read:appeal')
+  @UseInterceptors(OwnerInterceptor)
   @Get('/count')
-  async count(@Query('filter') filter: string): Promise<number> {
+  async count(
+    @Query('filter') filter: string,
+    @Req() req: Request,
+  ): Promise<number> {
     return this.countAppealInteractor.execute({
       ...JSON.parse(filter || '{}'),
+      'student.identification': req.user['identification'],
     });
   }
 
@@ -115,7 +130,8 @@ export class AppealController {
   })
   @ApiParam({ name: 'id', required: true })
   @ApiNotFoundResponse({ description: 'Solicitud no encontrada' })
-  @Permission('*')
+  @UseInterceptors(OwnerInterceptor)
+  @Permission('*', 'read:appeal')
   @Get(':id')
   async findById(@Param('id') id: string): Promise<AppealDocument> {
     return this.findAppealByIdInteractor.execute(id);
@@ -126,7 +142,8 @@ export class AppealController {
   @ApiNotFoundResponse({ description: 'Solicitud no encontrada' })
   @ApiParam({ name: 'id', required: true })
   @ApiBearerAuth()
-  @Permission('*')
+  @UseInterceptors(OwnerInterceptor)
+  @Permission('*', 'write:appeal')
   async updateById(
     @Param('id') id: string,
     @Body() payload: UpdateAppealRequest,
@@ -139,7 +156,8 @@ export class AppealController {
   @ApiNotFoundResponse({ description: 'Solicitud no encontrada' })
   @ApiParam({ name: 'id', required: true })
   @ApiBearerAuth()
-  @Permission('*')
+  @UseInterceptors(OwnerInterceptor)
+  @Permission('*', 'delete:appeal')
   async deleteById(@Param('id') id: string) {
     return this.deleteAppealByIdInteractor.execute(id);
   }

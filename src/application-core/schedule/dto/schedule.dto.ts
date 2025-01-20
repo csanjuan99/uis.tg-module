@@ -1,17 +1,88 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsNotEmptyObject, IsString } from 'class-validator';
+import { SubjectGroupSchedule } from '../../../infrastructure/persistence/schema/subject.schema';
 
-class ScheduleSubjectRequest {
+class ScheduleSubjectGroupScheduleRequest {
+  @ApiProperty({
+    example: 'MONDAY',
+  })
+  @IsNotEmpty({
+    message: 'El día de la semana es requerido',
+  })
+  @IsString({
+    message: 'El día de la semana debe ser un texto',
+  })
+  day: string;
+  @ApiProperty({
+    example: '8:00 - 10:00',
+  })
+  @IsNotEmpty({
+    message: 'El horario de la materia es requerido',
+  })
+  @IsString({
+    message: 'El horario de la materia debe ser un texto',
+  })
+  time: string;
+  @ApiProperty({
+    example: 'CAMILO TORRES',
+  })
+  @IsNotEmpty({
+    message: 'El edificio de la materia es requerido',
+  })
+  @IsString({
+    message: 'El edificio de la materia debe ser un texto',
+  })
+  building: string;
+  @ApiProperty({
+    example: '201',
+  })
+  @IsNotEmpty({
+    message: 'El salón de la materia es requerido',
+  })
+  @IsString({
+    message: 'El salón de la materia debe ser un texto',
+  })
+  room: string;
+  @ApiProperty({
+    example: 'JUAN PEREZ',
+  })
+  @IsNotEmpty({
+    message: 'El profesor de la materia es requerido',
+  })
+  @IsString({
+    message: 'El profesor de la materia debe ser un texto',
+  })
+  professor: string;
+}
+
+class ScheduleSubjectGroupRequest {
   @ApiProperty({
     example: 'A2',
   })
   @IsNotEmpty({
-    message: 'El grupo de la materia es requerido',
+    message: 'El sku del grupo de la materia es requerido',
   })
-  @IsString({
-    message: 'El grupo de la materia debe ser un texto',
+  sku: string;
+  @ApiProperty({
+    type: ScheduleSubjectGroupScheduleRequest,
+    isArray: true,
   })
-  group: string;
+  schedule: ScheduleSubjectGroupScheduleRequest[];
+}
+
+class ScheduleSubjectRequest {
+  @ApiProperty({
+    type: ScheduleSubjectGroupRequest,
+  })
+  @IsNotEmptyObject(
+    {
+      nullable: false,
+    },
+    {
+      message: 'El grupo de la materia es requerido',
+    },
+  )
+  group: ScheduleSubjectGroupRequest;
   @ApiProperty({
     example: '22052',
   })
@@ -32,56 +103,6 @@ class ScheduleSubjectRequest {
     message: 'El nombre de la materia debe ser un texto',
   })
   name: string;
-  @ApiProperty({
-    example: 'LUNES',
-  })
-  @IsNotEmpty({
-    message: 'El día de la materia es requerido',
-  })
-  @IsString({
-    message: 'El día de la materia debe ser un texto',
-  })
-  day: string;
-  @ApiProperty({
-    example: '8:00 - 10:00',
-  })
-  @IsNotEmpty({
-    message: 'La hora de la materia es requerida',
-  })
-  @IsString({
-    message: 'La hora de la materia debe ser un texto',
-  })
-  time: string;
-  @ApiProperty({
-    example: 'LABORATORIOS PESADOS',
-  })
-  @IsNotEmpty({
-    message: 'El edificio de la materia es requerido',
-  })
-  @IsString({
-    message: 'El edificio de la materia debe ser un texto',
-  })
-  building: string;
-  @ApiProperty({
-    example: '254',
-  })
-  @IsNotEmpty({
-    message: 'El salón de la materia es requerido',
-  })
-  @IsString({
-    message: 'El salón de la materia debe ser un texto',
-  })
-  room: string;
-  @ApiProperty({
-    example: 'LEONEL PARRA PINILLA',
-  })
-  @IsNotEmpty({
-    message: 'El profesor de la materia es requerido',
-  })
-  @IsString({
-    message: 'El profesor de la materia debe ser un texto',
-  })
-  professor: string;
 }
 
 export class CreateScheduleRequest {
@@ -93,9 +114,6 @@ export class CreateScheduleRequest {
     message: 'La lista de materias es requerida',
   })
   subjects: ScheduleSubjectRequest[];
-  @ApiProperty({
-    description: 'Identificador del estudiante',
-  })
   @IsNotEmpty({
     message: 'El identificador del estudiante es requerido',
   })
@@ -107,11 +125,42 @@ export class CreateScheduleRequest {
 
 export class UpdateScheduleRequest extends PartialType(CreateScheduleRequest) {}
 
-class ScheduleSubjectResponse {
+class ScheduleSubjectGroupScheduleResponse {
+  @ApiProperty({
+    example: 'MONDAY',
+  })
+  day: string;
+  @ApiProperty({
+    example: '8:00 - 10:00',
+  })
+  time: string;
+  @ApiProperty({
+    example: 'CAMILO TORRES',
+  })
+  building: string;
+  @ApiProperty({
+    example: '201',
+  })
+  room: string;
+  @ApiProperty({
+    example: 'JUAN PEREZ',
+  })
+  professor: string;
+}
+
+class ScheduleSubjectGroupResponse {
   @ApiProperty({
     example: 'A2',
   })
-  group: string;
+  sku: string;
+  @ApiProperty({
+    type: ScheduleSubjectGroupScheduleResponse,
+    isArray: true,
+  })
+  schedule: ScheduleSubjectGroupScheduleResponse[];
+}
+
+class ScheduleSubjectResponse {
   @ApiProperty({
     example: '22052',
   })
@@ -121,25 +170,9 @@ class ScheduleSubjectResponse {
   })
   name: string;
   @ApiProperty({
-    example: 'LUNES',
+    type: ScheduleSubjectGroupResponse,
   })
-  day: string;
-  @ApiProperty({
-    example: '8:00 - 10:00',
-  })
-  time: string;
-  @ApiProperty({
-    example: 'LABORATORIOS PESADOS',
-  })
-  building: string;
-  @ApiProperty({
-    example: '254',
-  })
-  room: string;
-  @ApiProperty({
-    example: 'LEONEL PARRA PINILLA',
-  })
-  professor: string;
+  group: ScheduleSubjectGroupResponse;
 }
 
 export class ScheduleResponse {

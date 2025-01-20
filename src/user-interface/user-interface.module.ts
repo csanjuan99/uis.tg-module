@@ -4,8 +4,8 @@ import { ApplicationCoreModule } from '../application-core/application-core.modu
 import { SubjectController } from './controllers/subject.controller';
 import { AppealController } from './controllers/appeal.controller';
 import { UserController } from './controllers/user.controller';
-import { StudentController } from './controllers/student.controller';
 import { ScheduleController } from './controllers/schedule.controller';
+import { StudentController } from './controllers/abstract/student.controller';
 
 @Module({
   imports: [ApplicationCoreModule],

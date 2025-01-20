@@ -31,6 +31,7 @@ import { DeleteScheduleByIdInteractor } from './schedule/use-cases/deleteSchedul
 import { CountSchedulesInteractor } from './schedule/use-cases/countSchedules.interactor';
 import { UpdateScheduleByIdInteractor } from './schedule/use-cases/updateScheduleById.interactor';
 import { AssignAppealHandler } from './appeal/event-handlers/assignAppeal.handler';
+import { UpdateStudentInteractor } from './abstract/student/use-cases/UpdateStudent.interactor';
 
 const SERVICES = [
   //AUTH
@@ -70,6 +71,8 @@ const SERVICES = [
   DeleteScheduleByIdInteractor,
   CountSchedulesInteractor,
   UpdateScheduleByIdInteractor,
+  //STUDENT
+  UpdateStudentInteractor,
 ];
 
 @Module({

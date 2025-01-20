@@ -3,24 +3,26 @@ import {
   NestInterceptor,
   ExecutionContext,
   CallHandler,
+  UnauthorizedException,
   ForbiddenException,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { Request } from 'express';
 
 @Injectable()
-export class StudentInterceptor implements NestInterceptor {
+export class OwnerInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request: Request = context.switchToHttp().getRequest();
-    const student: Express.User = request.user;
+    const user: Express.User = request.user;
+    const resource = request.headers['x-resource-id'] as string;
 
-    if (student['kind'] !== 'STUDENT') {
-      throw new ForbiddenException('No puedes acceder a este recurso');
+    if (user['kind'] !== 'STUDENT') {
+      return next.handle();
     }
 
-    request.body.studentId = student['id'];
-    request.body.user = student;
-    request.headers['student'] = JSON.stringify(student);
+    if (user['id'] !== resource) {
+      throw new ForbiddenException('No puedes acceder a este recurso');
+    }
 
     return next.handle();
   }

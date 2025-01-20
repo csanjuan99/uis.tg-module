@@ -99,7 +99,21 @@ async function seed() {
               sku: group['grupo'],
               capacity: group['capacidad'],
               enrolled: group['matriculados'],
-              schedule: group['horario'] ?? [],
+              schedule: (
+                group['horario'] as {
+                  dia: string;
+                  hora: string;
+                  edificio: string;
+                  aula: string;
+                  profesor: string;
+                }[]
+              ).map((s) => ({
+                day: s['dia'],
+                time: s['hora'],
+                building: s['edificio'],
+                room: s['aula'],
+                professor: s['profesor'],
+              })),
             });
           }
           await subject.save();

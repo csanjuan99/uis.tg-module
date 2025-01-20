@@ -7,6 +7,7 @@ import {
   Post,
   Put,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -28,6 +29,7 @@ import { DeleteUserByIdInteractor } from '../../application-core/user/use-cases/
 import { FindUserByIdInteractor } from '../../application-core/user/use-cases/findUserById.interactor';
 import { CreateUserInteractor } from '../../application-core/user/use-cases/createUser.interactor';
 import { UpdateUserByIdInteractor } from '../../application-core/user/use-cases/updateUserById.interactor';
+import { OwnerInterceptor } from '../inteceptors/owner.interceptor';
 
 @ApiTags('Usuarios - Administrador')
 @Controller('users')
@@ -52,6 +54,7 @@ export class UserController {
   @ApiQuery({ name: 'sort', required: false, example: 'asc' })
   @ApiQuery({ name: 'sortBy', required: false, example: 'createdAt' })
   @ApiQuery({ name: 'filter', required: false, example: '{}' })
+  @Permission('*', 'read:user')
   @Permission('*')
   @Get()
   async find(
@@ -80,7 +83,7 @@ export class UserController {
   @ApiQuery({ name: 'filter', required: false, example: '{}' })
   @ApiOkResponse({ type: Number })
   @ApiBearerAuth()
-  @Permission('*')
+  @Permission('*', 'read:user')
   @Get('/count')
   async count(@Query('filter') filter: string): Promise<number> {
     return this.countUsersInteractor.execute({
@@ -91,7 +94,7 @@ export class UserController {
   @ApiOperation({ summary: 'Listar un usuario por su identificador' })
   @ApiOkResponse({ type: UserResponse })
   @ApiBearerAuth()
-  @Permission('*')
+  @Permission('*', 'read:user')
   @Get(':id')
   async findById(@Param('id') id: string): Promise<UserDocument> {
     return this.findUserByIdInteractor.execute(id, {
@@ -102,7 +105,7 @@ export class UserController {
   @ApiOperation({ summary: 'Eliminar un usuario por su identificador' })
   @ApiOkResponse({ type: UserResponse })
   @ApiBearerAuth()
-  @Permission('*')
+  @Permission('*', 'delete:user')
   @Delete(':id')
   async deleteById(@Param('id') id: string): Promise<UserDocument> {
     return this.deleteUserByIdInteractor.execute(id);
@@ -110,7 +113,7 @@ export class UserController {
 
   @ApiOperation({ summary: 'Crear un usuario' })
   @ApiBearerAuth()
-  @Permission('*')
+  @Permission('*', 'write:user')
   @Post('/')
   async create(@Body() user: CreateUserRequest): Promise<UserDocument> {
     return this.createUserInteractor.execute(user);
@@ -119,7 +122,8 @@ export class UserController {
   @ApiOperation({ summary: 'Actualizar un usuario por su identificador' })
   @ApiOkResponse({ type: UserResponse })
   @ApiBearerAuth()
-  @Permission('*')
+  @UseInterceptors(OwnerInterceptor)
+  @Permission('*', 'write:user')
   @Put(':id')
   async updateById(
     @Param('id') id: string,

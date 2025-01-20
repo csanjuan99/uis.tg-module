@@ -13,6 +13,7 @@ import { CreateScheduleInteractor } from '../../application-core/schedule/use-ca
 import { FindScheduleInteractor } from '../../application-core/schedule/use-cases/findSchedule.interactor';
 import { FindScheduleByIdInteractor } from '../../application-core/schedule/use-cases/findScheduleById.interactor';
 import {
+  ApiBearerAuth,
   ApiOkResponse,
   ApiOperation,
   ApiQuery,
@@ -128,8 +129,9 @@ export class ScheduleController {
   @ApiOkResponse({
     type: ScheduleResponse,
   })
+  @ApiBearerAuth()
   @UseInterceptors(StudentInterceptor)
-  @Permission('write:schedule')
+  @Permission('*', 'write:schedule')
   @Post()
   async create(@Body() payload: CreateScheduleRequest) {
     return this.createScheduleInteractor.execute(payload);
@@ -153,6 +155,7 @@ export class ScheduleController {
   @ApiOkResponse({
     type: ScheduleResponse,
   })
+  @UseInterceptors(StudentInterceptor)
   @Permission('delete:schedule')
   @Delete(':id')
   async deleteById(@Param('id') id: string) {
@@ -165,6 +168,7 @@ export class ScheduleController {
   @ApiOkResponse({
     type: ScheduleResponse,
   })
+  @UseInterceptors(StudentInterceptor)
   @Permission('write:schedule')
   @Put(':id')
   async updateById(
