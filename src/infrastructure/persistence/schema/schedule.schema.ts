@@ -4,7 +4,9 @@ import { SubjectGroupSchedule } from './subject.schema';
 
 export type ScheduleDocument = HydratedDocument<Schedule>;
 
-@Schema()
+@Schema({
+  _id: false,
+})
 export class ScheduleSubjectGroup {
   @Prop({
     required: true,
@@ -16,7 +18,9 @@ export class ScheduleSubjectGroup {
   schedule: SubjectGroupSchedule[];
 }
 
-@Schema()
+@Schema({
+  _id: false,
+})
 export class ScheduleSubject {
   @Prop({
     required: true,

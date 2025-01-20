@@ -1,6 +1,13 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { IsNotEmpty, IsNotEmptyObject, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsNotEmpty,
+  IsNotEmptyObject,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 import { SubjectGroupSchedule } from '../../../infrastructure/persistence/schema/subject.schema';
+import { Type } from 'class-transformer';
 
 class ScheduleSubjectGroupScheduleRequest {
   @ApiProperty({
@@ -67,6 +74,16 @@ class ScheduleSubjectGroupRequest {
     type: ScheduleSubjectGroupScheduleRequest,
     isArray: true,
   })
+  @IsNotEmpty({
+    message: 'El horario del grupo de la materia es requerido',
+  })
+  @IsArray({
+    message: 'El horario del grupo de la materia debe ser una lista',
+  })
+  @ValidateNested({
+    each: true,
+  })
+  @Type(() => ScheduleSubjectGroupScheduleRequest)
   schedule: ScheduleSubjectGroupScheduleRequest[];
 }
 
@@ -113,6 +130,13 @@ export class CreateScheduleRequest {
   @IsNotEmpty({
     message: 'La lista de materias es requerida',
   })
+  @IsArray({
+    message: 'Las materia del horario deben ser una lista',
+  })
+  @ValidateNested({
+    each: true,
+  })
+  @Type(() => ScheduleSubjectRequest)
   subjects: ScheduleSubjectRequest[];
   @IsNotEmpty({
     message: 'El identificador del estudiante es requerido',

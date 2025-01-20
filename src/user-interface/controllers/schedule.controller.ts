@@ -79,6 +79,7 @@ export class ScheduleController {
     required: false,
     type: String,
   })
+  @ApiBearerAuth()
   @Permission('*')
   @Get()
   async find(
@@ -115,6 +116,7 @@ export class ScheduleController {
     required: false,
     type: String,
   })
+  @ApiBearerAuth()
   @Permission('*')
   @Get('/count')
   async count(@Query('filter') filter: string) {
@@ -143,6 +145,7 @@ export class ScheduleController {
   @ApiOkResponse({
     type: ScheduleResponse,
   })
+  @ApiBearerAuth()
   @Permission('read:schedule')
   @Get(':id')
   async findById(@Param('id') id: string) {
@@ -155,6 +158,7 @@ export class ScheduleController {
   @ApiOkResponse({
     type: ScheduleResponse,
   })
+  @ApiBearerAuth()
   @UseInterceptors(StudentInterceptor)
   @Permission('delete:schedule')
   @Delete(':id')
@@ -168,13 +172,16 @@ export class ScheduleController {
   @ApiOkResponse({
     type: ScheduleResponse,
   })
+  @ApiBearerAuth()
   @UseInterceptors(StudentInterceptor)
-  @Permission('write:schedule')
+  @Permission('*', 'write:schedule')
   @Put(':id')
   async updateById(
     @Param('id') id: string,
     @Body() payload: UpdateScheduleRequest,
   ) {
+    console.log('id', id);
+    console.log('payload', payload);
     return this.updateScheduleByIdInteractor.execute(id, payload);
   }
 }

@@ -91,7 +91,8 @@ export class AppealController {
     return this.findAppealsInteractor.execute(
       {
         ...JSON.parse(filter || '{}'),
-        'student.identification': req.user['identification'],
+        [req.user['identification'] ? 'student.identification' : '']:
+          req.user['identification'],
       },
       {
         ...JSON.parse(projection || '{}'),
@@ -119,7 +120,8 @@ export class AppealController {
   ): Promise<number> {
     return this.countAppealInteractor.execute({
       ...JSON.parse(filter || '{}'),
-      'student.identification': req.user['identification'],
+      [req.user['identification'] ? 'student.identification' : '']:
+        req.user['identification'],
     });
   }
 
