@@ -7,6 +7,7 @@ import {
   Post,
   Put,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CreateScheduleInteractor } from '../../application-core/schedule/use-cases/createSchedule.interactor';
 import { FindScheduleInteractor } from '../../application-core/schedule/use-cases/findSchedule.interactor';
@@ -26,6 +27,7 @@ import { Permission } from '../../application-core/abstract/auth/decorator/permi
 import { CountSchedulesInteractor } from '../../application-core/schedule/use-cases/countSchedules.interactor';
 import { DeleteScheduleByIdInteractor } from '../../application-core/schedule/use-cases/deleteScheduleById.interactor';
 import { UpdateScheduleByIdInteractor } from '../../application-core/schedule/use-cases/updateScheduleById.interactor';
+import { StudentInterceptor } from '../inteceptors/student.interceptor';
 
 @ApiTags('Horario')
 @Controller('schedule')
@@ -56,11 +58,35 @@ export class ScheduleController {
     required: false,
     type: String,
   })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'skip',
+    required: false,
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'sort',
+    required: false,
+    type: String,
+  })
+  @ApiQuery({
+    name: 'sortBy',
+    required: false,
+    type: String,
+  })
   @Permission('*')
   @Get()
   async find(
     @Query('filter') filter: string,
     @Query('projection') projection: string,
+    @Query('limit') limit: number = 10,
+    @Query('skip') skip: number = 0,
+    @Query('sort') sort: 'asc' | 'desc' = 'asc',
+    @Query('sortBy') sortBy: string = 'createdAt',
   ) {
     return this.findScheduleInteractor.execute(
       {
@@ -68,6 +94,11 @@ export class ScheduleController {
       },
       {
         ...JSON.parse(projection || '{}'),
+      },
+      {
+        limit,
+        skip,
+        sort: { [sortBy]: sort },
       },
     );
   }
@@ -97,7 +128,8 @@ export class ScheduleController {
   @ApiOkResponse({
     type: ScheduleResponse,
   })
-  @Permission('*', 'write:schedule')
+  @UseInterceptors(StudentInterceptor)
+  @Permission('write:schedule')
   @Post()
   async create(@Body() payload: CreateScheduleRequest) {
     return this.createScheduleInteractor.execute(payload);
@@ -109,7 +141,7 @@ export class ScheduleController {
   @ApiOkResponse({
     type: ScheduleResponse,
   })
-  @Permission('*', 'read:schedule')
+  @Permission('read:schedule')
   @Get(':id')
   async findById(@Param('id') id: string) {
     return this.findScheduleByIdInteractor.execute(id);
@@ -121,7 +153,7 @@ export class ScheduleController {
   @ApiOkResponse({
     type: ScheduleResponse,
   })
-  @Permission('*', 'delete:schedule')
+  @Permission('delete:schedule')
   @Delete(':id')
   async deleteById(@Param('id') id: string) {
     return this.deleteScheduleByIdInteractor.execute(id);
@@ -133,7 +165,7 @@ export class ScheduleController {
   @ApiOkResponse({
     type: ScheduleResponse,
   })
-  @Permission('*', 'write:schedule')
+  @Permission('write:schedule')
   @Put(':id')
   async updateById(
     @Param('id') id: string,

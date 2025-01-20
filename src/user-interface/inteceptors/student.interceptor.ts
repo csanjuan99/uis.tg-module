@@ -12,14 +12,15 @@ import { Request } from 'express';
 export class StudentInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request: Request = context.switchToHttp().getRequest();
-    const user: Express.User = request.user;
+    const student: Express.User = request.user;
 
-    if (!user) {
+    if (!student) {
       throw new UnauthorizedException();
     }
 
-    request.body.user = user;
-    request.headers['user'] = JSON.stringify(user);
+    request.body.studentId = student['id'];
+    request.body.user = student;
+    request.headers['student'] = JSON.stringify(student);
 
     return next.handle();
   }
