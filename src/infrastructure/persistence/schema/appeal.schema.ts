@@ -36,7 +36,10 @@ export class AppealRequestChange {
 
 @Schema()
 export class AppealRequest {
-  @Prop(AppealRequestChange)
+  @Prop({
+    required: false,
+    type: AppealRequestChange,
+  })
   from?: AppealRequestChange;
   @Prop([AppealRequestChange])
   to?: AppealRequestChange[];

@@ -55,7 +55,7 @@ export class AppealController {
   @ApiOperation({ summary: 'Crear una solicitud de cambio en el horario' })
   @ApiBearerAuth()
   @UseInterceptors(StudentInterceptor)
-  @Permission('write:appeal')
+  @Permission('*', 'write:appeal')
   @Post('/')
   async create(
     @Body()

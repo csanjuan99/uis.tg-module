@@ -67,20 +67,6 @@ export class AppealRequestRequest {
   @ValidateNested({ each: true })
   @Type(() => AppealRequestChangeRequest)
   to: AppealRequestChangeRequest[];
-
-  @ApiProperty({
-    description: 'Razón de la solicitud',
-    example: 'El horario no es compatible con mis otras materias',
-  })
-  @IsOptional()
-  reason?: string;
-
-  @ApiProperty({
-    description: 'Estado de la solicitud',
-    example: AppealStatus.PENDING,
-  })
-  @IsOptional()
-  status?: AppealRequestStatus;
 }
 
 export class AppealStudentRequest implements AppealStudent {
