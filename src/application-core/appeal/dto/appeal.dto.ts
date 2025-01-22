@@ -122,12 +122,12 @@ export class AppealStudentRequest implements AppealStudent {
 
 export class CreateAppealRequest {
   @ApiProperty({
-    description: 'Peticiones de la apelación',
+    description: 'Peticiones de la solicitud',
     type: AppealRequestRequest,
     isArray: true,
   })
   @IsNotEmpty({
-    message: 'Las peticiones de apelación son requeridas',
+    message: 'Las peticiones de la solicitud son requeridas',
   })
   @ValidateNested({ each: true })
   @Type(() => AppealRequestRequest)

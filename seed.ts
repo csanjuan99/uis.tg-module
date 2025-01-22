@@ -24,6 +24,8 @@ async function seed() {
     const userModel = mongoose.model('User', UserSchema);
 
     const root = {
+      name: 'Root',
+      lastname: 'Root',
       username: 'root@correo.uis.edu.co',
       password: '$2a$12$NXx4I1JBFvaZX./3EtvID.5Hk7/sXRjDhf2PE.iKS6tXuGSW46EHq',
       kind: 'ROOT',
