@@ -32,6 +32,7 @@ import { CountSchedulesInteractor } from './schedule/use-cases/countSchedules.in
 import { UpdateScheduleByIdInteractor } from './schedule/use-cases/updateScheduleById.interactor';
 import { AssignAppealHandler } from './appeal/event-handlers/assignAppeal.handler';
 import { UpdateStudentInteractor } from './abstract/student/use-cases/UpdateStudent.interactor';
+import { UpdatedAppealHandler } from './appeal/event-handlers/updatedAppeal.handler';
 
 const SERVICES = [
   //AUTH
@@ -57,6 +58,7 @@ const SERVICES = [
   DeleteAppealByIdInteractor,
   CountAppealInteractor,
   AssignAppealHandler,
+  UpdatedAppealHandler,
   //USER
   FindUsersInteractor,
   CountUsersInteractor,

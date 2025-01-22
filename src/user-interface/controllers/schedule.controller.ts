@@ -7,6 +7,7 @@ import {
   Post,
   Put,
   Query,
+  Req,
   UseInterceptors,
 } from '@nestjs/common';
 import { CreateScheduleInteractor } from '../../application-core/schedule/use-cases/createSchedule.interactor';
@@ -29,6 +30,8 @@ import { CountSchedulesInteractor } from '../../application-core/schedule/use-ca
 import { DeleteScheduleByIdInteractor } from '../../application-core/schedule/use-cases/deleteScheduleById.interactor';
 import { UpdateScheduleByIdInteractor } from '../../application-core/schedule/use-cases/updateScheduleById.interactor';
 import { StudentInterceptor } from '../inteceptors/student.interceptor';
+import { Request } from 'express';
+import { OwnerInterceptor } from '../inteceptors/owner.interceptor';
 
 @ApiTags('Horario')
 @Controller('schedule')
@@ -80,7 +83,8 @@ export class ScheduleController {
     type: String,
   })
   @ApiBearerAuth()
-  @Permission('*')
+  @Permission('*', 'read:schedule')
+  @UseInterceptors(OwnerInterceptor)
   @Get()
   async find(
     @Query('filter') filter: string,
@@ -89,10 +93,12 @@ export class ScheduleController {
     @Query('skip') skip: number = 0,
     @Query('sort') sort: 'asc' | 'desc' = 'asc',
     @Query('sortBy') sortBy: string = 'createdAt',
+    @Req() req: Request,
   ) {
     return this.findScheduleInteractor.execute(
       {
         ...JSON.parse(filter || '{}'),
+        [req.user['identification'] ? 'studentId' : '']: req.user['id'],
       },
       {
         ...JSON.parse(projection || '{}'),
@@ -117,11 +123,13 @@ export class ScheduleController {
     type: String,
   })
   @ApiBearerAuth()
-  @Permission('*', 'read:schedule')
+  @Permission('*')
+  @UseInterceptors(OwnerInterceptor)
   @Get('/count')
-  async count(@Query('filter') filter: string) {
+  async count(@Query('filter') filter: string, @Req() req: Request) {
     return this.countScheduleInteractor.execute({
       ...JSON.parse(filter || '{}'),
+      [req.user['identification'] ? 'studentId' : '']: req.user['id'],
     });
   }
 
@@ -133,7 +141,7 @@ export class ScheduleController {
   })
   @ApiBearerAuth()
   @UseInterceptors(StudentInterceptor)
-  @Permission('*', 'write:schedule')
+  @Permission('write:schedule')
   @Post()
   async create(@Body() payload: CreateScheduleRequest) {
     return this.createScheduleInteractor.execute(payload);
@@ -146,6 +154,7 @@ export class ScheduleController {
     type: ScheduleResponse,
   })
   @ApiBearerAuth()
+  @UseInterceptors(OwnerInterceptor)
   @Permission('read:schedule')
   @Get(':id')
   async findById(@Param('id') id: string) {
@@ -159,7 +168,7 @@ export class ScheduleController {
     type: ScheduleResponse,
   })
   @ApiBearerAuth()
-  @UseInterceptors(StudentInterceptor)
+  @UseInterceptors(StudentInterceptor, OwnerInterceptor)
   @Permission('delete:schedule')
   @Delete(':id')
   async deleteById(@Param('id') id: string) {
@@ -173,15 +182,13 @@ export class ScheduleController {
     type: ScheduleResponse,
   })
   @ApiBearerAuth()
-  @UseInterceptors(StudentInterceptor)
+  @UseInterceptors(OwnerInterceptor)
   @Permission('*', 'write:schedule')
   @Put(':id')
   async updateById(
     @Param('id') id: string,
     @Body() payload: UpdateScheduleRequest,
   ) {
-    console.log('id', id);
-    console.log('payload', payload);
     return this.updateScheduleByIdInteractor.execute(id, payload);
   }
 }

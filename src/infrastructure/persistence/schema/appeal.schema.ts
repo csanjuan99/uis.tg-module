@@ -18,7 +18,9 @@ export enum AppealRequestStatus {
   PENDING = 'PENDING',
 }
 
-@Schema()
+@Schema({
+  _id: false,
+})
 export class AppealRequestChange {
   @Prop({
     required: true,
@@ -32,6 +34,12 @@ export class AppealRequestChange {
     required: true,
   })
   name: string;
+  @Prop({
+    type: Boolean,
+    required: false,
+    default: null,
+  })
+  approved?: boolean;
 }
 
 @Schema()

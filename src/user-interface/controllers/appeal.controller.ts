@@ -55,7 +55,7 @@ export class AppealController {
   @ApiOperation({ summary: 'Crear una solicitud de cambio en el horario' })
   @ApiBearerAuth()
   @UseInterceptors(StudentInterceptor)
-  @Permission('*', 'write:appeal')
+  @Permission('write:appeal')
   @Post('/')
   async create(
     @Body()
@@ -144,8 +144,7 @@ export class AppealController {
   @ApiNotFoundResponse({ description: 'Solicitud no encontrada' })
   @ApiParam({ name: 'id', required: true })
   @ApiBearerAuth()
-  @UseInterceptors(OwnerInterceptor)
-  @Permission('*', 'write:appeal')
+  @Permission('*', 'update:appeal')
   async updateById(
     @Param('id') id: string,
     @Body() payload: UpdateAppealRequest,

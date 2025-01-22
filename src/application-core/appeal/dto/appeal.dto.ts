@@ -7,6 +7,7 @@ import {
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsArray,
+  IsBoolean,
   IsNotEmpty,
   IsNotEmptyObject,
   IsOptional,
@@ -42,6 +43,15 @@ export class AppealRequestChangeRequest {
     message: 'El nombre de la materia es requerido',
   })
   name: string;
+
+  @ApiProperty({
+    description: 'Estado de la solicitud',
+    type: Boolean,
+  })
+  @IsBoolean({
+    message: 'El estado de la solicitud debe ser verdad o falso',
+  })
+  approved?: boolean;
 }
 
 export class AppealRequestRequest {
@@ -67,6 +77,26 @@ export class AppealRequestRequest {
   @ValidateNested({ each: true })
   @Type(() => AppealRequestChangeRequest)
   to: AppealRequestChangeRequest[];
+
+  @ApiProperty({
+    description: 'Razón de la solicitud',
+    example: 'El estudiante necesita cambiar de horario',
+  })
+  @IsOptional()
+  @IsString({
+    message: 'La razón de la solicitud debe ser un texto',
+  })
+  reason?: string;
+
+  @ApiProperty({
+    description: 'Estado de la solicitud',
+    example: AppealRequestStatus.PENDING,
+  })
+  @IsOptional()
+  @IsString({
+    message: 'El estado de la solicitud debe ser un texto',
+  })
+  status?: AppealRequestStatus;
 }
 
 export class AppealStudentRequest implements AppealStudent {
