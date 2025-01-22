@@ -35,6 +35,9 @@ export class RegisterInteractor {
       password: hash,
       kind: 'STUDENT',
       permissions: [
+        'read:schedule',
+        'write:schedule',
+        'delete:schedule',
         'write:appeal',
         'read:appeal',
         'delete:appeal',
