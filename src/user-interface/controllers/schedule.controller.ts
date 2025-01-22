@@ -117,7 +117,7 @@ export class ScheduleController {
     type: String,
   })
   @ApiBearerAuth()
-  @Permission('*')
+  @Permission('*', 'read:schedule')
   @Get('/count')
   async count(@Query('filter') filter: string) {
     return this.countScheduleInteractor.execute({
