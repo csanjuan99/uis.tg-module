@@ -29,6 +29,10 @@ export class LoginInteractor {
       throw new NotFoundException('No pudimos encontrar el usuario');
     }
 
+    if (!user.verified) {
+      throw new BadRequestException('Tu cuenta aún no ha sido verificada');
+    }
+
     if (!bcrypt.compareSync(payload.password, user.password)) {
       throw new BadRequestException('Tu contraseña es incorrecta');
     }
