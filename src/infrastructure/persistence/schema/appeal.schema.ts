@@ -37,7 +37,7 @@ export class AppealRequestChange {
   @Prop({
     type: Boolean,
     required: false,
-    default: null,
+    default: undefined,
   })
   approved?: boolean;
 }

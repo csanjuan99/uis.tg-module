@@ -16,7 +16,36 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
-export class AppealRequestChangeRequest {
+export class AppealRequestFromChangeRequest {
+  @ApiProperty({
+    description: 'Grupo de la materia',
+    example: 'A',
+  })
+  @IsNotEmpty({
+    message: 'El grupo de la materia es requerido',
+  })
+  group: string;
+
+  @ApiProperty({
+    description: 'Código de la materia',
+    example: '225421',
+  })
+  @IsNotEmpty({
+    message: 'El código de la materia es requerido',
+  })
+  sku: string;
+
+  @ApiProperty({
+    description: 'Nombre de la materia',
+    example: 'Cálculo I',
+  })
+  @IsNotEmpty({
+    message: 'El nombre de la materia es requerido',
+  })
+  name: string;
+}
+
+export class AppealRequestToChangeRequest {
   @ApiProperty({
     description: 'Grupo de la materia',
     example: 'A',
@@ -49,25 +78,25 @@ export class AppealRequestChangeRequest {
     type: Boolean,
   })
   @IsBoolean({
-    message: 'El estado de la solicitud debe ser verdad o falso',
+    message: 'El estado de la solicitud debe ser un booleano',
   })
-  approved?: boolean;
+  approved: boolean;
 }
 
 export class AppealRequestRequest {
   @ApiProperty({
     nullable: true,
-    type: AppealRequestChangeRequest,
+    type: AppealRequestFromChangeRequest,
   })
   @IsOptional()
   @IsNotEmptyObject()
   @ValidateNested()
-  @Type(() => AppealRequestChangeRequest)
-  from: AppealRequestChangeRequest;
+  @Type(() => AppealRequestFromChangeRequest)
+  from: AppealRequestFromChangeRequest;
 
   @ApiProperty({
     nullable: true,
-    type: AppealRequestChangeRequest,
+    type: AppealRequestToChangeRequest,
     isArray: true,
   })
   @IsOptional()
@@ -75,8 +104,8 @@ export class AppealRequestRequest {
     message: 'Las peticiones de cambio deben ser un listo',
   })
   @ValidateNested({ each: true })
-  @Type(() => AppealRequestChangeRequest)
-  to: AppealRequestChangeRequest[];
+  @Type(() => AppealRequestToChangeRequest)
+  to: AppealRequestToChangeRequest[];
 
   @ApiProperty({
     description: 'Razón de la solicitud',
