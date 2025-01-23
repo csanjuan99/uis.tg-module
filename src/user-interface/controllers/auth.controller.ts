@@ -31,6 +31,7 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { VerifyInteractor } from '../../application-core/abstract/auth/use-cases/verify.interactor';
 import { OnSendVerifyInteractor } from '../../application-core/abstract/auth/use-cases/onSendVerify.interactor';
 import { ResendVerifyInteractor } from '../../application-core/abstract/auth/use-cases/resendVerify.interactor';
+import { MeInteractor } from '../../application-core/abstract/auth/use-cases/me.interactor';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -41,6 +42,7 @@ export class AuthController {
     private readonly verifyInteractor: VerifyInteractor,
     private readonly resendVerifyInteractor: ResendVerifyInteractor,
     private readonly onSendVerifyInteractor: OnSendVerifyInteractor,
+    private readonly meInteractor: MeInteractor,
   ) {}
 
   @ApiOperation({ summary: 'Get a JWT token' })
@@ -70,7 +72,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Get('user')
   async user(@Req() req: Request): Promise<Express.User> {
-    return req.user;
+    return this.meInteractor.execute(req.user['id']);
   }
 
   @Public()

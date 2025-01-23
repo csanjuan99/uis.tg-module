@@ -33,11 +33,13 @@ import { UpdateScheduleByIdInteractor } from './schedule/use-cases/updateSchedul
 import { AssignAppealHandler } from './appeal/event-handlers/assignAppeal.handler';
 import { UpdateStudentInteractor } from './abstract/student/use-cases/UpdateStudent.interactor';
 import { UpdatedAppealHandler } from './appeal/event-handlers/updatedAppeal.handler';
+import { MeInteractor } from './abstract/auth/use-cases/me.interactor';
 
 const SERVICES = [
   //AUTH
   LoginInteractor,
   RegisterInteractor,
+  MeInteractor,
   VerifyInteractor,
   ResendVerifyInteractor,
   OnSendVerifyInteractor,
