@@ -42,6 +42,7 @@ export class LoginInteractor {
       name: user.name,
       lastname: user.lastname,
       identification: user.identification,
+      shift: user.shift,
       username: user.username,
       permissions: user.permissions,
       kind: user.kind,
