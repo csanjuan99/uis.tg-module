@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { FindUserByIdInteractor } from '../../../user/use-cases/findUserById.interactor';
+import { UserDocument } from '../../../../infrastructure/persistence/schema/user.schema';
 
 @Injectable()
 export class MeInteractor {
@@ -8,8 +9,22 @@ export class MeInteractor {
   ) {}
 
   async execute(userId: string) {
-    return this.findUserByIdInteractor.execute(userId, {
-      password: 0,
-    });
+    const user: UserDocument = await this.findUserByIdInteractor.execute(
+      userId,
+      {
+        password: 0,
+      },
+    );
+
+    return {
+      id: user.id,
+      name: user.name,
+      lastname: user.lastname,
+      identification: user.identification ? user.identification : undefined,
+      username: user.username,
+      permissions: user.permissions,
+      kind: user.kind,
+      shift: user.shift ? user.shift : undefined,
+    };
   }
 }
