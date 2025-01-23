@@ -3,7 +3,12 @@ import {
   User,
 } from '../../../../infrastructure/persistence/schema/user.schema';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNotEmptyObject,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 class StudentShiftRequest implements StudentShift {
   @ApiProperty({
@@ -47,6 +52,15 @@ export class UpdateStudentRequest {
     type: StudentShiftRequest,
     description: 'Jornada del estudiante',
   })
+  @IsOptional()
+  @IsNotEmptyObject(
+    {
+      nullable: true,
+    },
+    {
+      message: 'La jornada del estudiante no puede estar vacía',
+    },
+  )
   shift?: StudentShiftRequest;
   @ApiProperty({
     type: String,

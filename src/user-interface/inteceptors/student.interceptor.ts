@@ -18,9 +18,11 @@ export class StudentInterceptor implements NestInterceptor {
       throw new ForbiddenException('No puedes acceder a este recurso');
     }
 
-    request.body.studentId = student['id'];
-    request.body.user = student;
-    request.headers['student'] = JSON.stringify(student);
+    request.body = {
+      ...request.body,
+      student: student,
+      studentId: student['id'],
+    };
 
     return next.handle();
   }
