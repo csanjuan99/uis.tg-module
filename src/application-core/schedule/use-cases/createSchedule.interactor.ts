@@ -36,6 +36,9 @@ export class CreateScheduleInteractor {
       );
     }
 
-    return await this.scheduleGateway.create(payload);
+    return await this.scheduleGateway.create({
+      subjects: payload.subjects,
+      student,
+    });
   }
 }

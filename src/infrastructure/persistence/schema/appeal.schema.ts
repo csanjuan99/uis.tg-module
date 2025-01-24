@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
-import { StudentShift, User } from './user.schema';
+import { User } from './user.schema';
 
 export type AppealDocument = HydratedDocument<Appeal>;
 
@@ -42,7 +42,9 @@ export class AppealRequestChange {
   approved?: boolean;
 }
 
-@Schema()
+@Schema({
+  _id: false,
+})
 export class AppealRequest {
   @Prop({
     required: false,
@@ -67,28 +69,6 @@ export class AppealRequest {
     default: AppealRequestStatus.PENDING,
   })
   status?: AppealRequestStatus;
-}
-
-@Schema()
-export class AppealStudent {
-  @Prop({
-    required: true,
-  })
-  name: string;
-  @Prop({
-    required: true,
-  })
-  lastname: string;
-  @Prop({
-    required: true,
-  })
-  username: string;
-  @Prop({
-    required: true,
-  })
-  identification: string;
-  @Prop(StudentShift)
-  shift?: StudentShift;
 }
 
 export class AppealLog {}

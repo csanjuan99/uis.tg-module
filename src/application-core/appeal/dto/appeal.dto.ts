@@ -2,7 +2,6 @@ import {
   AppealLog,
   AppealRequestStatus,
   AppealStatus,
-  AppealStudent,
 } from '../../../infrastructure/persistence/schema/appeal.schema';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
@@ -152,7 +151,7 @@ export class CreateAppealRequest {
   student: object;
 }
 
-export class AppealStudentResponse implements AppealStudent {
+export class AppealStudentResponse {
   @ApiProperty({
     description: 'Nombre del estudiante',
     example: 'Juan',

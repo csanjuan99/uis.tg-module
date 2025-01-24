@@ -39,7 +39,10 @@ export class CreateAppealInteractor {
       throw new NotFoundException('Ya existe una solicitud pendiente');
     }
 
-    const appeal: AppealDocument = await this.appealGateway.create(payload);
+    const appeal: AppealDocument = await this.appealGateway.create({
+      requests: payload.requests,
+      student,
+    });
 
     return appeal;
   }
