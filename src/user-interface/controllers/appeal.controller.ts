@@ -36,6 +36,7 @@ import { CountAppealInteractor } from '../../application-core/appeal/use-cases/c
 import { StudentInterceptor } from '../inteceptors/student.interceptor';
 import { OwnerInterceptor } from '../inteceptors/owner.interceptor';
 import { Request } from 'express';
+import { AppealInterceptor } from '../inteceptors/appeal.interceptor';
 
 @ApiTags('Solicitudes')
 @Controller('appeal')
@@ -144,6 +145,7 @@ export class AppealController {
   @ApiNotFoundResponse({ description: 'Solicitud no encontrada' })
   @ApiParam({ name: 'id', required: true })
   @ApiBearerAuth()
+  @UseInterceptors(AppealInterceptor)
   @Permission('*', 'update:appeal')
   async updateById(
     @Param('id') id: string,

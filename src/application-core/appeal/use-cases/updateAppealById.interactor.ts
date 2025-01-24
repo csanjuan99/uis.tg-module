@@ -4,11 +4,14 @@ import { AppealDocument } from '../../../infrastructure/persistence/schema/appea
 import { AppealGateway } from '../../../infrastructure/persistence/gateway/appeal.gateway';
 import { UpdateAppealRequest } from '../dto/appeal.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { UserDocument } from '../../../infrastructure/persistence/schema/user.schema';
+import { FindUserByIdInteractor } from '../../user/use-cases/findUserById.interactor';
 
 @Injectable()
 export class UpdateAppealByIdInteractor {
   constructor(
     private readonly findAppealByIdInteractor: FindAppealByIdInteractor,
+    private readonly findUserByIdInteractor: FindUserByIdInteractor,
     private readonly appealGateway: AppealGateway,
     private readonly eventEmitter: EventEmitter2,
   ) {}
@@ -17,15 +20,19 @@ export class UpdateAppealByIdInteractor {
     id: string,
     payload: UpdateAppealRequest,
   ): Promise<AppealDocument> {
-    const subject: AppealDocument =
+    const _appeal: AppealDocument =
       await this.findAppealByIdInteractor.execute(id);
 
     const appeal: AppealDocument = await this.appealGateway.updateById(
-      subject.id,
+      _appeal.id,
       payload,
     );
 
-    this.eventEmitter.emit('appeal.updated', appeal);
+    const user: UserDocument = await this.findUserByIdInteractor.execute(
+      appeal.attendedBy,
+    );
+
+    this.eventEmitter.emit('appeal.updated', { appeal, user });
 
     return appeal;
   }

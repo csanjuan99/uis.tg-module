@@ -30,18 +30,31 @@ export class AssignAppealHandler implements OnModuleInit {
 
   @OnEvent('assign.appeal')
   async execute(user: UserDocument, skip: number = 0) {
-    const appeal: AppealDocument = await this.appealGateway.findOne(
-      {
-        status: AppealStatus.PENDING,
-      },
-      null,
-      {
-        skip,
-        sort: {
-          createdAt: 1,
+    if (user.kind === 'ROOT') {
+      return;
+    }
+
+    let appeal: AppealDocument;
+
+    appeal = await this.appealGateway.findOne({
+      status: AppealStatus.PENDING,
+      attendedBy: user.id,
+    });
+
+    if (!appeal) {
+      appeal = await this.appealGateway.findOne(
+        {
+          status: AppealStatus.PENDING,
         },
-      },
-    );
+        null,
+        {
+          skip,
+          sort: {
+            createdAt: 1,
+          },
+        },
+      );
+    }
 
     if (!appeal) {
       return;
@@ -82,7 +95,7 @@ export class AssignAppealHandler implements OnModuleInit {
 
     const index: number = days.indexOf(student.shift.day);
 
-    if (index <= today.isoWeekday()) {
+    if (index < today.isoWeekday()) {
       return true;
     }
 

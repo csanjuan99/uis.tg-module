@@ -16,24 +16,24 @@ export class CreateAppealInteractor {
   ) {}
 
   async execute(payload: CreateAppealRequest) {
-    const user: UserDocument = await this.userGateway.findOne({
-      username: payload.user.username,
+    const student: UserDocument = await this.userGateway.findOne({
+      username: payload.student.username,
     });
 
-    if (!user) {
+    if (!student) {
       throw new NotFoundException('No pudimos encontrar a este estudiante');
     }
 
-    if (user.kind !== 'STUDENT') {
+    if (student.kind !== 'STUDENT') {
       throw new NotFoundException('No pudimos encontrar a este estudiante');
     }
 
-    if (!user.verified) {
-      throw new NotFoundException('Este estudiante no ha sido verificado');
+    if (!student.shift) {
+      throw new NotFoundException('El estudiante no tiene un turno asignado');
     }
 
     const _appeal: AppealDocument = await this.appealGateway.findOne({
-      'student.username': user.username,
+      'student.username': student.username,
       status: AppealStatus.PENDING,
     });
 
@@ -45,10 +45,10 @@ export class CreateAppealInteractor {
       requests: payload.requests,
       status: AppealStatus.PENDING,
       student: {
-        username: user.username,
-        identification: user.identification,
-        name: user.name,
-        lastname: user.lastname,
+        username: student.username,
+        identification: student.identification,
+        name: student.name,
+        lastname: student.lastname,
       },
     });
 

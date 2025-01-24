@@ -8,9 +8,7 @@ import {
   Req,
   Res,
 } from '@nestjs/common';
-import { LoginInteractor } from '../../application-core/abstract/auth/use-cases/login.interactor';
 import { Request, Response } from 'express';
-import { Public } from '../../application-core/abstract/auth/decorator/public.decorator';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
@@ -22,16 +20,18 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { RegisterInteractor } from '../../application-core/abstract/auth/use-cases/register.interactor';
-import { LoginRequest } from '../../application-core/abstract/auth/dto/login.dto';
-import { RegisterRequest } from '../../application-core/abstract/auth/dto/register.dto';
-import { JwtResponse } from '../../application-core/abstract/auth/dto/jwt.dto';
-import { UserDocument } from '../../infrastructure/persistence/schema/user.schema';
 import { OnEvent } from '@nestjs/event-emitter';
-import { VerifyInteractor } from '../../application-core/abstract/auth/use-cases/verify.interactor';
-import { OnSendVerifyInteractor } from '../../application-core/abstract/auth/use-cases/onSendVerify.interactor';
-import { ResendVerifyInteractor } from '../../application-core/abstract/auth/use-cases/resendVerify.interactor';
-import { MeInteractor } from '../../application-core/abstract/auth/use-cases/me.interactor';
+import { LoginInteractor } from '../../../application-core/abstract/auth/use-cases/login.interactor';
+import { RegisterInteractor } from '../../../application-core/abstract/auth/use-cases/register.interactor';
+import { VerifyInteractor } from '../../../application-core/abstract/auth/use-cases/verify.interactor';
+import { ResendVerifyInteractor } from '../../../application-core/abstract/auth/use-cases/resendVerify.interactor';
+import { OnSendVerifyInteractor } from '../../../application-core/abstract/auth/use-cases/onSendVerify.interactor';
+import { MeInteractor } from '../../../application-core/abstract/auth/use-cases/me.interactor';
+import { LoginRequest } from '../../../application-core/abstract/auth/dto/login.dto';
+import { Public } from '../../../application-core/abstract/auth/decorator/public.decorator';
+import { JwtResponse } from '../../../application-core/abstract/auth/dto/jwt.dto';
+import { RegisterRequest } from '../../../application-core/abstract/auth/dto/register.dto';
+import { UserDocument } from '../../../infrastructure/persistence/schema/user.schema';
 
 @ApiTags('Authentication')
 @Controller('auth')

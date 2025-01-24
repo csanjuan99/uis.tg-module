@@ -195,7 +195,7 @@ export class CreateAppealRequest {
   @IsNotEmpty({
     message: 'El estudiante es requerido',
   })
-  user: AppealStudentRequest;
+  student: AppealStudentRequest;
 }
 
 export class AppealStudentResponse implements AppealStudent {
