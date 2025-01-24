@@ -32,7 +32,7 @@ export class UpdatedAppealHandler {
       appeal.status === AppealStatus.REJECTED ||
       appeal.status === AppealStatus.PARTIAL_REJECTED
     ) {
-      this.eventEmitter.emit('assign.appeal');
+      this.eventEmitter.emit('assign.appeal', user);
     }
   }
 
