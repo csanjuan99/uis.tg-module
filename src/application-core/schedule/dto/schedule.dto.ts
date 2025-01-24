@@ -148,13 +148,16 @@ export class CreateScheduleRequest {
   })
   @Type(() => ScheduleSubjectRequest)
   subjects: ScheduleSubjectRequest[];
-  @IsNotEmpty({
-    message: 'El identificador del estudiante es requerido',
-  })
-  @IsString({
-    message: 'El identificador del estudiante debe ser un texto',
-  })
-  studentId: string;
+
+  @IsNotEmptyObject(
+    {
+      nullable: false,
+    },
+    {
+      message: 'El identificador del estudiante es requerido',
+    },
+  )
+  student: object;
 }
 
 export class UpdateScheduleRequest extends PartialType(CreateScheduleRequest) {}

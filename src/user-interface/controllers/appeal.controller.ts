@@ -92,8 +92,7 @@ export class AppealController {
     return this.findAppealsInteractor.execute(
       {
         ...JSON.parse(filter || '{}'),
-        [req.user['identification'] ? 'student.identification' : '']:
-          req.user['identification'],
+        [req.user['id'] ? 'student' : '']: req.user['id'],
       },
       {
         ...JSON.parse(projection || '{}'),
@@ -102,6 +101,10 @@ export class AppealController {
         limit,
         skip,
         sort: { [sortBy]: sort },
+        populate: {
+          path: 'student',
+          select: 'identification name lastname',
+        },
       },
     );
   }
@@ -121,8 +124,7 @@ export class AppealController {
   ): Promise<number> {
     return this.countAppealInteractor.execute({
       ...JSON.parse(filter || '{}'),
-      [req.user['identification'] ? 'student.identification' : '']:
-        req.user['identification'],
+      [req.user['id'] ? 'student' : '']: req.user['id'],
     });
   }
 

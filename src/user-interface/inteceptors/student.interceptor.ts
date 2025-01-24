@@ -21,7 +21,6 @@ export class StudentInterceptor implements NestInterceptor {
     request.body = {
       ...request.body,
       student: student,
-      studentId: student['id'],
     };
 
     return next.handle();

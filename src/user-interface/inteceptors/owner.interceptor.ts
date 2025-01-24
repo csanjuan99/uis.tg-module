@@ -15,6 +15,7 @@ export class OwnerInterceptor implements NestInterceptor {
     const user: Express.User = request.user;
     const resource = request.headers['x-resource-id'] as string;
 
+
     if (user['kind'] !== 'STUDENT') {
       return next.handle();
     }

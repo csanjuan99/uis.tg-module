@@ -21,16 +21,16 @@ export class CreateScheduleInteractor {
   ) {}
 
   async execute(payload: Schedule): Promise<ScheduleDocument> {
-    const student: UserDocument = await this.findUserByIdInteractor.execute(
-      payload.studentId,
-    );
+    const student: UserDocument = await this.userGateway.findOne({
+      identification: payload.student.identification,
+    });
 
     if (!student) {
       throw new NotFoundException('No pudimos encontrar al estudiante');
     }
 
     const _schedule: ScheduleDocument = await this.scheduleGateway.findOne({
-      studentId: student.id,
+      'student.identification': student.identification,
     });
 
     if (_schedule) {

@@ -12,12 +12,15 @@ export class CreateUserInteractor {
     const user: UserDocument = await this.userGateway.findOne({
       username: payload.username,
     });
+
     if (user) {
       throw new BadRequestException(
         'Ya existe un usuario registrado con este nombre de usuario',
       );
     }
+
     payload.password = hashSync(payload.password, 10);
+
     return this.userGateway.create(payload);
   }
 }

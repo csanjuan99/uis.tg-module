@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
-import { StudentShift } from './user.schema';
+import mongoose, { HydratedDocument } from 'mongoose';
+import { StudentShift, User } from './user.schema';
 
 export type AppealDocument = HydratedDocument<Appeal>;
 
@@ -98,8 +98,8 @@ export class AppealLog {}
   timestamps: true,
 })
 export class Appeal {
-  @Prop(AppealStudent)
-  student: AppealStudent;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
+  student: Partial<User>;
   @Prop([AppealRequest])
   requests: AppealRequest[];
   @Prop({
@@ -124,7 +124,7 @@ export class Appeal {
     ],
     default: AppealStatus.PENDING,
   })
-  status: string;
+  status?: string;
   @Prop({
     required: false,
     default: null,

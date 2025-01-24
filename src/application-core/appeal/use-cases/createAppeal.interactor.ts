@@ -7,18 +7,20 @@ import {
   AppealDocument,
   AppealStatus,
 } from '../../../infrastructure/persistence/schema/appeal.schema';
+import { FindUserByIdInteractor } from '../../user/use-cases/findUserById.interactor';
 
 @Injectable()
 export class CreateAppealInteractor {
   constructor(
     private readonly userGateway: UserGateway,
     private readonly appealGateway: AppealGateway,
+    private readonly findUserByIdInteractor: FindUserByIdInteractor,
   ) {}
 
   async execute(payload: CreateAppealRequest) {
-    const student: UserDocument = await this.userGateway.findOne({
-      username: payload.student.username,
-    });
+    const student: UserDocument = await this.findUserByIdInteractor.execute(
+      payload.student['id'],
+    );
 
     if (!student) {
       throw new NotFoundException('No pudimos encontrar a este estudiante');
@@ -33,7 +35,7 @@ export class CreateAppealInteractor {
     }
 
     const _appeal: AppealDocument = await this.appealGateway.findOne({
-      'student.username': student.username,
+      student: student.id,
       status: AppealStatus.PENDING,
     });
 
@@ -41,16 +43,7 @@ export class CreateAppealInteractor {
       throw new NotFoundException('Ya existe una solicitud pendiente');
     }
 
-    const appeal: AppealDocument = await this.appealGateway.create({
-      requests: payload.requests,
-      status: AppealStatus.PENDING,
-      student: {
-        username: student.username,
-        identification: student.identification,
-        name: student.name,
-        lastname: student.lastname,
-      },
-    });
+    const appeal: AppealDocument = await this.appealGateway.create(payload);
 
     return appeal;
   }

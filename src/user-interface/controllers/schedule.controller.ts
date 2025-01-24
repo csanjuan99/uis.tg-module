@@ -98,7 +98,7 @@ export class ScheduleController {
     return this.findScheduleInteractor.execute(
       {
         ...JSON.parse(filter || '{}'),
-        [req.user['identification'] ? 'studentId' : '']: req.user['id'],
+        [req.user['id'] ? 'student' : '']: req.user['id'],
       },
       {
         ...JSON.parse(projection || '{}'),
@@ -107,6 +107,10 @@ export class ScheduleController {
         limit,
         skip,
         sort: { [sortBy]: sort },
+        populate: {
+          path: 'student',
+          select: 'identification name lastname',
+        },
       },
     );
   }
@@ -129,7 +133,7 @@ export class ScheduleController {
   async count(@Query('filter') filter: string, @Req() req: Request) {
     return this.countScheduleInteractor.execute({
       ...JSON.parse(filter || '{}'),
-      [req.user['identification'] ? 'studentId' : '']: req.user['id'],
+      [req.user['id'] ? 'student' : '']: req.user['id'],
     });
   }
 

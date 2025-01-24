@@ -128,57 +128,6 @@ export class AppealRequestRequest {
   status?: AppealRequestStatus;
 }
 
-export class AppealStudentRequest implements AppealStudent {
-  @ApiProperty({
-    required: true,
-    description: 'Nombre del estudiante',
-    example: 'Juan',
-  })
-  @IsNotEmpty({
-    message: 'El nombre del estudiante es requerido',
-  })
-  @IsString({
-    message: 'El nombre del estudiante debe ser un texto',
-  })
-  name: string;
-  @ApiProperty({
-    required: true,
-    description: 'Apellido del estudiante',
-    example: 'Doe',
-  })
-  @IsNotEmpty({
-    message: 'El apellido del estudiante es requerido',
-  })
-  @IsString({
-    message: 'El apellido del estudiante debe ser un texto',
-  })
-  lastname: string;
-  @ApiProperty({
-    required: true,
-    description: 'Nombre de usuario del estudiante',
-    example: 'john.doe@correo.uis.edu.co',
-  })
-  @IsNotEmpty({
-    message: 'El nombre de usuario del estudiante es requerido',
-  })
-  @IsString({
-    message: 'El nombre de usuario del estudiante debe ser un texto',
-  })
-  username: string;
-  @ApiProperty({
-    required: true,
-    description: 'Identificación del estudiante',
-    example: '217xxxx',
-  })
-  @IsNotEmpty({
-    message: 'La identificación del estudiante es requerida',
-  })
-  @IsString({
-    message: 'La identificación del estudiante debe ser un texto',
-  })
-  identification: string;
-}
-
 export class CreateAppealRequest {
   @ApiProperty({
     description: 'Peticiones de la solicitud',
@@ -192,10 +141,15 @@ export class CreateAppealRequest {
   @Type(() => AppealRequestRequest)
   requests: AppealRequestRequest[];
 
-  @IsNotEmpty({
-    message: 'El estudiante es requerido',
-  })
-  student: AppealStudentRequest;
+  @IsNotEmptyObject(
+    {
+      nullable: false,
+    },
+    {
+      message: 'El identificador del estudiante es requerido',
+    },
+  )
+  student: object;
 }
 
 export class AppealStudentResponse implements AppealStudent {
@@ -262,10 +216,6 @@ export class AppealResponse {
 }
 
 export class UpdateAppealRequest {
-  @ApiPropertyOptional({})
-  @IsOptional()
-  @IsNotEmptyObject()
-  student: AppealStudentRequest;
   @ApiPropertyOptional({})
   @IsOptional()
   @ValidateNested({ each: true })
