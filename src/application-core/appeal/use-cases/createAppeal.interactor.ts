@@ -22,10 +22,6 @@ export class CreateAppealInteractor {
       payload.student['id'],
     );
 
-    if (!student) {
-      throw new NotFoundException('No pudimos encontrar a este estudiante');
-    }
-
     if (student.kind !== 'STUDENT') {
       throw new NotFoundException('No pudimos encontrar a este estudiante');
     }

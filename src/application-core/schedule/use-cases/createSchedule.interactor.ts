@@ -11,6 +11,7 @@ import {
 import { UserDocument } from '../../../infrastructure/persistence/schema/user.schema';
 import { UserGateway } from '../../../infrastructure/persistence/gateway/user.gateway';
 import { FindUserByIdInteractor } from '../../user/use-cases/findUserById.interactor';
+import { CreateScheduleRequest } from '../dto/schedule.dto';
 
 @Injectable()
 export class CreateScheduleInteractor {
@@ -20,17 +21,13 @@ export class CreateScheduleInteractor {
     private readonly scheduleGateway: ScheduleGateway,
   ) {}
 
-  async execute(payload: Schedule): Promise<ScheduleDocument> {
-    const student: UserDocument = await this.userGateway.findOne({
-      identification: payload.student.identification,
-    });
-
-    if (!student) {
-      throw new NotFoundException('No pudimos encontrar al estudiante');
-    }
+  async execute(payload: CreateScheduleRequest): Promise<ScheduleDocument> {
+    const student: UserDocument = await this.findUserByIdInteractor.execute(
+      payload.student['id'],
+    );
 
     const _schedule: ScheduleDocument = await this.scheduleGateway.findOne({
-      'student.identification': student.identification,
+      student: student.id,
     });
 
     if (_schedule) {
