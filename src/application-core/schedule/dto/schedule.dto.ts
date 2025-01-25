@@ -120,16 +120,6 @@ class ScheduleSubjectRequest {
     message: 'El nombre de la materia debe ser un texto',
   })
   name: string;
-  @ApiProperty({
-    description: 'Identificador de la materia',
-  })
-  @IsNotEmpty({
-    message: 'El identificador de la materia es requerido',
-  })
-  @IsString({
-    message: 'El identificador de la materia debe ser un texto',
-  })
-  _id: string;
 }
 
 export class CreateScheduleRequest {
