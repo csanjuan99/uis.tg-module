@@ -20,8 +20,15 @@ export class UpdateAppealByIdInteractor {
     id: string,
     payload: UpdateAppealRequest,
   ): Promise<AppealDocument> {
-    const _appeal: AppealDocument =
-      await this.findAppealByIdInteractor.execute(id);
+    const _appeal: AppealDocument = await this.findAppealByIdInteractor.execute(
+      id,
+      null,
+      {
+        populate: {
+          path: 'attended',
+        },
+      },
+    );
 
     const appeal: AppealDocument = await this.appealGateway.updateById(
       _appeal.id,
@@ -29,7 +36,7 @@ export class UpdateAppealByIdInteractor {
     );
 
     const user: UserDocument = await this.findUserByIdInteractor.execute(
-      appeal.attendedBy,
+      appeal.attended['_id'],
     );
 
     this.eventEmitter.emit('appeal.updated', { appeal, user });

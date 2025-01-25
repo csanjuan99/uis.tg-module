@@ -98,7 +98,14 @@ export class ScheduleController {
     return this.findScheduleInteractor.execute(
       {
         ...JSON.parse(filter || '{}'),
-        [req.user['id'] ? 'student' : '']: req.user['id'],
+        [req.user['kind'] !== 'ROOT' ? '$or' : undefined]:
+          req.user['kind'] !== 'ROOT'
+            ? [
+                {
+                  student: req.user['id'],
+                },
+              ]
+            : undefined,
       },
       {
         ...JSON.parse(projection || '{}'),
@@ -133,7 +140,14 @@ export class ScheduleController {
   async count(@Query('filter') filter: string, @Req() req: Request) {
     return this.countScheduleInteractor.execute({
       ...JSON.parse(filter || '{}'),
-      [req.user['id'] ? 'student' : '']: req.user['id'],
+      [req.user['kind'] !== 'ROOT' ? '$or' : undefined]:
+        req.user['kind'] !== 'ROOT'
+          ? [
+              {
+                student: req.user['id'],
+              },
+            ]
+          : undefined,
     });
   }
 

@@ -107,9 +107,11 @@ export class Appeal {
   status?: string;
   @Prop({
     required: false,
-    default: null,
+    default: undefined,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
   })
-  attendedBy?: string;
+  attended?: Partial<User>;
 }
 
 export const AppealSchema = SchemaFactory.createForClass(Appeal);

@@ -13,12 +13,14 @@ import * as utc from 'dayjs/plugin/utc';
 import * as timezone from 'dayjs/plugin/timezone';
 import * as isoWeek from 'dayjs/plugin/isoWeek';
 import { Dayjs } from 'dayjs';
+import { FindUserByIdInteractor } from '../../user/use-cases/findUserById.interactor';
 
 @Injectable()
 export class AssignAppealHandler implements OnModuleInit {
   constructor(
     private readonly userGateway: UserGateway,
     private readonly appealGateway: AppealGateway,
+    private readonly findUserByIdInteractor: FindUserByIdInteractor,
   ) {}
 
   onModuleInit() {
@@ -52,6 +54,10 @@ export class AssignAppealHandler implements OnModuleInit {
           sort: {
             createdAt: 1,
           },
+          populate: {
+            path: 'student',
+            select: 'shift',
+          },
         },
       );
     }
@@ -60,9 +66,9 @@ export class AssignAppealHandler implements OnModuleInit {
       return;
     }
 
-    const student: UserDocument = await this.userGateway.findOne({
-      identification: appeal.student.identification,
-    });
+    const student: UserDocument = await this.findUserByIdInteractor.execute(
+      appeal.student['_id'],
+    );
 
     if (!student) {
       return;
@@ -74,7 +80,7 @@ export class AssignAppealHandler implements OnModuleInit {
       await this.execute(user, skip + 1);
     } else {
       appeal.status = 'REVIEW';
-      appeal.attendedBy = user.id;
+      appeal.attended = user;
       await appeal.save();
     }
   }

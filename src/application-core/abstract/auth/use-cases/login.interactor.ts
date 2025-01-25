@@ -48,16 +48,16 @@ export class LoginInteractor {
       kind: user.kind,
     });
 
-    this.dispatchEvent(user);
+    await this.dispatchEvent(user);
 
     return {
       access_token,
     };
   }
 
-  private dispatchEvent(user: UserDocument): void {
+  private async dispatchEvent(user: UserDocument): Promise<void> {
     if (user.kind === 'ADMIN') {
-      this.eventEmitter.emit('assign.appeal', user);
+      await this.eventEmitter.emitAsync('assign.appeal', user);
     }
   }
 }

@@ -26,7 +26,7 @@ export class UpdatedAppealHandler {
 
   private handleStatus(appeal: AppealDocument, user: UserDocument) {
     // TODO: notificar cuando cambie el estado general de la solicitud
-    // usar user para registrar logs|
+    // usar user para registrar logs
     if (
       appeal.status === AppealStatus.APPROVED ||
       appeal.status === AppealStatus.REJECTED ||
@@ -42,7 +42,6 @@ export class UpdatedAppealHandler {
       appeal.status === AppealStatus.APPROVED ||
       appeal.status === AppealStatus.PARTIAL_REJECTED
     ) {
-      this.eventEmitter.emit('assign.appeal');
     }
   }
 }

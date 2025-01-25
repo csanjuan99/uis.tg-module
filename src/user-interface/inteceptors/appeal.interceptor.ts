@@ -10,19 +10,38 @@ import { Observable } from 'rxjs';
 import { Request } from 'express';
 import { UserDocument } from '../../infrastructure/persistence/schema/user.schema';
 import { AppealDocument } from '../../infrastructure/persistence/schema/appeal.schema';
+import { FindAppealByIdInteractor } from '../../application-core/appeal/use-cases/findAppealById.interactor';
 
 @Injectable()
 export class AppealInterceptor implements NestInterceptor {
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+  constructor(
+    private readonly findAppealByIdInteractor: FindAppealByIdInteractor,
+  ) {}
+
+  async intercept(
+    context: ExecutionContext,
+    next: CallHandler,
+  ): Promise<Observable<any>> {
     const request: Request = context.switchToHttp().getRequest();
     const user = request.user as UserDocument;
-    const payload = request.body as AppealDocument;
+    const id: string = request.params['id'];
 
     if (user['kind'] == 'STUDENT') {
       throw new ForbiddenException('No puedes acceder a este recurso');
     }
 
-    if (user.id !== payload.attendedBy) {
+    const appeal: AppealDocument = await this.findAppealByIdInteractor.execute(
+      id,
+      null,
+      {
+        populate: {
+          path: 'attended',
+          select: '_id',
+        },
+      },
+    );
+
+    if (user.id !== appeal.attended['id']) {
       throw new BadRequestException('Esta solicitud ya ha sido asignada');
     }
 

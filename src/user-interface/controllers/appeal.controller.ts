@@ -92,7 +92,17 @@ export class AppealController {
     return this.findAppealsInteractor.execute(
       {
         ...JSON.parse(filter || '{}'),
-        [req.user['id'] ? 'student' : '']: req.user['id'],
+        [req.user['kind'] !== 'ROOT' ? '$or' : undefined]:
+          req.user['kind'] !== 'ROOT'
+            ? [
+                {
+                  student: req.user['id'],
+                },
+                {
+                  attended: req.user['id'],
+                },
+              ]
+            : undefined,
       },
       {
         ...JSON.parse(projection || '{}'),
@@ -101,10 +111,16 @@ export class AppealController {
         limit,
         skip,
         sort: { [sortBy]: sort },
-        populate: {
-          path: 'student',
-          select: 'identification name lastname',
-        },
+        populate: [
+          {
+            path: 'student',
+            select: 'identification name lastname',
+          },
+          {
+            path: 'attended',
+            select: 'name lastname',
+          },
+        ],
       },
     );
   }
@@ -124,7 +140,17 @@ export class AppealController {
   ): Promise<number> {
     return this.countAppealInteractor.execute({
       ...JSON.parse(filter || '{}'),
-      [req.user['id'] ? 'student' : '']: req.user['id'],
+      [req.user['kind'] !== 'ROOT' ? '$or' : undefined]:
+        req.user['kind'] !== 'ROOT'
+          ? [
+              {
+                student: req.user['id'],
+              },
+              {
+                attended: req.user['id'],
+              },
+            ]
+          : undefined,
     });
   }
 
@@ -139,7 +165,18 @@ export class AppealController {
   @Permission('*', 'read:appeal')
   @Get(':id')
   async findById(@Param('id') id: string): Promise<AppealDocument> {
-    return this.findAppealByIdInteractor.execute(id);
+    return this.findAppealByIdInteractor.execute(id, null, {
+      populate: [
+        {
+          path: 'student',
+          select: 'identification name lastname',
+        },
+        {
+          path: 'attended',
+          select: 'name lastname',
+        },
+      ],
+    });
   }
 
   @Put(':id')
