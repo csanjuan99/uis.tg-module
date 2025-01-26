@@ -20,11 +20,11 @@ export class UpdatedAppealHandler {
   }) {
     console.log('UpdatedAppealHandler', appeal);
     console.log('UpdatedAppealHandler', user);
-    this.handleStatus(appeal, user);
+    await this.handleStatus(appeal, user);
     this.handleSchedule(appeal);
   }
 
-  private handleStatus(appeal: AppealDocument, user: UserDocument) {
+  private async handleStatus(appeal: AppealDocument, user: UserDocument) {
     // TODO: notificar cuando cambie el estado general de la solicitud
     // usar user para registrar logs
     if (
@@ -32,7 +32,7 @@ export class UpdatedAppealHandler {
       appeal.status === AppealStatus.REJECTED ||
       appeal.status === AppealStatus.PARTIAL_REJECTED
     ) {
-      this.eventEmitter.emit('assign.appeal', user);
+      await this.eventEmitter.emitAsync('assign.appeal', user);
     }
   }
 
