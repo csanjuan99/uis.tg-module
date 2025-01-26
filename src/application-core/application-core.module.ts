@@ -8,8 +8,6 @@ import { CreateSubjectInteractor } from './subject/use-cases/createSubject.inter
 import { UpdateSubjectBySkuInteractor } from './subject/use-cases/updateSubjectBySku.interactor';
 import { DeleteSubjectBySkuInteractor } from './subject/use-cases/deleteSubjectBySku.interactor';
 import { CreateAppealInteractor } from './appeal/use-cases/createAppeal.interactor';
-import { SendEmailInteractor } from './abstract/ses/use-cases/sendEmail.interactor';
-import { OnSendVerifyInteractor } from './abstract/auth/use-cases/onSendVerify.interactor';
 import { ResendVerifyInteractor } from './abstract/auth/use-cases/resendVerify.interactor';
 import { VerifyInteractor } from './abstract/auth/use-cases/verify.interactor';
 import { FindAppealByIdInteractor } from './appeal/use-cases/findAppealById.interactor';
@@ -34,6 +32,10 @@ import { AssignAppealHandler } from './appeal/event-handlers/assignAppeal.handle
 import { UpdateStudentInteractor } from './abstract/student/use-cases/UpdateStudent.interactor';
 import { UpdatedAppealHandler } from './appeal/event-handlers/updatedAppeal.handler';
 import { MeInteractor } from './abstract/auth/use-cases/me.interactor';
+import { SendEmailByMailtrapInteractor } from './abstract/mailtrap/use-cases/sendEmailByMailtrap.interactor';
+import { SendVerifyInteractor } from './abstract/auth/event-handlers/sendVerify.interactor';
+import { RecoverPasswordInteractor } from './abstract/auth/use-cases/recoverPassword.interactor';
+import { ChangePasswordInteractor } from './abstract/auth/use-cases/changePassword.interactor';
 
 const SERVICES = [
   //AUTH
@@ -41,10 +43,13 @@ const SERVICES = [
   RegisterInteractor,
   MeInteractor,
   VerifyInteractor,
+  ChangePasswordInteractor,
+  RecoverPasswordInteractor,
   ResendVerifyInteractor,
-  OnSendVerifyInteractor,
-  //SES
-  SendEmailInteractor,
+  // AUTH - EVENT HANDLERS
+  SendVerifyInteractor,
+  // MAILTRAP
+  SendEmailByMailtrapInteractor,
   //SUBJECT
   FindSubjectsInteractor,
   FindSubjectBySkuInteractor,

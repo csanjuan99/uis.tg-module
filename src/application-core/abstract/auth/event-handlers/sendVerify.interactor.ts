@@ -1,18 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { SendEmailInteractor } from '../../ses/use-cases/sendEmail.interactor';
 import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
 import handlebars from 'handlebars';
 import { Request } from 'express';
 import * as path from 'node:path';
 import * as fs from 'node:fs';
+import { SendEmailByMailtrapInteractor } from '../../mailtrap/use-cases/sendEmailByMailtrap.interactor';
 
 @Injectable()
-export class OnSendVerifyInteractor {
+export class SendVerifyInteractor {
   constructor(
     private readonly jwtService: JwtService,
-    private readonly sendEmailInteractor: SendEmailInteractor,
-    private readonly configService: ConfigService,
+    private readonly sendEmailByMailtrapInteractor: SendEmailByMailtrapInteractor,
   ) {}
 
   async execute(req: Request, payload: { username: string }): Promise<void> {
@@ -47,12 +45,15 @@ export class OnSendVerifyInteractor {
       resend,
     });
 
-    await this.sendEmailInteractor.execute({
-      to: [(payload.username as string).toLowerCase()],
-      subject: 'Verifica tu cuenta',
+    await this.sendEmailByMailtrapInteractor.execute(
+      [
+        {
+          email: payload.username.toLowerCase(),
+        },
+      ],
+      'Verifica tu cuenta',
+      'Verifica tu cuenta',
       html,
-      text: 'Verifica tu cuenta',
-      source: this.configService.get<string>('aws.ses.source'),
-    });
+    );
   }
 }

@@ -25,13 +25,17 @@ import { LoginInteractor } from '../../../application-core/abstract/auth/use-cas
 import { RegisterInteractor } from '../../../application-core/abstract/auth/use-cases/register.interactor';
 import { VerifyInteractor } from '../../../application-core/abstract/auth/use-cases/verify.interactor';
 import { ResendVerifyInteractor } from '../../../application-core/abstract/auth/use-cases/resendVerify.interactor';
-import { OnSendVerifyInteractor } from '../../../application-core/abstract/auth/use-cases/onSendVerify.interactor';
 import { MeInteractor } from '../../../application-core/abstract/auth/use-cases/me.interactor';
 import { LoginRequest } from '../../../application-core/abstract/auth/dto/login.dto';
 import { Public } from '../../../application-core/abstract/auth/decorator/public.decorator';
 import { JwtResponse } from '../../../application-core/abstract/auth/dto/jwt.dto';
 import { RegisterRequest } from '../../../application-core/abstract/auth/dto/register.dto';
 import { UserDocument } from '../../../infrastructure/persistence/schema/user.schema';
+import { SendVerifyInteractor } from '../../../application-core/abstract/auth/event-handlers/sendVerify.interactor';
+import { RecoverPasswordInteractor } from '../../../application-core/abstract/auth/use-cases/recoverPassword.interactor';
+import { ChangePasswordInteractor } from '../../../application-core/abstract/auth/use-cases/changePassword.interactor';
+import { RecoverPasswordRequest } from '../../../application-core/abstract/auth/dto/recover-password.dto';
+import { ChangePasswordRequest } from '../../../application-core/abstract/auth/dto/change-password.dto';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -41,8 +45,10 @@ export class AuthController {
     private readonly registerInteractor: RegisterInteractor,
     private readonly verifyInteractor: VerifyInteractor,
     private readonly resendVerifyInteractor: ResendVerifyInteractor,
-    private readonly onSendVerifyInteractor: OnSendVerifyInteractor,
+    private readonly sendVerifyInteractor: SendVerifyInteractor,
     private readonly meInteractor: MeInteractor,
+    private readonly changePasswordInteractor: ChangePasswordInteractor,
+    private readonly recoverPasswordInteractor: RecoverPasswordInteractor,
   ) {}
 
   @ApiOperation({ summary: 'Get a JWT token' })
@@ -106,8 +112,30 @@ export class AuthController {
     return await this.resendVerifyInteractor.execute(req, res);
   }
 
-  @OnEvent('onVerify')
-  async onVerify(req: Request, payload: { username: string }): Promise<void> {
-    return await this.onSendVerifyInteractor.execute(req, payload);
+  @ApiOperation({ summary: 'Enviar enlace de recuperación' })
+  @Public()
+  @Post('recover-password')
+  async recoverPassword(
+    @Req() req: Request,
+    @Body() payload: RecoverPasswordRequest,
+  ) {
+    return this.recoverPasswordInteractor.execute(req, payload);
+  }
+
+  @ApiOperation({ summary: 'Cambiar contraseña' })
+  @ApiQuery({
+    name: 't',
+    required: true,
+  })
+  @Public()
+  @Post('change-password')
+  async changePassword(
+    @Req() req: Request,
+    @Body() payload: ChangePasswordRequest,
+  ) {
+    return this.changePasswordInteractor.execute(
+      req.query.t as string,
+      payload,
+    );
   }
 }

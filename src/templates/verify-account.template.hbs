@@ -12,6 +12,7 @@
       margin: 0;
       padding: 0;
     }
+
     .container {
       max-width: 600px;
       margin: 20px auto;
@@ -21,12 +22,15 @@
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       text-align: center;
     }
+
     h1 {
       color: #4CAF50;
     }
+
     p {
       line-height: 1.5;
     }
+
     a.button {
       display: inline-block;
       margin-top: 20px;
@@ -37,9 +41,11 @@
       border-radius: 5px;
       font-weight: bold;
     }
+
     a.button:hover {
       background: #45a049;
     }
+
     a.secondary {
       display: block;
       margin-top: 20px;
@@ -47,22 +53,25 @@
       color: #555;
       text-decoration: none;
     }
+
     a.secondary:hover {
       text-decoration: underline;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>¡Verifica tu cuenta!</h1>
-    <p>
-      Hola, bienvenido al sistema de ajuste de matrícula. Por favor, verifica tu cuenta haciendo clic en el siguiente botón:
-    </p>
-    <a href="{{ callback }}" class="button">Verificar mi cuenta</a>
-    <p>
-      Si no realizaste esta solicitud o necesitas un nuevo enlace, puedes reenviar el correo utilizando el siguiente enlace:
-    </p>
-    <a href="{{ resend }}" class="secondary">Reenviar correo de verificación</a>
-  </div>
+<div class="container">
+  <h1>¡Verifica tu cuenta!</h1>
+  <p>
+    Hola, bienvenido al sistema de ajuste de matrícula. Por favor, verifica tu cuenta haciendo clic en el siguiente
+    botón:
+  </p>
+  <a href="{{ callback }}" class="button">Verificar mi cuenta</a>
+  <p>
+    Si no realizaste esta solicitud o necesitas un nuevo enlace, puedes reenviar el correo utilizando el siguiente
+    enlace:
+  </p>
+  <a href="{{ resend }}" class="secondary">Reenviar correo de verificación</a>
+</div>
 </body>
 </html>

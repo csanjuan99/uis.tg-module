@@ -38,6 +38,7 @@
     "dayjs": "^1.11.13",
     "handlebars": "^4.7.8",
     "helmet": "^8.0.0",
+    "mailtrap": "^3.4.0",
     "mongoose": "^8.7.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
