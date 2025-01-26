@@ -90,17 +90,29 @@ export class UpdatedAppealHandler {
       if (appeal.status === AppealStatus.APPROVED) {
         appeal.logs.push({
           message: 'Solicitud aprobada',
-          user: user.toJSON(),
+          user: {
+            id: user.id,
+            name: user.name,
+            lastname: user.lastname,
+          },
         });
       } else if (appeal.status === AppealStatus.REJECTED) {
         appeal.logs.push({
           message: 'Solicitud rechazada',
-          user: user.toJSON(),
+          user: {
+            id: user.id,
+            name: user.name,
+            lastname: user.lastname,
+          },
         });
       } else if (appeal.status === AppealStatus.PARTIAL_REJECTED) {
         appeal.logs.push({
           message: 'Solicitud parcialmente rechazada',
-          user: user.toJSON(),
+          user: {
+            id: user.id,
+            name: user.name,
+            lastname: user.lastname,
+          },
         });
       }
 

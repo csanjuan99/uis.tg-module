@@ -38,7 +38,11 @@ export class ScaleAppealInteractor {
 
     appeal.logs.push({
       message: `La solicitud ha sido escalada por ${appeal.attended.name} ${appeal.attended.lastname}`,
-      user: appeal.attended,
+      user: {
+        id: appeal.attended['id'],
+        name: appeal.attended.name,
+        lastname: appeal.attended.lastname,
+      },
     });
     appeal.attended = user.id;
 
