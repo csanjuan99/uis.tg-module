@@ -39,8 +39,8 @@ export class AssignAppealHandler implements OnModuleInit {
     let appeal: AppealDocument;
 
     appeal = await this.appealGateway.findOne({
-      status: AppealStatus.PENDING,
-      attendedBy: user.id,
+      status: AppealStatus.REVIEW,
+      attended: user.id,
     });
 
     if (!appeal) {
