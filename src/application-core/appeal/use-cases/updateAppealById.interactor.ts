@@ -39,7 +39,7 @@ export class UpdateAppealByIdInteractor {
       appeal.attended['_id'],
     );
 
-    this.eventEmitter.emit('appeal.updated', { appeal, user });
+    await this.eventEmitter.emitAsync('appeal.updated', { appeal, user });
 
     return appeal;
   }
