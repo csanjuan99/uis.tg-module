@@ -6,12 +6,14 @@ import { UpdateAppealRequest } from '../dto/appeal.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { UserDocument } from '../../../infrastructure/persistence/schema/user.schema';
 import { FindUserByIdInteractor } from '../../user/use-cases/findUserById.interactor';
+import { UserGateway } from '../../../infrastructure/persistence/gateway/user.gateway';
 
 @Injectable()
 export class UpdateAppealByIdInteractor {
   constructor(
     private readonly findAppealByIdInteractor: FindAppealByIdInteractor,
     private readonly findUserByIdInteractor: FindUserByIdInteractor,
+    private readonly userGateway: UserGateway,
     private readonly appealGateway: AppealGateway,
     private readonly eventEmitter: EventEmitter2,
   ) {}
@@ -35,9 +37,16 @@ export class UpdateAppealByIdInteractor {
       payload,
     );
 
-    const user: UserDocument = await this.findUserByIdInteractor.execute(
-      appeal.attended['_id'],
-    );
+    let user: UserDocument;
+    if (appeal.attended) {
+      user = await this.findUserByIdInteractor.execute(appeal.attended['_id']);
+    } else {
+      user = await this.userGateway.findOne({
+        kind: 'ROOT',
+      });
+      appeal.attended = user.id;
+      await appeal.save();
+    }
 
     await this.eventEmitter.emitAsync('appeal.updated', { appeal, user });
 

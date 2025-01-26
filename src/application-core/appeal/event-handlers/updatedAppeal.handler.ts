@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import {
   AppealDocument,
   AppealRequestChange,
+  AppealRequestStatus,
   AppealStatus,
 } from '../../../infrastructure/persistence/schema/appeal.schema';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
@@ -18,6 +19,7 @@ import * as path from 'node:path';
 import * as fs from 'node:fs';
 import handlebars from 'handlebars';
 import { UserGateway } from '../../../infrastructure/persistence/gateway/user.gateway';
+import { AppealGateway } from '../../../infrastructure/persistence/gateway/appeal.gateway';
 
 handlebars.registerHelper('eq', (a, b) => a === b);
 
@@ -28,6 +30,7 @@ export class UpdatedAppealHandler {
     private readonly userGateway: UserGateway,
     private readonly scheduleGateway: ScheduleGateway,
     private readonly subjectGateway: SubjectGateway,
+    private readonly appealGateway: AppealGateway,
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
@@ -116,11 +119,14 @@ export class UpdatedAppealHandler {
         });
       }
 
+      await appeal.save();
+
       await this.eventEmitter.emitAsync('assign.appeal', user);
     }
   }
 
   private async handleSchedule(appeal: AppealDocument) {
+    // Solo se aplica lógica si está en estado que permita cambios (APROBADA o PARCIALMENTE RECHAZADA).
     if (
       appeal.status === AppealStatus.APPROVED ||
       appeal.status === AppealStatus.PARTIAL_REJECTED
@@ -133,68 +139,74 @@ export class UpdatedAppealHandler {
         return;
       }
 
+      // Recorremos cada request en orden.
       for (const request of appeal.requests) {
-        if (request.from === null && request.to.length) {
-          const to: AppealRequestChange = request.to.find(
-            (to) => to.approved === true,
-          );
+        // 1. Verificamos si la petición está aprobada en su conjunto.
+        //    (Cada petición en 'requests' tiene su propio status: PENDING, APPROVED, REJECTED)
+        if (request.status !== AppealRequestStatus.APPROVED) {
+          // Si la petición no está aprobada, no la procesamos
+          continue;
+        }
 
-          if (!to) {
-            continue;
-          }
-
-          const subject: SubjectDocument = await this.subjectGateway.findOne({
-            sku: to.sku,
-          });
-
-          if (!subject) {
-            continue;
-          }
-
-          const group: SubjectGroup = subject.groups.find(
-            (group) => group.sku === to.group,
-          );
-
-          schedule.subjects.push({
-            name: subject.name,
-            sku: subject.sku,
-            group: {
-              sku: group.sku,
-              schedule: group.schedule,
-            },
-          });
-
-          await schedule.save();
-        } else if (request.to === null && request.from !== null) {
+        // 2. Lógica de cancelación de materia (request.from)
+        //    - Ocurre cuando "from" existe y "to" es null o array vacío
+        //    - O bien cuando "from" existe y "to" también existe, pero necesitamos primero "liberar" esa materia
+        if (
+          request.from !== null &&
+          request.from !== undefined &&
+          (request.to === null || request.to.length === 0)
+        ) {
+          // Este bloque es solo si la petición es "eliminar" la materia (sin añadir otra)
+          // Eliminamos la materia de schedule (si aún está allí)
           schedule.subjects = schedule.subjects.filter(
             (subject) => subject.sku !== request.from.sku,
           );
           await schedule.save();
-        } else if (request.from !== null && request.to.length) {
-          schedule.subjects = schedule.subjects.filter(
-            (subject) => subject.sku !== request.from.sku,
+          continue;
+        }
+
+        // 3. Lógica de inclusión de materia (request.to)
+        //    - Ocurre cuando "to" no es null e incluye al menos una materia aprobada.
+        //      “Aprobada” quiere decir que en request.to[].approved sea true
+        //    - Puede ser un caso donde 'from' es null (solo añadir) o sea != null (sustitución).
+        if (request.to !== null && request.to.length > 0) {
+          // Si 'from' no es null y se quiere “migrar” de la materia 'from' hacia una de las 'to'
+          // primero filtramos la materia 'from' (solo si estaba en schedule).
+          if (request.from) {
+            // Eliminamos la materia 'from' del schedule
+            schedule.subjects = schedule.subjects.filter(
+              (subject) => subject.sku !== request.from.sku,
+            );
+            await schedule.save();
+          }
+
+          // Ahora buscamos una 'to' aprobada
+          const toApproved: AppealRequestChange = request.to.find(
+            (toItem) => toItem.approved === true,
           );
 
-          const to: AppealRequestChange = request.to.find(
-            (to) => to.approved === true,
-          );
-
-          if (!to) {
+          // Si no hay ninguna 'to' aprobada, no hacemos nada más en esta petición.
+          if (!toApproved) {
             continue;
           }
 
+          // Verificamos que la materia a la que se va a migrar exista
           const subject: SubjectDocument = await this.subjectGateway.findOne({
-            sku: to.sku,
+            sku: toApproved.sku,
           });
-
           if (!subject) {
             continue;
           }
 
+          // Buscamos el grupo específico
           const group: SubjectGroup = subject.groups.find(
-            (group) => group.sku === to.group,
+            (g) => g.sku === toApproved.group,
           );
+          if (!group) {
+            continue;
+          }
 
+          // Insertamos la nueva materia en el schedule
           schedule.subjects.push({
             name: subject.name,
             sku: subject.sku,

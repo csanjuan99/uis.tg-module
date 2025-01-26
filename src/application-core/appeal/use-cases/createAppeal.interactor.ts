@@ -41,8 +41,21 @@ export class CreateAppealInteractor {
 
     const appeal: AppealDocument = await this.appealGateway.create({
       requests: payload.requests,
+      logs: [],
       student,
     });
+
+    appeal.logs.push({
+      message: 'Solicitud creada',
+      user: {
+        id: student.id,
+        name: student.name,
+        lastname: student.lastname,
+        identification: student.identification,
+      },
+    });
+
+    await appeal.save();
 
     return appeal;
   }

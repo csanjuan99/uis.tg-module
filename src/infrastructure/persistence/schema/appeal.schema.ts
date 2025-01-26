@@ -83,11 +83,10 @@ export class Appeal {
   @Prop([AppealRequest])
   requests: AppealRequest[];
   @Prop({
-    required: false,
-    default: [],
+    required: true,
     type: [AppealLog],
   })
-  logs?: AppealLog[];
+  logs: AppealLog[];
   @Prop({
     required: false,
     default: null,

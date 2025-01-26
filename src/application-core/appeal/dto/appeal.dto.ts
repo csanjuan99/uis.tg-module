@@ -82,6 +82,20 @@ export class AppealRequestToChangeRequest {
   approved: boolean;
 }
 
+export class AppealLogRequest {
+  @IsString({
+    message: 'El mensaje del log debe ser un texto',
+  })
+  @IsNotEmpty({
+    message: 'El mensaje del log es requerido',
+  })
+  message: string;
+  @IsNotEmptyObject({
+    nullable: false,
+  })
+  user: object;
+}
+
 export class AppealRequestRequest {
   @ApiProperty({
     nullable: true,
@@ -222,7 +236,9 @@ export class UpdateAppealRequest {
   requests: AppealRequestRequest[];
   @ApiPropertyOptional({})
   @IsOptional()
-  logs?: AppealLog[];
+  @ValidateNested({ each: true })
+  @Type(() => AppealLogRequest)
+  logs?: AppealLogRequest[];
   @ApiPropertyOptional({})
   @IsOptional()
   observation?: string;
