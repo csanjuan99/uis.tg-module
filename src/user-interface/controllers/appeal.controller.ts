@@ -37,6 +37,7 @@ import { StudentInterceptor } from '../inteceptors/student.interceptor';
 import { OwnerInterceptor } from '../inteceptors/owner.interceptor';
 import { Request } from 'express';
 import { AppealInterceptor } from '../inteceptors/appeal.interceptor';
+import { ScaleAppealInteractor } from '../../application-core/appeal/use-cases/scaleAppeal.interactor';
 
 @ApiTags('Solicitudes')
 @Controller('appeal')
@@ -48,6 +49,7 @@ export class AppealController {
     private readonly updateAppealByIdInteractor: UpdateAppealByIdInteractor,
     private readonly deleteAppealByIdInteractor: DeleteAppealByIdInteractor,
     private readonly countAppealInteractor: CountAppealInteractor,
+    private readonly scaleAppealInteractor: ScaleAppealInteractor,
   ) {}
 
   @ApiCreatedResponse({
@@ -191,6 +193,16 @@ export class AppealController {
     @Body() payload: UpdateAppealRequest,
   ) {
     return this.updateAppealByIdInteractor.execute(id, payload);
+  }
+
+  @Put(':id/scale')
+  @ApiOperation({ summary: 'Escalar una solicitud por su id' })
+  @ApiNotFoundResponse({ description: 'Solicitud no encontrada' })
+  @ApiParam({ name: 'id', required: true })
+  @ApiBearerAuth()
+  @Permission('*', 'update:appeal')
+  async scaleById(@Param('id') id: string) {
+    return this.scaleAppealInteractor.execute(id);
   }
 
   @Delete(':id')

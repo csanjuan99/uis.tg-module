@@ -36,6 +36,7 @@ import { SendEmailByMailtrapInteractor } from './abstract/mailtrap/use-cases/sen
 import { SendVerifyInteractor } from './abstract/auth/event-handlers/sendVerify.interactor';
 import { RecoverPasswordInteractor } from './abstract/auth/use-cases/recoverPassword.interactor';
 import { ChangePasswordInteractor } from './abstract/auth/use-cases/changePassword.interactor';
+import { ScaleAppealInteractor } from './appeal/use-cases/scaleAppeal.interactor';
 
 const SERVICES = [
   //AUTH
@@ -64,6 +65,8 @@ const SERVICES = [
   UpdateAppealByIdInteractor,
   DeleteAppealByIdInteractor,
   CountAppealInteractor,
+  ScaleAppealInteractor,
+  //APPEAL - EVENT HANDLERS
   AssignAppealHandler,
   UpdatedAppealHandler,
   //USER

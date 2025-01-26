@@ -27,7 +27,7 @@ export class AppealInterceptor implements NestInterceptor {
     const id: string = request.params['id'];
 
     if (user['kind'] == 'STUDENT') {
-      throw new ForbiddenException('No puedes acceder a este recurso');
+      throw new ForbiddenException('No puedes modificar esta solicitud');
     }
 
     const appeal: AppealDocument = await this.findAppealByIdInteractor.execute(
@@ -41,8 +41,12 @@ export class AppealInterceptor implements NestInterceptor {
       },
     );
 
-    if (user.id !== appeal.attended['id']) {
-      throw new BadRequestException('Esta solicitud ya ha sido asignada');
+    if (!appeal.attended) {
+      return next.handle();
+    } else {
+      if (user.id !== appeal.attended['id']) {
+        throw new BadRequestException('Esta solicitud ya ha sido asignada');
+      }
     }
 
     return next.handle();
