@@ -99,6 +99,10 @@ export class AssignAppealHandler implements OnModuleInit {
     const day: string = today.format('dddd').toUpperCase();
     const time: string = today.format('A').toUpperCase();
 
+    if (!student.shift) {
+      return;
+    }
+
     const index: number = days.indexOf(student.shift.day);
 
     if (index < today.isoWeekday()) {

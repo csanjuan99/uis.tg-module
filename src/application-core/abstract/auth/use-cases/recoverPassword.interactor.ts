@@ -56,7 +56,7 @@ export class RecoverPasswordInteractor {
 
     const html: string = template({
       name: user.name,
-      link: `${req.headers.origin}/change-password?t=${t}`,
+      link: `${req.headers.origin}/cambiar-contrasena?t=${t}`,
     });
 
     await this.sendEmailByMailtrapInteractor.execute(
