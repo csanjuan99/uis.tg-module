@@ -34,7 +34,6 @@ export class StudentController {
   async update(
     @Body() payload: UpdateStudentRequest,
   ): Promise<{ message: string }> {
-    console.log('payload', payload);
     return this.updateStudentInteractor.execute(payload);
   }
 }

@@ -68,11 +68,13 @@ export class UpdateStudentRequest {
     example: '*********',
   })
   password?: string;
-  @IsNotEmpty({
-    message: 'El identificador del estudiante es requerido',
-  })
-  @IsString({
-    message: 'El identificador del estudiante debe ser un texto',
-  })
-  studentId: string;
+  @IsNotEmptyObject(
+    {
+      nullable: false,
+    },
+    {
+      message: 'El identificador del estudiante es requerido',
+    },
+  )
+  student: object;
 }

@@ -20,7 +20,7 @@ export class StudentInterceptor implements NestInterceptor {
 
     request.body = {
       ...request.body,
-      student: student,
+      student,
     };
 
     return next.handle();

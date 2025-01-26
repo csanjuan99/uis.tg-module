@@ -14,7 +14,7 @@ export class UpdateStudentInteractor {
 
   async execute(payload: UpdateStudentRequest): Promise<{ message: string }> {
     const student: UserDocument = await this.findUserByIdInteractor.execute(
-      payload.studentId,
+      payload.student['id'],
     );
 
     if (payload.password) {
