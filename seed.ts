@@ -40,8 +40,6 @@ async function seed() {
       await userModel.create(root);
     }
 
-    return;
-
     const client = new S3Client({
       credentials: {
         accessKeyId: process.env.AWS_S3_ACCESS_KEY_ID,
