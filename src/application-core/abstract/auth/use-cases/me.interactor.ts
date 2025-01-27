@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { FindUserByIdInteractor } from '../../../user/use-cases/findUserById.interactor';
 import { UserDocument } from '../../../../infrastructure/persistence/schema/user.schema';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class MeInteractor {
   constructor(
+    private readonly eventEmitter: EventEmitter2,
     private readonly findUserByIdInteractor: FindUserByIdInteractor,
   ) {}
 
@@ -15,6 +17,8 @@ export class MeInteractor {
         password: 0,
       },
     );
+
+    await this.eventEmitter.emitAsync('assign.appeal', user);
 
     return {
       id: user.id,

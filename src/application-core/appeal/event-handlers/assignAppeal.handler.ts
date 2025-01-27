@@ -14,6 +14,7 @@ import * as timezone from 'dayjs/plugin/timezone';
 import * as isoWeek from 'dayjs/plugin/isoWeek';
 import { Dayjs } from 'dayjs';
 import { FindUserByIdInteractor } from '../../user/use-cases/findUserById.interactor';
+import * as process from 'node:process';
 
 @Injectable()
 export class AssignAppealHandler implements OnModuleInit {
@@ -32,7 +33,7 @@ export class AssignAppealHandler implements OnModuleInit {
 
   @OnEvent('assign.appeal')
   async execute(user: UserDocument, skip: number = 0) {
-    if (user.kind === 'ROOT') {
+    if (user.kind !== 'ADMIN') {
       return;
     }
 
@@ -95,12 +96,22 @@ export class AssignAppealHandler implements OnModuleInit {
       'FRIDAY',
       'SATURDAY',
     ];
+    const start: number = dayjs(process.env.DAYJS_START).isoWeek();
     const today: Dayjs = dayjs();
+    const week: number = today.isoWeek();
     const day: string = today.format('dddd').toUpperCase();
     const time: string = today.format('A').toUpperCase();
 
     if (!student.shift) {
       return;
+    }
+
+    if (week < start) {
+      return false;
+    }
+
+    if (week > start) {
+      return true;
     }
 
     const index: number = days.indexOf(student.shift.day);
