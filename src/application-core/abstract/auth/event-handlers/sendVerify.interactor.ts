@@ -5,6 +5,7 @@ import { Request } from 'express';
 import * as path from 'node:path';
 import * as fs from 'node:fs';
 import { SendEmailByMailtrapInteractor } from '../../mailtrap/use-cases/sendEmailByMailtrap.interactor';
+import { OnEvent } from '@nestjs/event-emitter';
 
 @Injectable()
 export class SendVerifyInteractor {
@@ -13,6 +14,7 @@ export class SendVerifyInteractor {
     private readonly sendEmailByMailtrapInteractor: SendEmailByMailtrapInteractor,
   ) {}
 
+  @OnEvent('onVerify')
   async execute(req: Request, payload: { username: string }): Promise<void> {
     const t: string = this.jwtService.sign(
       {
