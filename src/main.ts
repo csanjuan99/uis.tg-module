@@ -13,7 +13,10 @@ async function bootstrap() {
   const logger = new Logger('bootstrap');
 
   app.enableCors({
-    origin: '*',
+    origin: [
+      'https://main.d19ru6faceci4a.amplifyapp.com',
+      'https://dev.d19ru6faceci4a.amplifyapp.com',
+    ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type, Accept, Authorization, X-Resource-Id',
   });
