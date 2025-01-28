@@ -120,9 +120,21 @@ export class AppealRequestRequest {
   @Type(() => AppealRequestToChangeRequest)
   to: AppealRequestToChangeRequest[];
 
-  @ApiProperty({
+  @ApiPropertyOptional({
+    description: 'Comentarios del estudiante en la solicitud',
+    example: 'Cambiar de grupo con el estudiante X',
+    default: null,
+  })
+  @IsOptional()
+  @IsString({
+    message: 'Los comentarios del estudiante en la solicitud debe ser un texto',
+  })
+  ask?: string;
+
+  @ApiPropertyOptional({
     description: 'Razón de la solicitud',
     example: 'El estudiante necesita cambiar de horario',
+    default: null,
   })
   @IsOptional()
   @IsString({
@@ -130,9 +142,10 @@ export class AppealRequestRequest {
   })
   reason?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Estado de la solicitud',
     example: AppealRequestStatus.PENDING,
+    default: AppealRequestStatus.PENDING,
   })
   @IsOptional()
   @IsString({
