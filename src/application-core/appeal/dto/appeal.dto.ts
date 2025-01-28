@@ -156,6 +156,17 @@ export class CreateAppealRequest {
   @Type(() => AppealRequestRequest)
   requests: AppealRequestRequest[];
 
+  @ApiPropertyOptional({
+    description: 'Comentarios del estudiante en la solicitud',
+    example: 'Cambiar de grupo con el estudiante X',
+    default: null,
+  })
+  @IsOptional()
+  @IsString({
+    message: 'Los comentarios del estudiante en la solicitud debe ser un texto',
+  })
+  ask?: string;
+
   @IsNotEmptyObject(
     {
       nullable: false,
