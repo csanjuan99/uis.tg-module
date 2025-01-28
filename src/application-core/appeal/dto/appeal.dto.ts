@@ -121,17 +121,6 @@ export class AppealRequestRequest {
   to: AppealRequestToChangeRequest[];
 
   @ApiPropertyOptional({
-    description: 'Comentarios del estudiante en la solicitud',
-    example: 'Cambiar de grupo con el estudiante X',
-    default: null,
-  })
-  @IsOptional()
-  @IsString({
-    message: 'Los comentarios del estudiante en la solicitud debe ser un texto',
-  })
-  ask?: string;
-
-  @ApiPropertyOptional({
     description: 'Razón de la solicitud',
     example: 'El estudiante necesita cambiar de horario',
     default: null,
@@ -252,10 +241,30 @@ export class UpdateAppealRequest {
   @ValidateNested({ each: true })
   @Type(() => AppealLogRequest)
   logs?: AppealLogRequest[];
-  @ApiPropertyOptional({})
+  @ApiPropertyOptional({
+    description: 'Comentarios del estudiante en la solicitud',
+    example: 'Cambiar de grupo con el estudiante X',
+    default: null,
+  })
   @IsOptional()
+  @IsString({
+    message: 'Los comentarios del estudiante en la solicitud debe ser un texto',
+  })
+  ask?: string;
+  @ApiPropertyOptional({
+    description: 'Observaciones de la solicitud',
+    example: 'El estudiante necesita cambiar de horario',
+  })
+  @IsOptional()
+  @IsString({
+    message: 'La observación de la solicitud debe ser un texto',
+  })
   observation?: string;
-  @ApiPropertyOptional({})
+  @ApiPropertyOptional({
+    description: 'Estado de la solicitud',
+    example: AppealStatus.PENDING,
+    default: AppealStatus.PENDING,
+  })
   @IsOptional()
   status: string;
 }
