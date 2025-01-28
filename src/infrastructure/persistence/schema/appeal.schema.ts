@@ -58,6 +58,12 @@ export class AppealRequest {
     type: String,
     default: null,
   })
+  ask?: string;
+  @Prop({
+    required: false,
+    type: String,
+    default: null,
+  })
   reason?: string;
   @Prop({
     required: true,
