@@ -111,10 +111,7 @@ export class AssignAppealHandler implements OnModuleInit {
     const day: string = now.format('dddd').toUpperCase();
     const time: string = now.format('A').toUpperCase();
 
-    if (
-      !(now.hour() >= 8 && now.hour() < 12) &&
-      !(now.hour() >= 14 && now.hour() < 18)
-    ) {
+    if (now.hour() > 12 && now.hour() < 2) {
       return false;
     }
 
