@@ -32,58 +32,61 @@ export class AssignAppealHandler implements OnModuleInit {
   }
 
   @OnEvent('assign.appeal')
-  async execute(user: UserDocument, skip: number = 0) {
+  async execute(user: UserDocument) {
     if (user.kind !== 'ADMIN') {
       return;
     }
 
-    let appeal: AppealDocument;
-
-    appeal = await this.appealGateway.findOne({
+    // 1) Verificar primero si ya hay un appeal en REVIEW por este user
+    let appeal: AppealDocument = await this.appealGateway.findOne({
       status: AppealStatus.REVIEW,
       attended: user.id,
     });
 
-    if (!appeal) {
-      appeal = await this.appealGateway.findOne(
-        {
-          status: AppealStatus.PENDING,
-        },
+    console.log('APPEAL', appeal);
+
+    // 2) Si no hay, buscamos en PENDING
+    let skip = 0;
+    while (!appeal) {
+      const candidate: AppealDocument = await this.appealGateway.findOne(
+        { status: AppealStatus.PENDING },
         null,
         {
           skip,
-          sort: {
-            createdAt: 1,
-          },
+          sort: { createdAt: 1 },
           populate: {
             path: 'student',
             select: 'shift',
           },
         },
       );
+
+      // Si no hay ninguno más, terminamos
+      if (!candidate) {
+        return;
+      }
+
+      // Verificamos SHIFT
+      const student: UserDocument = await this.findUserByIdInteractor.execute(
+        candidate.student['_id'],
+      );
+      if (!student) {
+        skip++;
+        continue;
+      }
+
+      if (this.handleShift(student)) {
+        appeal = candidate;
+      } else {
+        // si no cumple SHIFT, incrementamos skip y seguimos
+        skip++;
+      }
     }
 
-    if (!appeal) {
-      return;
-    }
-
-    const student: UserDocument = await this.findUserByIdInteractor.execute(
-      appeal.student['_id'],
-    );
-
-    if (!student) {
-      return;
-    }
-
-    const shift: boolean = this.handleShift(student);
-
-    if (!shift) {
-      await this.execute(user, skip + 1);
-    } else {
-      appeal.status = 'REVIEW';
-      appeal.attended = user;
-      await appeal.save();
-    }
+    // Cuando sales del while, `appeal` debe ser el primer appeal válido
+    appeal.status = AppealStatus.REVIEW;
+    appeal.attended = user;
+    await appeal.save();
   }
 
   private handleShift(student: UserDocument) {
