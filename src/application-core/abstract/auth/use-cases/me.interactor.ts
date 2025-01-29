@@ -18,7 +18,7 @@ export class MeInteractor {
       },
     );
 
-    await this.eventEmitter.emitAsync('assign.appeal', user);
+    this.eventEmitter.emit('assign.appeal', user);
 
     return {
       id: user.id,

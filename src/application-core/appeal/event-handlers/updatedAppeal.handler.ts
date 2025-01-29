@@ -121,7 +121,7 @@ export class UpdatedAppealHandler {
 
       await appeal.save();
 
-      await this.eventEmitter.emitAsync('assign.appeal', user);
+      this.eventEmitter.emit('assign.appeal', user);
     }
   }
 

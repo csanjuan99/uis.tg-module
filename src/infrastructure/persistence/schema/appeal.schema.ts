@@ -78,7 +78,11 @@ export class AppealLog {}
   timestamps: true,
 })
 export class Appeal {
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    index: true,
+  })
   student: Partial<User>;
   @Prop([AppealRequest])
   requests: AppealRequest[];
@@ -123,3 +127,5 @@ export class Appeal {
 
 export const AppealSchema = SchemaFactory.createForClass(Appeal);
 AppealSchema.index({ createdAt: 1 });
+AppealSchema.index({ status: 1, attended: 1 });
+AppealSchema.index({ status: 1, student: 1 });

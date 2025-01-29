@@ -48,7 +48,7 @@ export class UpdateAppealByIdInteractor {
       await appeal.save();
     }
 
-    await this.eventEmitter.emitAsync('appeal.updated', { appeal, user });
+    this.eventEmitter.emit('appeal.updated', { appeal, user });
 
     return appeal;
   }
