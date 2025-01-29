@@ -21,7 +21,7 @@ export class SendVerifyInteractor {
         username: payload.username,
       },
       {
-        expiresIn: '1m',
+        expiresIn: '20m',
       },
     );
 
@@ -39,16 +39,8 @@ export class SendVerifyInteractor {
     const templateContent: string = fs.readFileSync(templatePath, 'utf8');
     const template = handlebars.compile(templateContent);
 
-    let callback: string;
-    let resend: string;
-
-    if (process.env.NODE_ENV === 'production') {
-      callback = `${req.protocol}://${req.headers.host}/api/auth/verify?t=${t}`;
-      resend = `${req.protocol}://${req.headers.host}/api/auth/resend-verify?t=${t}`;
-    } else {
-      callback = `${req.headers.host}/auth/verify?t=${t}`;
-      resend = `${req.headers.host}/auth/resend-verify?t=${t}`;
-    }
+    const callback: string = `${req.protocol}://${req.headers.host}/api/auth/verify?t=${t}`;
+    const resend: string = `${req.protocol}://${req.headers.host}/api/auth/resend-verify?t=${t}`;
 
     const html: string = template({
       callback,
