@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString, Matches } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class LoginRequest {
@@ -8,9 +8,6 @@ export class LoginRequest {
   })
   @IsNotEmpty({
     message: 'El correo electrónico de usuario es requerido',
-  })
-  @Matches(/^[a-zA-Z0-9._%+-]+@correo\.uis\.edu\.co$/, {
-    message: 'El correo electrónico debe ser un correo institucional de la UIS',
   })
   @IsEmail(
     {
