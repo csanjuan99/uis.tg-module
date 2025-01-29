@@ -108,6 +108,7 @@ export class Appeal {
       AppealStatus.REVIEW,
     ],
     default: AppealStatus.PENDING,
+    index: true,
   })
   status?: string;
   @Prop({
@@ -115,8 +116,10 @@ export class Appeal {
     default: undefined,
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
+    index: true,
   })
   attended?: Partial<User>;
 }
 
 export const AppealSchema = SchemaFactory.createForClass(Appeal);
+AppealSchema.index({ createdAt: 1 });
