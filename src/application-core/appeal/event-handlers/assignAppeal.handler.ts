@@ -37,15 +37,11 @@ export class AssignAppealHandler implements OnModuleInit {
       return;
     }
 
-    // 1) Verificar primero si ya hay un appeal en REVIEW por este user
     let appeal: AppealDocument = await this.appealGateway.findOne({
       status: AppealStatus.REVIEW,
       attended: user.id,
     });
 
-    console.log('APPEAL', appeal);
-
-    // 2) Si no hay, buscamos en PENDING
     let skip = 0;
     while (!appeal) {
       const candidate: AppealDocument = await this.appealGateway.findOne(
@@ -61,12 +57,10 @@ export class AssignAppealHandler implements OnModuleInit {
         },
       );
 
-      // Si no hay ninguno más, terminamos
       if (!candidate) {
         return;
       }
 
-      // Verificamos SHIFT
       const student: UserDocument = await this.findUserByIdInteractor.execute(
         candidate.student['_id'],
       );
@@ -78,12 +72,10 @@ export class AssignAppealHandler implements OnModuleInit {
       if (this.handleShift(student)) {
         appeal = candidate;
       } else {
-        // si no cumple SHIFT, incrementamos skip y seguimos
         skip++;
       }
     }
 
-    // Cuando sales del while, `appeal` debe ser el primer appeal válido
     appeal.status = AppealStatus.REVIEW;
     appeal.attended = user;
     await appeal.save();
