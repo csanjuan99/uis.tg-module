@@ -97,10 +97,17 @@ export class AssignAppealHandler implements OnModuleInit {
       'SATURDAY',
     ];
     const start: number = dayjs(process.env.DAYJS_START).isoWeek();
-    const today: Dayjs = dayjs();
-    const week: number = today.isoWeek();
-    const day: string = today.format('dddd').toUpperCase();
-    const time: string = today.format('A').toUpperCase();
+    const now: Dayjs = dayjs();
+    const week: number = now.isoWeek();
+    const day: string = now.format('dddd').toUpperCase();
+    const time: string = now.format('A').toUpperCase();
+
+    if (
+      !(now.hour() >= 8 && now.hour() < 12) &&
+      !(now.hour() >= 14 && now.hour() < 18)
+    ) {
+      return false;
+    }
 
     if (!student.shift) {
       return;
@@ -116,7 +123,7 @@ export class AssignAppealHandler implements OnModuleInit {
 
     const index: number = days.indexOf(student.shift.day);
 
-    if (index < today.isoWeekday()) {
+    if (index < now.isoWeekday()) {
       return true;
     }
 
