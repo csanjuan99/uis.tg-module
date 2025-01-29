@@ -116,7 +116,7 @@ export class AppealController {
         populate: [
           {
             path: 'student',
-            select: 'identification name lastname',
+            select: 'identification name lastname shift',
           },
           {
             path: 'attended',
@@ -171,7 +171,7 @@ export class AppealController {
       populate: [
         {
           path: 'student',
-          select: 'identification name lastname',
+          select: 'identification name lastname shift',
         },
         {
           path: 'attended',
