@@ -1,6 +1,9 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
-import { UserDocument } from '../../../infrastructure/persistence/schema/user.schema';
+import {
+  StudentShift,
+  UserDocument,
+} from '../../../infrastructure/persistence/schema/user.schema';
 import { UserGateway } from '../../../infrastructure/persistence/gateway/user.gateway';
 import { AppealGateway } from '../../../infrastructure/persistence/gateway/appeal.gateway';
 import {
@@ -13,7 +16,6 @@ import * as utc from 'dayjs/plugin/utc';
 import * as timezone from 'dayjs/plugin/timezone';
 import * as isoWeek from 'dayjs/plugin/isoWeek';
 import { Dayjs } from 'dayjs';
-import { FindUserByIdInteractor } from '../../user/use-cases/findUserById.interactor';
 import * as process from 'node:process';
 
 @Injectable()
@@ -21,7 +23,6 @@ export class AssignAppealHandler implements OnModuleInit {
   constructor(
     private readonly userGateway: UserGateway,
     private readonly appealGateway: AppealGateway,
-    private readonly findUserByIdInteractor: FindUserByIdInteractor,
   ) {}
 
   onModuleInit() {
@@ -42,38 +43,51 @@ export class AssignAppealHandler implements OnModuleInit {
       attended: user.id,
     });
 
-    let skip = 0;
-    while (!appeal) {
-      const candidate: AppealDocument = await this.appealGateway.findOne(
-        { status: AppealStatus.PENDING },
-        null,
-        {
-          skip,
-          sort: { createdAt: 1 },
-          populate: {
-            path: 'student',
-            select: 'shift',
+    if (!appeal) {
+      const BATCH_SIZE = 50;
+      let skip = 0;
+
+      while (true) {
+        const candidates: AppealDocument[] = await this.appealGateway.find(
+          { status: AppealStatus.PENDING },
+          null,
+          {
+            skip,
+            limit: BATCH_SIZE,
+            sort: {
+              createdAt: 1,
+            },
+            populate: {
+              path: 'student',
+              select: 'shift',
+            },
           },
-        },
-      );
+        );
 
-      if (!candidate) {
-        return;
-      }
+        if (!candidates.length) {
+          return;
+        }
 
-      const student: UserDocument = await this.findUserByIdInteractor.execute(
-        candidate.student['_id'],
-      );
-      if (!student) {
-        skip++;
-        continue;
-      }
+        for (const candidate of candidates) {
+          const student = candidate.student as UserDocument;
+          if (!student) continue;
 
-      if (this.handleShift(student)) {
-        appeal = candidate;
-      } else {
-        skip++;
+          if (this.handleShift(candidate.student.shift)) {
+            appeal = candidate;
+            break;
+          }
+        }
+
+        if (appeal) {
+          break;
+        }
+
+        skip += BATCH_SIZE;
       }
+    }
+
+    if (!appeal) {
+      return;
     }
 
     appeal.status = AppealStatus.REVIEW;
@@ -81,7 +95,7 @@ export class AssignAppealHandler implements OnModuleInit {
     await appeal.save();
   }
 
-  private handleShift(student: UserDocument) {
+  private handleShift(shift: StudentShift): boolean {
     const days: string[] = [
       'SUNDAY',
       'MONDAY',
@@ -104,7 +118,7 @@ export class AssignAppealHandler implements OnModuleInit {
       return false;
     }
 
-    if (!student.shift) {
+    if (!shift) {
       return;
     }
 
@@ -116,20 +130,20 @@ export class AssignAppealHandler implements OnModuleInit {
       return true;
     }
 
-    const index: number = days.indexOf(student.shift.day);
+    const index: number = days.indexOf(shift.day);
 
     if (index < now.isoWeekday()) {
       return true;
     }
 
-    if (day === student.shift.day) {
-      if (time === student.shift.time) {
+    if (day === shift.day) {
+      if (time === shift.time) {
         return true;
       }
-      if (time === 'PM' && student.shift.time === 'AM') {
+      if (time === 'PM' && shift.time === 'AM') {
         return true;
       }
-      if (time === 'AM' && student.shift.time === 'PM') {
+      if (time === 'AM' && shift.time === 'PM') {
         return false;
       }
     }

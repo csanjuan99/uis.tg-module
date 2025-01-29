@@ -72,3 +72,4 @@ UserSchema.index(
     partialFilterExpression: { identification: { $exists: true, $ne: null } },
   },
 );
+UserSchema.index({ shift: 1 });
