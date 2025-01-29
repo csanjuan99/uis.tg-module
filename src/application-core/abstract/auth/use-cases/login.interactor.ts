@@ -57,7 +57,7 @@ export class LoginInteractor {
 
   private async dispatchEvent(user: UserDocument): Promise<void> {
     if (user.kind === 'ADMIN') {
-      await this.eventEmitter.emitAsync('assign.appeal', user);
+      this.eventEmitter.emit('assign.appeal', user);
     }
   }
 }
