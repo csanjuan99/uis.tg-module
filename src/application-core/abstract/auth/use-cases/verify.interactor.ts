@@ -24,7 +24,9 @@ export class VerifyInteractor {
     } catch {
       res
         .status(403)
-        .send('No pudimos verificar tu cuenta, intenta de nuevo mas tarde');
+        .send(
+          'No pudimos verificar tu cuenta en este momento, puede que tu enlace expirará,  intenta utilizando el enlace de re-envío en tu correo electrónico',
+        );
       return;
     }
 
@@ -43,6 +45,8 @@ export class VerifyInteractor {
 
     await user.save();
 
-    res.status(200).send('Tu cuenta ha sido verificada');
+    res
+      .status(200)
+      .send('Tu cuenta ha sido verificada, ya puedes iniciar sesión');
   }
 }

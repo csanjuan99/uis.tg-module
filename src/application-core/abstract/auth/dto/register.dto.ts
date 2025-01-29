@@ -46,10 +46,6 @@ export class RegisterRequest {
   @IsNotEmpty({
     message: 'La confirmación de la contraseña es requerida',
   })
-  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/, {
-    message:
-      'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número',
-  })
   confirm_password: string;
   @ApiProperty({
     example: 'John',
