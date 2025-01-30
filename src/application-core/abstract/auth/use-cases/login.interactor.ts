@@ -9,15 +9,12 @@ import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { JwtResponse } from '../dto/jwt.dto';
 import { LoginRequest } from '../dto/login.dto';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { logger } from 'handlebars';
 
 @Injectable()
 export class LoginInteractor {
   constructor(
     private readonly jwtService: JwtService,
     private readonly userGateway: UserGateway,
-    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async execute(payload: LoginRequest): Promise<JwtResponse> {
@@ -47,8 +44,6 @@ export class LoginInteractor {
       permissions: user.permissions,
       kind: user.kind,
     });
-
-    this.eventEmitter.emit('assign.appeal', user);
 
     return {
       access_token,
