@@ -38,64 +38,79 @@ export class AssignAppealHandler implements OnModuleInit {
       return;
     }
 
-    let appeal: AppealDocument = await this.appealGateway.findOne({
+    const appeal: AppealDocument = await this.appealGateway.findOne({
       status: AppealStatus.REVIEW,
       attended: user.id,
     });
 
-    if (!appeal) {
-      const BATCH_SIZE = 50;
-      let skip = 0;
-
-      while (true) {
-        const candidates: AppealDocument[] = await this.appealGateway.find(
-          { status: AppealStatus.PENDING },
-          null,
-          {
-            skip,
-            limit: BATCH_SIZE,
-            sort: {
-              createdAt: 1,
-            },
-            populate: {
-              path: 'student',
-              select: 'shift',
-            },
-          },
-        );
-
-        if (!candidates.length) {
-          break;
-        }
-
-        for (const candidate of candidates) {
-          const student = candidate.student as UserDocument;
-          if (!student) continue;
-
-          if (this.handleShift(candidate.student.shift)) {
-            appeal = candidate;
-            break;
-          }
-        }
-
-        if (appeal) {
-          break;
-        }
-
-        skip += BATCH_SIZE;
-      }
-    }
-
-    if (!appeal) {
+    if (appeal) {
       return;
     }
 
-    appeal.status = AppealStatus.REVIEW;
-    appeal.attended = user;
-    await appeal.save();
+    const BATCH_SIZE = 50;
+    let skip = 0;
+    let foundAppeal: AppealDocument | null = null;
+
+    while (true) {
+      const candidates: AppealDocument[] = await this.appealGateway.find(
+        { status: AppealStatus.PENDING },
+        null,
+        {
+          skip,
+          limit: BATCH_SIZE,
+          sort: {
+            createdAt: 1,
+          },
+          populate: {
+            path: 'student',
+            select: 'shift',
+          },
+        },
+      );
+
+      if (!candidates.length) {
+        break;
+      }
+
+      for (const candidate of candidates) {
+        const student = candidate.student as UserDocument;
+        if (!student || !student.shift) {
+          continue;
+        }
+
+        if (this.canAssign(student.shift)) {
+          foundAppeal = candidate;
+          break;
+        }
+      }
+
+      if (foundAppeal) {
+        break;
+      }
+
+      skip += BATCH_SIZE;
+    }
+
+    if (!foundAppeal) {
+      return;
+    }
+
+    foundAppeal.status = AppealStatus.REVIEW;
+    foundAppeal.attended = user;
+    await foundAppeal.save();
   }
 
-  private handleShift(shift: StudentShift): boolean {
+  /**
+   * Decide si podemos asignar una "appeal" con el shift del estudiante
+   * basado en las reglas:
+   *
+   * 1) Validar horario (mañana >= 8:00, tarde >= 14:00)
+   * 2) Comparar semana actual con "start" para ver si es la misma, anterior o posterior
+   * 3) Si es la misma semana -> comparar día. (días anteriores tienen prioridad, día igual validamos AM/PM)
+   * 4) Si la semana es mayor -> no asignamos
+   * 5) Si la semana es menor -> se asume que es rezagada y se asigna (opcional: se podría seguir validando horario)
+   */
+  private canAssign(shift: StudentShift): boolean {
     const days: string[] = [
       'SUNDAY',
       'MONDAY',
@@ -105,44 +120,55 @@ export class AssignAppealHandler implements OnModuleInit {
       'FRIDAY',
       'SATURDAY',
     ];
-    const start: number = dayjs(process.env.DAYJS_START).isoWeek();
+
+    const startWeek: number = dayjs(process.env.DAYJS_START).isoWeek();
+
     const now: Dayjs = dayjs();
-    const week: number = now.isoWeek();
-    const day: string = now.format('dddd').toUpperCase();
-    const time: string = now.format('A').toUpperCase();
+    const currentWeek: number = now.isoWeek();
+    const currentDayIndex: number = now.isoWeekday();
+    const currentTime: string = now.format('A').toUpperCase();
+    const hour: number = now.hour();
 
-    if (!shift) {
-      return;
-    }
-
-    if (time === 'PM' && now.hour() < 14) {
+    // 1) Validar si el sistema está “abierto”
+    //    - Mañana: a partir de las 8:00 AM
+    //    - Tarde: a partir de las 14:00 PM
+    if (
+      (currentTime === 'AM' && hour < 8) ||
+      (currentTime === 'PM' && hour < 14)
+    ) {
       return false;
     }
 
-    if (time === 'AM' && now.hour() < 8) {
+    // 2) Comparar weeks
+    //    - Si la currentWeek > startWeek => “futuro” => no asignar
+    //    - Si la currentWeek < startWeek => es rezagado => sí asignar (o puedes aplicar más lógica)
+    //    - Si la currentWeek === startWeek => validamos días
+    if (currentWeek > startWeek) {
       return false;
-    }
-
-    if (week < start) {
-      return false;
-    } else if (week > start) {
+    } else if (currentWeek < startWeek) {
+      // Es de semanas pasadas => lo asignamos sin más validaciones de día/AM/PM
       return true;
     } else {
-      const index: number = days.indexOf(shift.day);
+      // currentWeek === startWeek
+      // 3) Validar día
+      const shiftDayIndex = days.indexOf(shift.day);
 
-      if (index < now.isoWeekday()) {
+      if (shiftDayIndex < currentDayIndex) {
+        // Día de la solicitud es anterior al día actual -> se asigna
         return true;
-      } else if (index > now.isoWeekday()) {
+      } else if (shiftDayIndex > currentDayIndex) {
+        // Día posterior -> no asignar
         return false;
-      } else if (index === now.isoWeekday()) {
-        if (time === shift.time) {
-          return true;
-        } else if (time === 'PM' && shift.time === 'AM') {
-          return true;
-        } else if (time === 'AM' && shift.time === 'PM') {
-          return false;
+      } else {
+        // Mismo día: validamos la jornada
+        // "AM solo acepta AM" / "PM puede aceptar PM y AM"
+        if (currentTime === 'AM') {
+          // Solo SHIFT con time = 'AM'
+          return shift.time === 'AM';
         } else {
-          return false;
+          // currentTime === 'PM'
+          // SHIFT con time = 'AM' o 'PM'
+          return true;
         }
       }
     }
