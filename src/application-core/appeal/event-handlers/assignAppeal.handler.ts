@@ -106,7 +106,6 @@ export class AssignAppealHandler implements OnModuleInit {
       'SATURDAY',
     ];
     const start: number = dayjs(process.env.DAYJS_START).isoWeek();
-    console.log('Semana de inicio: ', start);
     const now: Dayjs = dayjs();
     const week: number = now.isoWeek();
     const day: string = now.format('dddd').toUpperCase();
@@ -116,7 +115,11 @@ export class AssignAppealHandler implements OnModuleInit {
       return;
     }
 
-    if (now.hour() > 12 && now.hour() < 2) {
+    if (time === 'PM' && now.hour() < 14) {
+      return false;
+    }
+
+    if (time === 'AM' && now.hour() < 8) {
       return false;
     }
 
