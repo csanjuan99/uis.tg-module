@@ -144,8 +144,6 @@ export class AssignAppealHandler implements OnModuleInit {
         } else {
           return false;
         }
-      } else {
-        return false;
       }
     }
   }
