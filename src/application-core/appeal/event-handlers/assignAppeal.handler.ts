@@ -65,7 +65,7 @@ export class AssignAppealHandler implements OnModuleInit {
         );
 
         if (!candidates.length) {
-          return;
+          break;
         }
 
         for (const candidate of candidates) {
@@ -106,45 +106,44 @@ export class AssignAppealHandler implements OnModuleInit {
       'SATURDAY',
     ];
     const start: number = dayjs(process.env.DAYJS_START).isoWeek();
+    console.log('Semana de inicio: ', start);
     const now: Dayjs = dayjs();
     const week: number = now.isoWeek();
     const day: string = now.format('dddd').toUpperCase();
     const time: string = now.format('A').toUpperCase();
 
-    if (now.hour() > 12 && now.hour() < 2) {
-      return false;
-    }
-
     if (!shift) {
       return;
     }
 
-    if (week < start) {
+    if (now.hour() > 12 && now.hour() < 2) {
       return false;
     }
 
-    if (week > start) {
+    if (week < start) {
+      return false;
+    } else if (week > start) {
       return true;
-    }
+    } else {
+      const index: number = days.indexOf(shift.day);
 
-    const index: number = days.indexOf(shift.day);
-
-    if (index < now.isoWeekday()) {
-      return true;
-    }
-
-    if (day === shift.day) {
-      if (time === shift.time) {
+      if (index < now.isoWeekday()) {
         return true;
-      }
-      if (time === 'PM' && shift.time === 'AM') {
-        return true;
-      }
-      if (time === 'AM' && shift.time === 'PM') {
+      } else if (index > now.isoWeekday()) {
+        return false;
+      } else if (index === now.isoWeekday()) {
+        if (time === shift.time) {
+          return true;
+        } else if (time === 'PM' && shift.time === 'AM') {
+          return true;
+        } else if (time === 'AM' && shift.time === 'PM') {
+          return false;
+        } else {
+          return false;
+        }
+      } else {
         return false;
       }
     }
-
-    return false;
   }
 }
