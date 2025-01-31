@@ -120,8 +120,6 @@ export class UpdatedAppealHandler {
       }
 
       await appeal.save();
-
-      this.eventEmitter.emit('assign.appeal', user);
     }
   }
 

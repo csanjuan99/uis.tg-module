@@ -100,16 +100,6 @@ export class AssignAppealHandler implements OnModuleInit {
     await foundAppeal.save();
   }
 
-  /**
-   * Decide si podemos asignar una "appeal" con el shift del estudiante
-   * basado en las reglas:
-   *
-   * 1) Validar horario (mañana >= 8:00, tarde >= 14:00)
-   * 2) Comparar semana actual con "start" para ver si es la misma, anterior o posterior
-   * 3) Si es la misma semana -> comparar día. (días anteriores tienen prioridad, día igual validamos AM/PM)
-   * 4) Si la semana es mayor -> no asignamos
-   * 5) Si la semana es menor -> se asume que es rezagada y se asigna (opcional: se podría seguir validando horario)
-   */
   private canAssign(shift: StudentShift): boolean {
     const days: string[] = [
       'SUNDAY',
@@ -129,45 +119,25 @@ export class AssignAppealHandler implements OnModuleInit {
     const currentTime: string = now.format('A').toUpperCase();
     const hour: number = now.hour();
 
-    // 1) Validar si el sistema está “abierto”
-    //    - Mañana: a partir de las 8:00 AM
-    //    - Tarde: a partir de las 14:00 PM
-    if (
-      (currentTime === 'AM' && hour < 8) ||
-      (currentTime === 'PM' && hour < 14)
-    ) {
+    if (hour < 8) {
       return false;
     }
 
-    // 2) Comparar weeks
-    //    - Si la currentWeek > startWeek => “futuro” => no asignar
-    //    - Si la currentWeek < startWeek => es rezagado => sí asignar (o puedes aplicar más lógica)
-    //    - Si la currentWeek === startWeek => validamos días
     if (currentWeek > startWeek) {
       return false;
     } else if (currentWeek < startWeek) {
-      // Es de semanas pasadas => lo asignamos sin más validaciones de día/AM/PM
       return true;
     } else {
-      // currentWeek === startWeek
-      // 3) Validar día
       const shiftDayIndex = days.indexOf(shift.day);
 
       if (shiftDayIndex < currentDayIndex) {
-        // Día de la solicitud es anterior al día actual -> se asigna
         return true;
       } else if (shiftDayIndex > currentDayIndex) {
-        // Día posterior -> no asignar
         return false;
       } else {
-        // Mismo día: validamos la jornada
-        // "AM solo acepta AM" / "PM puede aceptar PM y AM"
         if (currentTime === 'AM') {
-          // Solo SHIFT con time = 'AM'
           return shift.time === 'AM';
         } else {
-          // currentTime === 'PM'
-          // SHIFT con time = 'AM' o 'PM'
           return true;
         }
       }
