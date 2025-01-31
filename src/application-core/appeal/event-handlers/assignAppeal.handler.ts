@@ -119,7 +119,7 @@ export class AssignAppealHandler implements OnModuleInit {
     const currentTime: string = now.format('A').toUpperCase();
     const hour: number = now.hour();
 
-    if (hour < 8) {
+    if (!(hour >= 8)) {
       return false;
     }
 
