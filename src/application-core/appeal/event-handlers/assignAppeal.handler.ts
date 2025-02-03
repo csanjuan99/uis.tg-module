@@ -124,9 +124,9 @@ export class AssignAppealHandler implements OnModuleInit {
     }
 
     if (currentWeek > startWeek) {
-      return false;
-    } else if (currentWeek < startWeek) {
       return true;
+    } else if (currentWeek < startWeek) {
+      return false;
     } else {
       const shiftDayIndex = days.indexOf(shift.day);
 
