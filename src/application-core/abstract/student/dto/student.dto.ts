@@ -1,14 +1,6 @@
-import {
-  StudentShift,
-  User,
-} from '../../../../infrastructure/persistence/schema/user.schema';
+import { StudentShift } from '../../../../infrastructure/persistence/schema/user.schema';
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsNotEmpty,
-  IsNotEmptyObject,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsNotEmptyObject, IsOptional, IsString } from 'class-validator';
 
 class StudentShiftRequest implements StudentShift {
   @ApiProperty({

@@ -6,7 +6,6 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
-import { SubjectGroupSchedule } from '../../../infrastructure/persistence/schema/subject.schema';
 import { Type } from 'class-transformer';
 
 class ScheduleSubjectGroupScheduleRequest {

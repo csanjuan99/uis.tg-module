@@ -20,7 +20,6 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { OnEvent } from '@nestjs/event-emitter';
 import { LoginInteractor } from '../../../application-core/abstract/auth/use-cases/login.interactor';
 import { RegisterInteractor } from '../../../application-core/abstract/auth/use-cases/register.interactor';
 import { VerifyInteractor } from '../../../application-core/abstract/auth/use-cases/verify.interactor';

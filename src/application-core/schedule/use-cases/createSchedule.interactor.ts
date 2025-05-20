@@ -1,13 +1,6 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { ScheduleGateway } from '../../../infrastructure/persistence/gateway/shedule.gateway';
-import {
-  Schedule,
-  ScheduleDocument,
-} from '../../../infrastructure/persistence/schema/schedule.schema';
+import { ScheduleDocument } from '../../../infrastructure/persistence/schema/schedule.schema';
 import { UserDocument } from '../../../infrastructure/persistence/schema/user.schema';
 import { UserGateway } from '../../../infrastructure/persistence/gateway/user.gateway';
 import { FindUserByIdInteractor } from '../../user/use-cases/findUserById.interactor';

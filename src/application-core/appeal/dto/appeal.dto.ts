@@ -1,5 +1,4 @@
 import {
-  AppealLog,
   AppealRequestStatus,
   AppealStatus,
 } from '../../../infrastructure/persistence/schema/appeal.schema';
