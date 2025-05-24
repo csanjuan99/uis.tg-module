@@ -1,5 +1,6 @@
 import { IsEmail, IsNotEmpty, IsString, Matches } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { StudentProgram } from '../../../../infrastructure/persistence/schema/user.schema';
 
 export class RegisterRequest {
   @ApiProperty({
@@ -80,4 +81,15 @@ export class RegisterRequest {
     message: 'El código del estudiante es requerido',
   })
   identification: string;
+  @ApiProperty({
+    example: '11',
+    required: true,
+  })
+  @IsString({
+    message: 'El codigo del programa es el identificador del programa',
+  })
+  @IsNotEmpty({
+    message: 'El código del programa es requerido',
+  })
+  program: StudentProgram;
 }

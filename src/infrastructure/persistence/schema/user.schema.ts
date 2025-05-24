@@ -21,6 +21,33 @@ export class StudentShift {
 }
 
 @Schema({
+  _id: false,
+  timestamps: false,
+})
+export class StudentProgram {
+  @Prop({
+    required: true,
+    enum: [11, 27, 69, 50],
+  })
+  id: number;
+  @Prop({
+    required: true,
+    enum: [
+      'INGENIERIA DE SISTEMAS',
+      'DISEÑO INDUSTRIAL',
+      'INGENIERIA BIOMEDICA',
+      'INGENIERIA EN CIENCIA DE DATOS',
+    ],
+  })
+  program: string;
+  @Prop({
+    required: false,
+    default: null,
+  })
+  new_pensum?: boolean;
+}
+
+@Schema({
   collection: 'users',
   timestamps: true,
 })
@@ -62,6 +89,10 @@ export class User {
     required: true,
   })
   permissions: string[];
+  @Prop({
+    required: true,
+  })
+  program: StudentProgram;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

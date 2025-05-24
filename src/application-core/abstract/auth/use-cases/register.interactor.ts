@@ -32,6 +32,7 @@ export class RegisterInteractor {
       lastname: payload.lastname,
       identification: payload.identification,
       username: payload.email,
+      program: payload.program,
       password: hash,
       kind: 'STUDENT',
       permissions: [
