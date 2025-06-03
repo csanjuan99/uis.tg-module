@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
+import { StudentProgram } from 'src/infrastructure/persistence/schema/user.schema';
 
 export class UserResponse {
   @ApiProperty({
@@ -113,6 +114,12 @@ export class CreateUserRequest {
     example: ['*'],
   })
   permissions: string[];
+  @ApiProperty({
+    type: StudentProgram,
+    description: 'Programa del estudiante',
+    example: 'ING DE SISTEMAS',
+  })
+  program: StudentProgram;
 }
 
 export class UpdateUserRequest extends PartialType(CreateUserRequest) {}
