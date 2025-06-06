@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
@@ -27,19 +28,21 @@ export class StudentShift {
 export class StudentProgram {
   @Prop({
     required: true,
-    enum: [11, 27, 69, 50],
+    enum: [11, 27, 69, 50, 21, 24],
   })
   id: number;
   @Prop({
-    required: true,
+    required: false,
     enum: [
       'INGENIERIA DE SISTEMAS',
       'DISEÑO INDUSTRIAL',
       'INGENIERIA BIOMEDICA',
       'INGENIERIA EN CIENCIA DE DATOS',
+      'INGENIERIA CIVIL',
+      'INGENIERIA MECANICA',
     ],
   })
-  program: string;
+  name?: string;
   @Prop({
     required: false,
     default: null,
