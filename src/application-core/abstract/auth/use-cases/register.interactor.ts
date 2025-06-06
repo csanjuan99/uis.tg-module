@@ -27,6 +27,29 @@ export class RegisterInteractor {
     const salt: string = genSaltSync(10);
     const hash: string = hashSync(payload.password, salt);
 
+    switch (payload.program?.id) {
+      case 11:
+        payload.program.name = 'INGENIERIA DE SISTEMAS';
+        break;
+      case 27:
+        payload.program.name = 'DISEÑO INDUSTRIAL';
+        break;
+      case 69:
+        payload.program.name = 'INGENIERIA BIOMEDICA';
+        break;
+      case 50:
+        payload.program.name = 'INGENIERIA EN CIENCIA DE DATOS';
+        break;
+      case 21:
+        payload.program.name = 'INGENIERIA CIVIL';
+        break;
+      case 24:
+        payload.program.name = 'INGENIERIA MECANICA';
+        break;
+      default:
+        throw new BadRequestException('Programa no válido');
+    }
+
     const student: UserDocument = await this.userGateway.create({
       name: payload.name,
       lastname: payload.lastname,
