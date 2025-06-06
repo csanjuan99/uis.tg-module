@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
@@ -18,6 +19,35 @@ export class StudentShift {
     enum: ['AM', 'PM'],
   })
   time: string;
+}
+
+@Schema({
+  _id: false,
+  timestamps: false,
+})
+export class StudentProgram {
+  @Prop({
+    required: true,
+    enum: [11, 27, 69, 50, 21, 24],
+  })
+  id: number;
+  @Prop({
+    required: false,
+    enum: [
+      'INGENIERIA DE SISTEMAS',
+      'DISEÑO INDUSTRIAL',
+      'INGENIERIA BIOMEDICA',
+      'INGENIERIA EN CIENCIA DE DATOS',
+      'INGENIERIA CIVIL',
+      'INGENIERIA MECANICA',
+    ],
+  })
+  name?: string;
+  @Prop({
+    required: false,
+    default: null,
+  })
+  new_pensum?: boolean;
 }
 
 @Schema({
@@ -62,6 +92,10 @@ export class User {
     required: true,
   })
   permissions: string[];
+  @Prop({
+    required: true,
+  })
+  program: StudentProgram;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

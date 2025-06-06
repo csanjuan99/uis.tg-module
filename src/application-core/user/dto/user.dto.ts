@@ -1,5 +1,7 @@
+/* eslint-disable prettier/prettier */
 import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
+import { StudentProgram } from 'src/infrastructure/persistence/schema/user.schema';
 
 export class UserResponse {
   @ApiProperty({
@@ -86,7 +88,7 @@ export class CreateUserRequest {
   @ApiProperty({
     type: String,
     description: 'Contraseña del usuario en texto plano',
-    example: '*********',
+    example: '**',
   })
   password: string;
   @IsNotEmpty({
@@ -110,9 +112,15 @@ export class CreateUserRequest {
   @ApiProperty({
     type: [String],
     description: 'Permisos del usuario',
-    example: ['*'],
+    example: [''],
   })
   permissions: string[];
+  @ApiProperty({
+    type: StudentProgram,
+    description: 'Programa del estudiante',
+    example: {id:27, new_pensum: true},
+  })
+  program: StudentProgram;
 }
 
 export class UpdateUserRequest extends PartialType(CreateUserRequest) {}

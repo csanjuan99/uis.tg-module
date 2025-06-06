@@ -1,5 +1,7 @@
+/* eslint-disable prettier/prettier */
 import { IsEmail, IsNotEmpty, IsString, Matches } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { StudentProgram } from '../../../../infrastructure/persistence/schema/user.schema';
 
 export class RegisterRequest {
   @ApiProperty({
@@ -70,7 +72,7 @@ export class RegisterRequest {
   })
   lastname: string;
   @ApiProperty({
-    example: '225421',
+    example: '2191940',
     required: true,
   })
   @IsString({
@@ -80,4 +82,12 @@ export class RegisterRequest {
     message: 'El código del estudiante es requerido',
   })
   identification: string;
+  @ApiProperty({
+    example: { id: 21, new_pensum: false },
+    required: true,
+  })
+  @IsNotEmpty({
+    message: 'El código del programa es requerido',
+  })
+  program: StudentProgram;
 }
