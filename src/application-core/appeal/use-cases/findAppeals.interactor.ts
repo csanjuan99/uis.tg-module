@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { AppealGateway } from '../../../infrastructure/persistence/gateway/appeal.gateway';
 import { FilterQuery, ProjectionFields, QueryOptions } from 'mongoose';
