@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   Body,
   Controller,
@@ -67,65 +68,88 @@ export class AppealController {
     return this.createAppealInteractor.execute(payload);
   }
 
-  @Get('/')
-  @ApiOperation({ summary: 'Listar y filtrar todas las solicitudes' })
-  @ApiOkResponse({
-    type: AppealResponse,
-    isArray: true,
-  })
-  @ApiQuery({ name: 'filter', required: false, example: '{}' })
-  @ApiQuery({ name: 'projection', required: false, example: '{}' })
-  @ApiQuery({ name: 'limit', required: false, example: 10 })
-  @ApiQuery({ name: 'skip', required: false, example: 0 })
-  @ApiQuery({ name: 'sort', required: false, example: 'asc' })
-  @ApiQuery({ name: 'sortBy', required: false, example: 'createdAt' })
-  @ApiBearerAuth()
-  @UseInterceptors(OwnerInterceptor)
-  @Permission('*', 'read:appeal')
-  async find(
-    @Query('filter') filter: string,
-    @Query('projection') projection: string,
-    @Query('limit') limit: number = 10,
-    @Query('skip') skip: number = 0,
-    @Query('sort') sort: 'asc' | 'desc' = 'asc',
-    @Query('sortBy') sortBy: string = 'createdAt',
-    @Req() req: Request,
-  ): Promise<AppealDocument[]> {
-    return this.findAppealsInteractor.execute(
-      {
-        ...JSON.parse(filter || '{}'),
-        [req.user['kind'] !== 'ROOT' ? '$or' : undefined]:
-          req.user['kind'] !== 'ROOT'
-            ? [
-                {
-                  student: req.user['id'],
-                },
-                {
-                  attended: req.user['id'],
-                },
-              ]
-            : undefined,
-      },
-      {
-        ...JSON.parse(projection || '{}'),
-      },
-      {
-        limit,
-        skip,
-        sort: { [sortBy]: sort },
-        populate: [
-          {
-            path: 'student',
-            select: 'identification name lastname shift',
-          },
-          {
-            path: 'attended',
-            select: 'name lastname',
-          },
-        ],
-      },
-    );
+@Get('/')
+@ApiOperation({ summary: 'Listar y filtrar todas las solicitudes' })
+@ApiOkResponse({
+  type: AppealResponse,
+  isArray: true,
+})
+@ApiQuery({ name: 'filter', required: false, example: '{}' })
+@ApiQuery({ name: 'projection', required: false, example: '{}' })
+@ApiQuery({ name: 'limit', required: false, example: 10 })
+@ApiQuery({ name: 'skip', required: false, example: 0 })
+@ApiQuery({ name: 'sort', required: false, example: 'asc' })
+@ApiQuery({ name: 'sortBy', required: false, example: 'createdAt' })
+@ApiQuery({ name: 'year', required: false, example: 2025 })
+@ApiQuery({ name: 'term', required: false, example: 1 })
+@ApiBearerAuth()
+@UseInterceptors(OwnerInterceptor)
+@Permission('*', 'read:appeal')
+async find(
+  @Query('filter') filter: string,
+  @Query('projection') projection: string,
+  @Query('limit') limit: number = 10,
+  @Query('skip') skip: number = 0,
+  @Query('sort') sort: 'asc' | 'desc' = 'asc',
+  @Query('sortBy') sortBy: string = 'createdAt',
+  @Req() req: Request,
+  @Query('year') year?: number,
+  @Query('term') term?: number,
+): Promise<AppealDocument[]> {
+  const baseFilter = JSON.parse(filter || '{}');
+  //agrego filtro de periodo en caso de especificarse de lo contrario mostrara todas las solicitudes
+  const periodFilter = {};
+
+  const hasValidYear = year !== undefined && year !== null && !isNaN(year);
+  const hasValidTerm = term !== undefined && term !== null && !isNaN(term);
+
+  if (hasValidYear || hasValidTerm) {
+    const periodConditions = {};
+    if (hasValidYear) {
+      periodConditions['period.year'] = Number(year);
+    }
+    if (hasValidTerm) {
+      periodConditions['period.term'] = Number(term);
+    }
+    periodFilter['logs'] = { $elemMatch: periodConditions };
   }
+
+  const userFilter = req.user['kind'] !== 'ROOT' ? {
+    $or: [
+      { student: req.user['id'] },
+      { attended: req.user['id'] },
+    ]
+  } : {};
+
+  const finalFilter = {
+    ...baseFilter,
+    ...(Object.keys(periodFilter).length > 0 ? periodFilter : {}),
+    ...(Object.keys(userFilter).length > 0 ? userFilter : {}),
+  };
+
+  return this.findAppealsInteractor.execute(
+    finalFilter,
+    {
+      ...JSON.parse(projection || '{}'),
+    },
+    {
+      limit,
+      skip,
+      sort: { [sortBy]: sort },
+      populate: [
+        {
+          path: 'student',
+          select: 'identification name lastname shift',
+        },
+        {
+          path: 'attended',
+          select: 'name lastname',
+        },
+      ],
+    },
+  );
+}
+
 
   @ApiOperation({ summary: 'Contar todas las solicitudes' })
   @ApiOkResponse({

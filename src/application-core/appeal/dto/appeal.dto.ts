@@ -8,11 +8,45 @@ import {
   IsBoolean,
   IsNotEmpty,
   IsNotEmptyObject,
+  IsNumber,
   IsOptional,
   IsString,
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+
+// Nueva clase para el período académico
+export class AcademicPeriodRequest {
+  @ApiProperty({
+    description: 'Año académico',
+    example: 2025,
+  })
+  @IsNumber(
+    {},
+    {
+      message: 'El año académico debe ser un número',
+    },
+  )
+  @IsNotEmpty({
+    message: 'El año académico es requerido',
+  })
+  year: number;
+
+  @ApiProperty({
+    description: 'Período académico (1 o 2)',
+    example: 1,
+  })
+  @IsNumber(
+    {},
+    {
+      message: 'El período académico debe ser un número',
+    },
+  )
+  @IsNotEmpty({
+    message: 'El período académico es requerido',
+  })
+  term: number;
+}
 
 export class AppealRequestFromChangeRequest {
   @ApiProperty({
@@ -113,7 +147,7 @@ export class AppealRequestRequest {
   })
   @IsOptional()
   @IsArray({
-    message: 'Las peticiones de cambio deben ser un listo',
+    message: 'Las peticiones de cambio deben ser una lista',
   })
   @ValidateNested({ each: true })
   @Type(() => AppealRequestToChangeRequest)
@@ -175,6 +209,8 @@ export class CreateAppealRequest {
     },
   )
   student: object;
+
+  // NO incluir academicPeriod - se asigna automáticamente desde variables de entorno
 }
 
 export class AppealStudentResponse {
@@ -238,6 +274,13 @@ export class AppealResponse {
     example: AppealStatus.PENDING,
   })
   status: AppealStatus;
+
+  // Agregar el período académico a la respuesta también
+  @ApiProperty({
+    description: 'Período académico de la apelación',
+    type: AcademicPeriodRequest,
+  })
+  academicPeriod: AcademicPeriodRequest;
 }
 
 export class UpdateAppealRequest {
