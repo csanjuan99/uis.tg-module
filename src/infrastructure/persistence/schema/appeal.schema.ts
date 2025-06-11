@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 import { User } from './user.schema';
@@ -71,6 +72,22 @@ export class AppealRequest {
   status?: AppealRequestStatus;
 }
 
+@Schema({
+  _id: false,
+})
+export class period {
+  @Prop({
+    required: true,
+    type: Number,
+  })
+  year: number;
+  @Prop({
+    required: true,
+    type: Number,
+  })
+  term: number;
+}
+
 export class AppealLog {}
 
 @Schema({
@@ -123,9 +140,16 @@ export class Appeal {
     index: true,
   })
   attended?: Partial<User>;
+  @Prop({
+    required: false,
+    type: period,
+    default: null,
+  })
+  period?: period;
 }
 
 export const AppealSchema = SchemaFactory.createForClass(Appeal);
 AppealSchema.index({ createdAt: 1 });
 AppealSchema.index({ status: 1, attended: 1 });
 AppealSchema.index({ status: 1, student: 1 });
+AppealSchema.index({ 'period.year': 1, 'period.term': 1 });
