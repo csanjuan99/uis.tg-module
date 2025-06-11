@@ -34,7 +34,11 @@ export class CreateAppealInteractor {
     }
 
     // Obtener el período académico automáticamente de las variables de entorno
+<<<<<<< HEAD
     const period = {
+=======
+    const academicPeriod = {
+>>>>>>> ce2051b483f84c0a9ad7c6e006ff1d11d9192c51
       year: parseInt(this.configService.get<string>('ACADEMIC_YEAR', '2025')),
       term: parseInt(this.configService.get<string>('ACADEMIC_TERM', '1')),
     };
@@ -43,8 +47,13 @@ export class CreateAppealInteractor {
     const _appeal: AppealDocument = await this.appealGateway.findOne({
       student: student.id,
       status: AppealStatus.PENDING,
+<<<<<<< HEAD
       'period.year': period.year,
       'period.term': period.term,
+=======
+      'academicPeriod.year': academicPeriod.year,
+      'academicPeriod.term': academicPeriod.term,
+>>>>>>> ce2051b483f84c0a9ad7c6e006ff1d11d9192c51
     });
 
     if (_appeal) {
@@ -60,6 +69,10 @@ export class CreateAppealInteractor {
     });
 
     appeal.logs.push({
+<<<<<<< HEAD
+=======
+      period: { year: academicPeriod.year, term: academicPeriod.term },
+>>>>>>> ce2051b483f84c0a9ad7c6e006ff1d11d9192c51
       user: {
         id: student.id,
         name: student.name,
