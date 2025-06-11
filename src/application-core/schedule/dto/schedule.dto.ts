@@ -217,4 +217,17 @@ export class ScheduleResponse {
     description: 'Identificador del estudiante',
   })
   studentId: string;
+
+  // Agregar propiedades del período académico en la respuesta
+  @ApiProperty({
+    example: 2025,
+    description: 'Año académico',
+  })
+  year: number;
+
+  @ApiProperty({
+    example: 1,
+    description: 'Período académico',
+  })
+  term: number;
 }

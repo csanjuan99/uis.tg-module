@@ -36,7 +36,6 @@ export class ScheduleSubject {
   })
   name: string;
 }
-
 @Schema({
   collection: 'schedule',
   timestamps: true,
@@ -44,8 +43,18 @@ export class ScheduleSubject {
 export class Schedule {
   @Prop([ScheduleSubject])
   subjects: ScheduleSubject[];
+
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   student: Partial<User>;
+
+  @Prop({
+    required: true,
+    type: Object,
+  })
+  period: {
+    year: number;
+    term: number;
+  };
 }
 
 export const ScheduleSchema = SchemaFactory.createForClass(Schedule);

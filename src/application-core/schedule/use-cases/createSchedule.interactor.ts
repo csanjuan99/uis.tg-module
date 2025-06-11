@@ -5,6 +5,7 @@ import { UserDocument } from '../../../infrastructure/persistence/schema/user.sc
 import { UserGateway } from '../../../infrastructure/persistence/gateway/user.gateway';
 import { FindUserByIdInteractor } from '../../user/use-cases/findUserById.interactor';
 import { CreateScheduleRequest } from '../dto/schedule.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class CreateScheduleInteractor {
@@ -12,6 +13,7 @@ export class CreateScheduleInteractor {
     private readonly findUserByIdInteractor: FindUserByIdInteractor,
     private readonly userGateway: UserGateway,
     private readonly scheduleGateway: ScheduleGateway,
+    private readonly configService: ConfigService,
   ) {}
 
   async execute(payload: CreateScheduleRequest): Promise<ScheduleDocument> {
@@ -29,9 +31,15 @@ export class CreateScheduleInteractor {
       );
     }
 
+    const period = {
+      year: parseInt(this.configService.get<string>('ACADEMIC_YEAR', '2025')),
+      term: parseInt(this.configService.get<string>('ACADEMIC_TERM', '1')),
+    };
+
     return await this.scheduleGateway.create({
       subjects: payload.subjects,
       student,
+      period,
     });
   }
 }
