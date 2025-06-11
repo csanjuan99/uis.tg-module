@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   Body,
   Controller,
@@ -82,6 +83,16 @@ export class ScheduleController {
     required: false,
     type: String,
   })
+  @ApiQuery({
+    name: 'year',
+    required: false,
+    example: 2025,
+    })
+  @ApiQuery({
+    name: 'term',
+    required: false,
+    example: 1
+    })
   @ApiBearerAuth()
   @Permission('*', 'read:schedule')
   @UseInterceptors(OwnerInterceptor)
@@ -94,10 +105,19 @@ export class ScheduleController {
     @Query('sort') sort: 'asc' | 'desc' = 'asc',
     @Query('sortBy') sortBy: string = 'createdAt',
     @Req() req: Request,
+    @Query('year') year?: number,
+    @Query('term') term?: number,
   ) {
+    const baseFilter = JSON.parse(filter || '{}');
+    const periodFilter = {};
+
+    if (year) periodFilter['period.year'] = year;
+    if (term) periodFilter['period.term'] = term;
+
     return this.findScheduleInteractor.execute(
       {
-        ...JSON.parse(filter || '{}'),
+        ...baseFilter,
+        ...periodFilter,
         [req.user['kind'] !== 'ROOT' ? '$or' : undefined]:
           req.user['kind'] !== 'ROOT'
             ? [
