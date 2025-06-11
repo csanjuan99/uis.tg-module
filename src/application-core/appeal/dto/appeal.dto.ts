@@ -16,7 +16,7 @@ import {
 import { Type } from 'class-transformer';
 
 // Nueva clase para el período académico
-export class AcademicPeriodRequest {
+export class periodRequest {
   @ApiProperty({
     description: 'Año académico',
     example: 2025,
@@ -210,7 +210,7 @@ export class CreateAppealRequest {
   )
   student: object;
 
-  // NO incluir academicPeriod - se asigna automáticamente desde variables de entorno
+  // NO incluir period - se asigna automáticamente desde variables de entorno
 }
 
 export class AppealStudentResponse {
@@ -278,9 +278,9 @@ export class AppealResponse {
   // Agregar el período académico a la respuesta también
   @ApiProperty({
     description: 'Período académico de la apelación',
-    type: AcademicPeriodRequest,
+    type: periodRequest,
   })
-  academicPeriod: AcademicPeriodRequest;
+  period: periodRequest;
 }
 
 export class UpdateAppealRequest {

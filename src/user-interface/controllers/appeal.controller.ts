@@ -97,71 +97,18 @@ async find(
   @Query('term') term?: number,
 ): Promise<AppealDocument[]> {
   const baseFilter = JSON.parse(filter || '{}');
-<<<<<<< HEAD
   // Filtro de período académico usando la nueva estructura
-=======
-  //agrego filtro de periodo en caso de especificarse de lo contrario mostrara todas las solicitudes
->>>>>>> ce2051b483f84c0a9ad7c6e006ff1d11d9192c51
   const periodFilter = {};
 
   const hasValidYear = year !== undefined && year !== null && !isNaN(year);
   const hasValidTerm = term !== undefined && term !== null && !isNaN(term);
 
-<<<<<<< HEAD
   if (hasValidYear) {
     periodFilter['period.year'] = Number(year);
-=======
-  if (hasValidYear || hasValidTerm) {
-    const periodConditions = {};
-    if (hasValidYear) {
-      periodConditions['period.year'] = Number(year);
-    }
-    if (hasValidTerm) {
-      periodConditions['period.term'] = Number(term);
-    }
-    periodFilter['logs'] = { $elemMatch: periodConditions };
->>>>>>> ce2051b483f84c0a9ad7c6e006ff1d11d9192c51
   }
   if (hasValidTerm) {
     periodFilter['period.term'] = Number(term);
   }
-
-  const userFilter = req.user['kind'] !== 'ROOT' ? {
-    $or: [
-      { student: req.user['id'] },
-      { attended: req.user['id'] },
-    ]
-  } : {};
-
-  const finalFilter = {
-    ...baseFilter,
-    ...(Object.keys(periodFilter).length > 0 ? periodFilter : {}),
-    ...(Object.keys(userFilter).length > 0 ? userFilter : {}),
-  };
-
-  return this.findAppealsInteractor.execute(
-    finalFilter,
-    {
-      ...JSON.parse(projection || '{}'),
-    },
-    {
-      limit,
-      skip,
-      sort: { [sortBy]: sort },
-      populate: [
-        {
-          path: 'student',
-          select: 'identification name lastname shift',
-        },
-        {
-          path: 'attended',
-          select: 'name lastname',
-        },
-      ],
-    },
-  );
-}
-
 
   const userFilter = req.user['kind'] !== 'ROOT' ? {
     $or: [
