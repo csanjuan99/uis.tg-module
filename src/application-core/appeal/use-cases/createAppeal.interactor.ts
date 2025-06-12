@@ -1,6 +1,10 @@
 /* eslint-disable prettier/prettier */
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import * as dayjs from 'dayjs';
+import * as customParseFormat from 'dayjs/plugin/customParseFormat';
+
+dayjs.extend(customParseFormat);
 import { AppealGateway } from '../../../infrastructure/persistence/gateway/appeal.gateway';
 import { CreateAppealRequest } from '../dto/appeal.dto';
 import { UserGateway } from '../../../infrastructure/persistence/gateway/user.gateway';
@@ -31,6 +35,17 @@ export class CreateAppealInteractor {
 
     if (!student.shift) {
       throw new NotFoundException('El estudiante no tiene un turno asignado');
+    }
+
+    // funcion para validar que se puedan crear soliictudes dentro de las fechas establecidas
+    const startDate = dayjs(this.configService.get<string>('DAYJS_START')).startOf('day');
+    const endDate = dayjs(this.configService.get<string>('DAYJS_END')).endOf('day');
+    const currentDate = dayjs();
+
+    if (currentDate.isBefore(startDate) || currentDate.isAfter(endDate)) {
+      throw new BadRequestException(
+        `La fecha de creación de la solicitud está fuera del período permitido (${startDate.format('YYYY-MM-DD')} - ${endDate.format('YYYY-MM-DD')})`,
+      );
     }
 
     // Obtener el período académico automáticamente de las variables de entorno
