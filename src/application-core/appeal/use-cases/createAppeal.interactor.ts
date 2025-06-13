@@ -37,15 +37,35 @@ export class CreateAppealInteractor {
       throw new NotFoundException('El estudiante no tiene un turno asignado');
     }
 
-    // funcion para validar que se puedan crear soliictudes dentro de las fechas establecidas
-    const startDate = dayjs(this.configService.get<string>('DAYJS_START')).startOf('day');
-    const endDate = dayjs(this.configService.get<string>('DAYJS_END')).endOf('day');
-    const currentDate = dayjs();
+    // Validación creación de solicitudes para programas con ID 69 o 50 (biomédica y ciencia de datos)
+    if (student.program?.id === 69 || student.program?.id === 50) {
+      const specialStartDate = this.configService.get<string>('DAYJS_START_EXTRA');
+      const specialEndDate = this.configService.get<string>('DAYJS_END_EXTRA');
+      const currentDate = dayjs();
 
-    if (currentDate.isBefore(startDate) || currentDate.isAfter(endDate)) {
-      throw new BadRequestException(
-        `La fecha de creación de la solicitud está fuera del período permitido (${startDate.format('YYYY-MM-DD')} - ${endDate.format('YYYY-MM-DD')})`,
-      );
+      if (currentDate.isBefore(specialStartDate) || currentDate.isAfter(specialEndDate)) {
+        throw new BadRequestException(
+          `Para el programa ${student.program.name}, la fecha de creación de la solicitud debe estar entre ${dayjs(specialStartDate).format('YYYY-MM-DD')} y ${dayjs(specialEndDate).format('YYYY-MM-DD')}`,
+        );
+      }
+    } else {
+      // Validación general para los demas programas
+      const startDateStr = this.configService.get<string>('DAYJS_START');
+      const endDateStr = this.configService.get<string>('DAYJS_END');
+
+      if (!startDateStr || !endDateStr) {
+        throw new BadRequestException('Las fechas de inicio y fin del período no están configuradas');
+      }
+
+      const startDate = dayjs(startDateStr).startOf('day');
+      const endDate = dayjs(endDateStr).endOf('day');
+      const currentDate = dayjs();
+
+      if (currentDate.isBefore(startDate) || currentDate.isAfter(endDate)) {
+        throw new BadRequestException(
+          `La fecha de creación de la solicitud está fuera del período permitido (${startDate.format('YYYY-MM-DD')} - ${endDate.format('YYYY-MM-DD')})`,
+        );
+      }
     }
 
     // Obtener el período académico automáticamente de las variables de entorno
