@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   Body,
   Controller,
@@ -35,6 +36,8 @@ import { RecoverPasswordInteractor } from '../../../application-core/abstract/au
 import { ChangePasswordInteractor } from '../../../application-core/abstract/auth/use-cases/changePassword.interactor';
 import { RecoverPasswordRequest } from '../../../application-core/abstract/auth/dto/recover-password.dto';
 import { ChangePasswordRequest } from '../../../application-core/abstract/auth/dto/change-password.dto';
+import { VerifyEmailInteractor } from '../../../application-core/abstract/auth/use-cases/verifyEmail.interactor';
+import { VerifyEmailRequest, VerifyEmailResponse } from '../../../application-core/abstract/auth/dto/verify-email.dto';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -48,6 +51,7 @@ export class AuthController {
     private readonly meInteractor: MeInteractor,
     private readonly changePasswordInteractor: ChangePasswordInteractor,
     private readonly recoverPasswordInteractor: RecoverPasswordInteractor,
+    private readonly verifyEmailInteractor: VerifyEmailInteractor,
   ) {}
 
   @ApiOperation({ summary: 'Get a JWT token' })
@@ -136,5 +140,19 @@ export class AuthController {
       req.query.t as string,
       payload,
     );
+  }
+
+  @ApiOperation({ summary: 'Verificar email de usuario' })
+  @ApiOkResponse({ 
+    description: 'Datos del usuario encontrado',
+    type: VerifyEmailResponse 
+  })
+  @ApiNotFoundResponse({
+    description: 'No pudimos encontrar un usuario con ese correo electrónico',
+  })
+  @Public()
+  @Post('verify-email')
+  async verifyEmail(@Body() payload: VerifyEmailRequest): Promise<VerifyEmailResponse> {
+    return await this.verifyEmailInteractor.execute(payload.username);
   }
 }

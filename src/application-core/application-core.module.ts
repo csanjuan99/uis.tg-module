@@ -35,6 +35,7 @@ import { MeInteractor } from './abstract/auth/use-cases/me.interactor';
 import { SendEmailByMailtrapInteractor } from './abstract/mailtrap/use-cases/sendEmailByMailtrap.interactor';
 import { SendVerifyInteractor } from './abstract/auth/event-handlers/sendVerify.interactor';
 import { RecoverPasswordInteractor } from './abstract/auth/use-cases/recoverPassword.interactor';
+import { VerifyEmailInteractor } from './abstract/auth/use-cases/verifyEmail.interactor';
 import { ChangePasswordInteractor } from './abstract/auth/use-cases/changePassword.interactor';
 import { ScaleAppealInteractor } from './appeal/use-cases/scaleAppeal.interactor';
 
@@ -46,6 +47,7 @@ const SERVICES = [
   VerifyInteractor,
   ChangePasswordInteractor,
   RecoverPasswordInteractor,
+  VerifyEmailInteractor,
   ResendVerifyInteractor,
   // AUTH - EVENT HANDLERS
   SendVerifyInteractor,
