@@ -50,8 +50,8 @@ export class ChangePasswordInteractor {
     }
 
     const salt: string = await genSalt(10);
-
     user.password = await hash(payload.password, salt);
+    user.verified = true;
 
     await user.save();
 
