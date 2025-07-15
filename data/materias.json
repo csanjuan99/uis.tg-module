@@ -1,0 +1,25 @@
+{
+  "materias": [
+    {
+      "codigo": "MAT101",
+      "nombre": "Matemáticas Básicas",
+      "creditos": 3,
+      "nivel": 1,
+      "requisitos": []
+    },
+    {
+      "codigo": "PROG201",
+      "nombre": "Programación Avanzada",
+      "creditos": 4,
+      "nivel": 2,
+      "requisitos": ["MAT101"]
+    },
+    {
+      "codigo": "FIS301",
+      "nombre": "Física Moderna",
+      "creditos": 3,
+      "nivel": 3,
+      "requisitos": ["MAT101"]
+    }
+  ]
+}

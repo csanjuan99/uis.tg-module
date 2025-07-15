@@ -4,18 +4,13 @@ import {
   UserSchema,
 } from './src/infrastructure/persistence/schema/user.schema';
 import {
-  GetObjectCommand,
-  GetObjectCommandOutput,
-  GetObjectRequest,
-  S3Client,
-} from '@aws-sdk/client-s3';
-import { Readable } from 'stream';
-import {
   Subject,
   SubjectDocument,
   SubjectGroup,
   SubjectSchema,
 } from './src/infrastructure/persistence/schema/subject.schema';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 
 async function seed() {
   try {
@@ -40,29 +35,9 @@ async function seed() {
       await userModel.create(root);
     }
 
-    const client = new S3Client({
-      credentials: {
-        accessKeyId: process.env.AWS_S3_ACCESS_KEY_ID,
-        secretAccessKey: process.env.AWS_S3_SECRET_ACCESS_KEY,
-      },
-      region: process.env.AWS_S3_REGION,
-    });
-
-    const subjectsInput: GetObjectRequest = {
-      Bucket: process.env.AWS_S3_BUCKET_NAME,
-      Key: 'materias.json',
-    };
-
-    const schedulesInput: GetObjectRequest = {
-      Bucket: process.env.AWS_S3_BUCKET_NAME,
-      Key: 'horarios.json',
-    };
-
-    const subjects: Subject[] = await getSubjects(client, subjectsInput);
-    const schedules: SubjectGroup[] = await getSchedules(
-      client,
-      schedulesInput,
-    );
+    // Leer archivos JSON desde el sistema de archivos local
+    const subjects: Subject[] = getSubjects();
+    const schedules: SubjectGroup[] = getSchedules();
 
     const subjectModel = mongoose.model(Subject.name, SubjectSchema);
 
@@ -129,26 +104,27 @@ async function seed() {
   }
 }
 
-async function getSubjects(client: S3Client, request: GetObjectRequest) {
-  const command = new GetObjectCommand(request);
-  const response: GetObjectCommandOutput = await client.send(command);
-  const body: string = await streamToString(response.Body as Readable);
-  return JSON.parse(body)['materias'];
+function getSubjects(): Subject[] {
+  try {
+    const filePath = join(process.cwd(), 'data', 'materias.json');
+    const fileContent = readFileSync(filePath, 'utf-8');
+    const data = JSON.parse(fileContent);
+    return data['materias'];
+  } catch (error) {
+    console.error('Error al leer el archivo materias.json:', error);
+    throw new Error('No se pudo cargar el archivo materias.json');
+  }
 }
 
-async function getSchedules(client: S3Client, request: GetObjectRequest) {
-  const command = new GetObjectCommand(request);
-  const response: GetObjectCommandOutput = await client.send(command);
-  const body: string = await streamToString(response.Body as Readable);
-  return JSON.parse(body);
+function getSchedules(): SubjectGroup[] {
+  try {
+    const filePath = join(process.cwd(), 'data', 'horarios.json');
+    const fileContent = readFileSync(filePath, 'utf-8');
+    return JSON.parse(fileContent);
+  } catch (error) {
+    console.error('Error al leer el archivo horarios.json:', error);
+    throw new Error('No se pudo cargar el archivo horarios.json');
+  }
 }
-
-const streamToString = (stream: Readable): Promise<string> =>
-  new Promise((resolve, reject) => {
-    const chunks: Buffer[] = [];
-    stream.on('data', (chunk) => chunks.push(chunk));
-    stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf-8')));
-    stream.on('error', reject);
-  });
 
 export default seed;
