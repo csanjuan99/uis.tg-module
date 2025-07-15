@@ -1,5 +1,9 @@
 /* eslint-disable prettier/prettier */
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as dayjs from 'dayjs';
 import * as customParseFormat from 'dayjs/plugin/customParseFormat';
@@ -39,11 +43,15 @@ export class CreateAppealInteractor {
 
     // Validación creación de solicitudes para programas con ID 69 o 50 (biomédica y ciencia de datos)
     if (student.program?.id === 69 || student.program?.id === 50) {
-      const specialStartDate = this.configService.get<string>('DAYJS_START_EXTRA');
+      const specialStartDate =
+        this.configService.get<string>('DAYJS_START_EXTRA');
       const specialEndDate = this.configService.get<string>('DAYJS_END_EXTRA');
       const currentDate = dayjs();
 
-      if (currentDate.isBefore(specialStartDate) || currentDate.isAfter(specialEndDate)) {
+      if (
+        currentDate.isBefore(specialStartDate) ||
+        currentDate.isAfter(specialEndDate)
+      ) {
         throw new BadRequestException(
           `Para el programa ${student.program.name}, la fecha de creación de la solicitud debe estar entre ${dayjs(specialStartDate).format('YYYY-MM-DD')} y ${dayjs(specialEndDate).format('YYYY-MM-DD')}`,
         );
@@ -54,7 +62,9 @@ export class CreateAppealInteractor {
       const endDateStr = this.configService.get<string>('DAYJS_END');
 
       if (!startDateStr || !endDateStr) {
-        throw new BadRequestException('Las fechas de inicio y fin del período no están configuradas');
+        throw new BadRequestException(
+          'Las fechas de inicio y fin del período no están configuradas',
+        );
       }
 
       const startDate = dayjs(startDateStr).startOf('day');
@@ -83,7 +93,9 @@ export class CreateAppealInteractor {
     });
 
     if (_appeal) {
-      throw new NotFoundException('Ya existe una solicitud pendiente para este período académico');
+      throw new NotFoundException(
+        'Ya existe una solicitud pendiente para este período académico',
+      );
     }
 
     const appeal: AppealDocument = await this.appealGateway.create({
@@ -101,6 +113,7 @@ export class CreateAppealInteractor {
         lastname: student.lastname,
         identification: student.identification,
       },
+      message: 'Solicitud creada',
     });
 
     await appeal.save();
