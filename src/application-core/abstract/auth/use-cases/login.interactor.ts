@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   BadRequestException,
   Injectable,
@@ -43,6 +44,7 @@ export class LoginInteractor {
       username: user.username,
       permissions: user.permissions,
       kind: user.kind,
+      program: user.program,
     });
 
     return {
