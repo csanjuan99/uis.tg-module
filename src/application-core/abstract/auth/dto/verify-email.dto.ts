@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { StudentProgram } from 'src/infrastructure/persistence/schema/user.schema';
 
 export class VerifyEmailRequest {
   @ApiProperty({
@@ -34,4 +35,14 @@ export class VerifyEmailResponse {
     type: String,
   })
   lastname: string;
+
+  @ApiProperty({
+    description: 'Programa del usuario',
+    example: {
+      name: 'Ingeniería de Sistemas',
+      id: 11,
+    },
+    type: StudentProgram,
+  })
+  program: StudentProgram;
 }

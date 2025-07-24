@@ -7,7 +7,6 @@ import { UserGateway } from '../../../infrastructure/persistence/gateway/user.ga
 import { FilterQuery, ProjectionFields, QueryOptions } from 'mongoose';
 import { Appeal } from '../../../infrastructure/persistence/schema/appeal.schema';
 
-
 interface Program {
   id: number;
   name: string;
@@ -48,20 +47,22 @@ export class FindAppealsInteractor {
     const sessionUserProgramId = this.request.user.program?.id;
 
     if (!sessionUserProgramId) {
-      this.logger.warn(`El usuario ${this.request.user.username} no tiene un programa asignado`);
+      this.logger.warn(
+        `El usuario ${this.request.user.username} no tiene un programa asignado`,
+      );
       return [];
     }
 
     const studentsInProgram = await this.userGateway.find(
       { 'program.id': sessionUserProgramId },
-      { _id: 1 }
+      { _id: 1 },
     );
 
     const studentIds = studentsInProgram.map((student) => student._id);
 
     const enhancedFilter: FilterQuery<Appeal> = {
       ...filter,
-      student: { $in: studentIds }
+      student: { $in: studentIds },
     };
 
     return this.appealGateway.find(enhancedFilter, projection, options);

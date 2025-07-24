@@ -43,8 +43,14 @@ export class RegisterInteractor {
       case 21:
         payload.program.name = 'INGENIERIA CIVIL';
         break;
-      case 24:
-        payload.program.name = 'INGENIERIA MECANICA';
+      case 14:
+        payload.program.name = 'QUIMICA';
+        break;
+      case 58:
+        payload.program.name = 'MICROBIOLOGIA';
+        break;
+      case 32:
+        payload.program.name = 'INGENIERIA DE PETROLEOS';
         break;
       default:
         throw new BadRequestException('Programa no válido');

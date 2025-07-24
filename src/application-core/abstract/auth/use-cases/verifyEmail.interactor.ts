@@ -6,13 +6,9 @@ import { VerifyEmailResponse } from '../dto/verify-email.dto';
 
 @Injectable()
 export class VerifyEmailInteractor {
-  constructor(
-    private readonly userGateway: UserGateway,
-  ) {}
+  constructor(private readonly userGateway: UserGateway) {}
 
-  async execute(
-    email: string,
-  ): Promise<VerifyEmailResponse> {
+  async execute(email: string): Promise<VerifyEmailResponse> {
     const user: UserDocument = await this.userGateway.findOne({
       username: email,
     });
@@ -27,6 +23,7 @@ export class VerifyEmailInteractor {
       name: user.name,
       identification: user.identification,
       lastname: user.lastname,
+      program: user.program,
     };
   }
 }

@@ -28,7 +28,7 @@ export class StudentShift {
 export class StudentProgram {
   @Prop({
     required: true,
-    enum: [11, 27, 69, 50, 21, 24],
+    enum: [11, 27, 69, 50, 21, 14, 58, 32],
   })
   id: number;
   @Prop({
@@ -39,7 +39,9 @@ export class StudentProgram {
       'INGENIERIA BIOMEDICA',
       'INGENIERIA EN CIENCIA DE DATOS',
       'INGENIERIA CIVIL',
-      'INGENIERIA MECANICA',
+      'QUIMICA',
+      'MICROBIOLOGIA',
+      'INGENIERIA DE PETROLEOS',
     ],
   })
   name?: string;

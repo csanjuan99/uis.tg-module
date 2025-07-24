@@ -87,12 +87,12 @@ export class ScheduleController {
     name: 'year',
     required: false,
     example: 2025,
-    })
+  })
   @ApiQuery({
     name: 'term',
     required: false,
-    example: 1
-    })
+    example: 1,
+  })
   @ApiBearerAuth()
   @Permission('*', 'read:schedule')
   @UseInterceptors(OwnerInterceptor)

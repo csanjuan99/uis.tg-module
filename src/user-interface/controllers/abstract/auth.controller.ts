@@ -37,7 +37,10 @@ import { ChangePasswordInteractor } from '../../../application-core/abstract/aut
 import { RecoverPasswordRequest } from '../../../application-core/abstract/auth/dto/recover-password.dto';
 import { ChangePasswordRequest } from '../../../application-core/abstract/auth/dto/change-password.dto';
 import { VerifyEmailInteractor } from '../../../application-core/abstract/auth/use-cases/verifyEmail.interactor';
-import { VerifyEmailRequest, VerifyEmailResponse } from '../../../application-core/abstract/auth/dto/verify-email.dto';
+import {
+  VerifyEmailRequest,
+  VerifyEmailResponse,
+} from '../../../application-core/abstract/auth/dto/verify-email.dto';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -143,16 +146,18 @@ export class AuthController {
   }
 
   @ApiOperation({ summary: 'Verificar email de usuario' })
-  @ApiOkResponse({ 
+  @ApiOkResponse({
     description: 'Datos del usuario encontrado',
-    type: VerifyEmailResponse 
+    type: VerifyEmailResponse,
   })
   @ApiNotFoundResponse({
     description: 'No pudimos encontrar un usuario con ese correo electrónico',
   })
   @Public()
   @Post('verify-email')
-  async verifyEmail(@Body() payload: VerifyEmailRequest): Promise<VerifyEmailResponse> {
+  async verifyEmail(
+    @Body() payload: VerifyEmailRequest,
+  ): Promise<VerifyEmailResponse> {
     return await this.verifyEmailInteractor.execute(payload.username);
   }
 }
