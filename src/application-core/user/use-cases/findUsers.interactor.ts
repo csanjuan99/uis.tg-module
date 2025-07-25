@@ -6,7 +6,6 @@ import { UserGateway } from '../../../infrastructure/persistence/gateway/user.ga
 import { FilterQuery, ProjectionFields, QueryOptions } from 'mongoose';
 import { User } from '../../../infrastructure/persistence/schema/user.schema';
 
-
 interface Program {
   id: number;
   name: string;
@@ -45,19 +44,26 @@ export class FindUsersInteractor {
     // Obtener el program del usuario de la sesión
     const sessionUserProgram = this.request.user.program;
 
-    this.logger.log(`Usuario ${this.request.user.username} con program ID: ${sessionUserProgram.id} (${sessionUserProgram.name})`);
-
+    this.logger.log(
+      `Usuario ${this.request.user.username} con program ID: ${sessionUserProgram.id} (${sessionUserProgram.name})`,
+    );
 
     // Filtro de usuarios por el mismo program.id del usuario de la sesión
     const enhancedPayload = {
       ...payload,
-      'program.id': sessionUserProgram.id
+      'program.id': sessionUserProgram.id,
     };
 
     // Ejecutar la consulta con el filtro de program.id
-    const users = await this.userGateway.find(enhancedPayload, projection, options);
+    const users = await this.userGateway.find(
+      enhancedPayload,
+      projection,
+      options,
+    );
 
-    console.log(`Se encontraron ${users.length} usuarios con el mismo program.id (${sessionUserProgram.id})`);
+    console.log(
+      `Se encontraron ${users.length} usuarios con el mismo program.id (${sessionUserProgram.id})`,
+    );
 
     return users;
   }

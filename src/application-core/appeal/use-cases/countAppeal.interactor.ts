@@ -46,7 +46,10 @@ export class CountAppealInteractor {
       return 0;
     }
 
-    const students = await this.userGateway.find({ 'program.id': sessionProgramId }, { _id: 1 });
+    const students = await this.userGateway.find(
+      { 'program.id': sessionProgramId },
+      { _id: 1 },
+    );
     const studentIds = students.map((s) => s._id);
 
     const enhancedPayload: FilterQuery<Appeal> = {

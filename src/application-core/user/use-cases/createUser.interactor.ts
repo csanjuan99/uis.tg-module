@@ -65,6 +65,29 @@ export class CreateUserInteractor {
       );
     }
 
+    switch (payload.program?.id) {
+      case 11:
+        payload.program.name = 'INGENIERIA DE SISTEMAS';
+        break;
+      case 27:
+        payload.program.name = 'DISEÑO INDUSTRIAL';
+        break;
+      case 69:
+        payload.program.name = 'INGENIERIA BIOMEDICA';
+        break;
+      case 50:
+        payload.program.name = 'INGENIERIA EN CIENCIA DE DATOS';
+        break;
+      case 21:
+        payload.program.name = 'INGENIERIA CIVIL';
+        break;
+      case 24:
+        payload.program.name = 'INGENIERIA MECANICA';
+        break;
+      default:
+        throw new BadRequestException('Programa no válido');
+    }
+
     // Hash de la contraseña
     payload.password = hashSync(payload.password, 10);
 

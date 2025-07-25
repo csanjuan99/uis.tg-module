@@ -118,7 +118,7 @@ export class CreateUserRequest {
   @ApiProperty({
     type: StudentProgram,
     description: 'Programa del estudiante',
-    example: {id:27, new_pensum: true},
+    example: { id: 27, new_pensum: true },
   })
   program: StudentProgram;
 }
