@@ -29,6 +29,7 @@ export class MeInteractor {
       permissions: user.permissions,
       kind: user.kind,
       shift: user.shift ? user.shift : undefined,
+      program: user.program,
     };
   }
 }
