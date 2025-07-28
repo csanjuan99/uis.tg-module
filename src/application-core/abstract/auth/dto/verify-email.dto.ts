@@ -45,4 +45,18 @@ export class VerifyEmailResponse {
     type: StudentProgram,
   })
   program: StudentProgram;
+
+  @ApiProperty({
+    description: 'Indica si el usuario ha verificado su correo electrónico',
+    example: true,
+    type: Boolean,
+  })
+  verified: boolean;
+
+  @ApiProperty({
+    description: 'Tipo de usuario',
+    example: 'STUDENT',
+    type: String,
+  })
+  kind: string;
 }

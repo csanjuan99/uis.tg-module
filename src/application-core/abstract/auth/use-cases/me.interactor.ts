@@ -27,6 +27,7 @@ export class MeInteractor {
       identification: user.identification ? user.identification : undefined,
       username: user.username,
       permissions: user.permissions,
+      verified: user.verified,
       kind: user.kind,
       shift: user.shift ? user.shift : undefined,
       program: user.program,

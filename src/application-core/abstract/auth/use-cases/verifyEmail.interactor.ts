@@ -24,6 +24,8 @@ export class VerifyEmailInteractor {
       identification: user.identification,
       lastname: user.lastname,
       program: user.program,
+      verified: user.verified,
+      kind: user.kind,
     };
   }
 }
