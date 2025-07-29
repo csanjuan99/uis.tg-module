@@ -12,7 +12,7 @@ export class ChangePasswordRequest {
   @IsString({
     message: 'La contraseña debe ser un texto',
   })
-  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/, {
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/, {
     message:
       'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número',
   })
