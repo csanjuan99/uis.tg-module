@@ -41,20 +41,16 @@ export class FindUsersInteractor {
     projection?: ProjectionFields<User>,
     options?: QueryOptions,
   ) {
-    // Obtener el program del usuario de la sesión
     const sessionUserProgram = this.request.user.program;
 
     this.logger.log(
       `Usuario ${this.request.user.username} con program ID: ${sessionUserProgram.id} (${sessionUserProgram.name})`,
     );
-
-    // Filtro de usuarios por el mismo program.id del usuario de la sesión
     const enhancedPayload = {
       ...payload,
       'program.id': sessionUserProgram.id,
     };
 
-    // Ejecutar la consulta con el filtro de program.id
     const users = await this.userGateway.find(
       enhancedPayload,
       projection,

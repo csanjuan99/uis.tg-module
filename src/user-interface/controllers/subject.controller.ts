@@ -65,7 +65,7 @@ export class SubjectController {
     @Query('limit') limit: number = 10,
     @Query('skip') skip: number = 0,
     @Query('sort') sort: 'asc' | 'desc' = 'asc',
-    @Query('sortBy') sortBy: string = 'createdAt',
+    @Query('sortBy') sortBy: string = 'level',
   ): Promise<SubjectDocument[]> {
     return this.findSubjectsInteractor.execute(
       JSON.parse(filter || '{}'),
