@@ -28,6 +28,7 @@ interface SessionUser {
   permissions: string[];
   kind: string;
   program: Program;
+  level?: number;
 }
 
 interface AuthenticatedRequest extends Request {
@@ -54,6 +55,9 @@ export class CreateUserInteractor {
       id: creatorProgram.id,
       name: creatorProgram.name,
     };
+
+    if (payload.level === undefined && this.request.user?.level !== undefined) {
+    }
 
     const existingUser: UserDocument = await this.userGateway.findOne({
       username: payload.username,

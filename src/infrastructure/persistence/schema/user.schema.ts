@@ -28,7 +28,7 @@ export class StudentShift {
 export class StudentProgram {
   @Prop({
     required: true,
-    enum: [11, 27, 69, 50, 21, 14, 58, 32],
+    enum: [11, 27, 69, 50, 21, 14, 58, 32, 14],
   })
   id: number;
   @Prop({
@@ -42,6 +42,7 @@ export class StudentProgram {
       'QUIMICA',
       'MICROBIOLOGIA',
       'INGENIERIA DE PETROLEOS',
+      'QUIMICA'
     ],
   })
   name?: string;
@@ -98,6 +99,11 @@ export class User {
     required: true,
   })
   program: StudentProgram;
+  @Prop({
+    required: false,
+    type: Number,
+  })
+  level?: number;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
