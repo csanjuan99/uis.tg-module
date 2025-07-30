@@ -96,9 +96,9 @@ export class User {
   })
   permissions: string[];
   @Prop({
-    required: true,
+    required: false,
   })
-  program: StudentProgram;
+  program?: StudentProgram;
   @Prop({
     required: false,
     type: Number,
