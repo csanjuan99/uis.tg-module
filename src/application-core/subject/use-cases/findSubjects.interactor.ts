@@ -49,7 +49,7 @@ export class FindSubjectsInteractor {
     }
 
     const programId = sessionUser.program.id;
-    const pensum = sessionUser.program.new_pensum;
+    const pensum = sessionUser.program.new_pensum || false;
 
     const enhancedFilter = {
       ...filter,
