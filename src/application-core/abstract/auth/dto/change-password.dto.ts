@@ -14,7 +14,7 @@ export class ChangePasswordRequest {
   })
   @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/, {
     message:
-      'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número',
+      'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número, verifique que cumpla con estos requisitos',
   })
   password: string;
   @ApiProperty({
