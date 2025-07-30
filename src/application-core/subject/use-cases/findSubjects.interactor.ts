@@ -51,10 +51,6 @@ export class FindSubjectsInteractor {
     const programId = sessionUser.program.id;
     const pensum = sessionUser.program.new_pensum;
 
-    this.logger.log(
-      `Usuario ${sessionUser.username} accediendo a materias con program.id: ${programId} (${sessionUser.program.name})`,
-    );
-
     const enhancedFilter = {
       ...filter,
       'program.id': programId,
@@ -65,10 +61,6 @@ export class FindSubjectsInteractor {
       enhancedFilter,
       projection,
       options,
-    );
-
-    this.logger.log(
-      `Se encontraron ${subjects.length} materias para program.id ${programId}`,
     );
 
     return subjects;

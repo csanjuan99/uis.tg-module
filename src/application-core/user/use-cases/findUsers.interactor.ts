@@ -43,9 +43,6 @@ export class FindUsersInteractor {
   ) {
     const sessionUserProgram = this.request.user.program;
 
-    this.logger.log(
-      `Usuario ${this.request.user.username} con program ID: ${sessionUserProgram.id} (${sessionUserProgram.name})`,
-    );
     const enhancedPayload = {
       ...payload,
       'program.id': sessionUserProgram.id,
