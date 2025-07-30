@@ -47,6 +47,11 @@ export class AssignAppealHandler implements OnModuleInit {
       return;
     }
 
+    const adminProgramId = user.program?.id;
+    if (!adminProgramId) {
+      return;
+    }
+
     const BATCH_SIZE = 50;
     let skip = 0;
     let foundAppeal: AppealDocument | null = null;
@@ -61,10 +66,12 @@ export class AssignAppealHandler implements OnModuleInit {
           sort: {
             createdAt: 1,
           },
-          populate: {
-            path: 'student',
-            select: 'shift',
-          },
+          populate: [
+            {
+              path: 'student',
+              select: 'shift program',
+            },
+          ],
         },
       );
 
@@ -75,6 +82,10 @@ export class AssignAppealHandler implements OnModuleInit {
       for (const candidate of candidates) {
         const student = candidate.student as UserDocument;
         if (!student || !student.shift) {
+          continue;
+        }
+
+        if (!student.program || student.program.id !== adminProgramId) {
           continue;
         }
 
