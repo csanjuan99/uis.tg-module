@@ -42,7 +42,7 @@ export class StudentProgram {
       'QUIMICA',
       'MICROBIOLOGIA',
       'INGENIERIA DE PETROLEOS',
-      'QUIMICA'
+      'QUIMICA',
     ],
   })
   name?: string;

@@ -1,10 +1,5 @@
 /* eslint-disable prettier/prettier */
-import {
-  BadRequestException,
-  Injectable,
-  Scope,
-  Inject,
-} from '@nestjs/common';
+import { BadRequestException, Injectable, Scope, Inject } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
 import { UserGateway } from '../../../infrastructure/persistence/gateway/user.gateway';

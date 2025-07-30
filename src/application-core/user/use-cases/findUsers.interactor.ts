@@ -57,10 +57,6 @@ export class FindUsersInteractor {
       options,
     );
 
-    console.log(
-      `Se encontraron ${users.length} usuarios con el mismo program.id (${sessionUserProgram.id})`,
-    );
-
     return users;
   }
 }

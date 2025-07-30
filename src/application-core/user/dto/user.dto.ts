@@ -133,9 +133,12 @@ export class CreateUserRequest {
     example: 1,
   })
   @IsOptional()
-  @IsNumber({}, {
-    message: 'El nivel debe ser un número',
-  })
+  @IsNumber(
+    {},
+    {
+      message: 'El nivel debe ser un número',
+    },
+  )
   level?: number;
 }
 

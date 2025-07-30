@@ -1,5 +1,12 @@
 /* eslint-disable prettier/prettier */
-import { IsEmail, IsNotEmpty, IsString, Matches, IsOptional, IsNumber } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsString,
+  Matches,
+  IsOptional,
+  IsNumber,
+} from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { StudentProgram } from '../../../../infrastructure/persistence/schema/user.schema';
 
@@ -96,8 +103,11 @@ export class RegisterRequest {
     example: 1,
   })
   @IsOptional()
-  @IsNumber({}, {
-    message: 'El nivel debe ser un número',
-  })
+  @IsNumber(
+    {},
+    {
+      message: 'El nivel debe ser un número',
+    },
+  )
   level?: number;
 }
