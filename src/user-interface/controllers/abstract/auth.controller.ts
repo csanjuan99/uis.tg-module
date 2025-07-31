@@ -41,6 +41,7 @@ import {
   VerifyEmailRequest,
   VerifyEmailResponse,
 } from '../../../application-core/abstract/auth/dto/verify-email.dto';
+import { RefreshTokenInteractor } from 'src/application-core/abstract/auth/use-cases/refreshToken.interactor';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -52,6 +53,7 @@ export class AuthController {
     private readonly resendVerifyInteractor: ResendVerifyInteractor,
     private readonly sendVerifyInteractor: SendVerifyInteractor,
     private readonly meInteractor: MeInteractor,
+    private readonly refreshTokenInteractor: RefreshTokenInteractor,
     private readonly changePasswordInteractor: ChangePasswordInteractor,
     private readonly recoverPasswordInteractor: RecoverPasswordInteractor,
     private readonly verifyEmailInteractor: VerifyEmailInteractor,
@@ -101,6 +103,20 @@ export class AuthController {
   @Get('/verify')
   async verify(@Req() req: Request, @Res() res: Response): Promise<void> {
     return await this.verifyInteractor.execute(req, res);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Refrescar el token de la sesión' })
+  @ApiOkResponse({ description: 'Token recargado' })
+  @ApiUnauthorizedResponse({ description: 'No se pudo otorgar acceso' })
+  @ApiQuery({
+    name: 't',
+    required: true,
+    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.***',
+  })
+  @Get('/refresh-token')
+  async refreshToken(@Req() req: Request): Promise<JwtResponse> {
+    return await this.refreshTokenInteractor.execute(req);
   }
 
   @Public()

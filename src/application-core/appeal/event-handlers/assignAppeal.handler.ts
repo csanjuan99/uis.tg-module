@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import {
   StudentShift,
@@ -31,6 +31,8 @@ export class AssignAppealHandler implements OnModuleInit {
     dayjs.extend(isoWeek);
     dayjs.tz.setDefault('America/Bogota');
   }
+
+  private readonly logger = new Logger(AssignAppealHandler.name);
 
   @OnEvent('assign.appeal')
   async execute(user: UserDocument) {
@@ -129,6 +131,8 @@ export class AssignAppealHandler implements OnModuleInit {
     const currentDayIndex: number = now.isoWeekday();
     const currentTime: string = now.format('A').toUpperCase();
     const hour: number = now.hour();
+
+    console.log(hour);
 
     if (!(hour >= 8)) {
       return false;

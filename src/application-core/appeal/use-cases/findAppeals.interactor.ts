@@ -78,9 +78,26 @@ export class FindAppealsInteractor {
       studentFilter['level'] = { $in: levels };
     }
 
-    const studentsInProgram = await this.userGateway.find(studentFilter, {
-      _id: 1,
-    });
+    // Extraer y aplicar sorts de student al find de users
+    // const studentSort: Record<string, 'asc' | 'desc'> = {};
+
+    // if (options?.sort) {
+    //   Object.entries(options.sort).forEach(([key, value]) => {
+    //     if (key.startsWith('student.')) {
+    //       // Quitar el prefijo 'student.' para el sort de users
+    //       studentSort[key.replace('student.', '')] = value as 'asc' | 'desc';
+    //     }
+    //   });
+    // }
+    // console.log('Student Sort:', studentSort);
+
+    const studentsInProgram = await this.userGateway.find(
+      studentFilter,
+      {
+        _id: 1,
+      },
+      // { sort: studentSort },
+    );
 
     const studentIds = studentsInProgram.map((student) => student._id);
 

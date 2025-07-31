@@ -38,6 +38,7 @@ import { RecoverPasswordInteractor } from './abstract/auth/use-cases/recoverPass
 import { VerifyEmailInteractor } from './abstract/auth/use-cases/verifyEmail.interactor';
 import { ChangePasswordInteractor } from './abstract/auth/use-cases/changePassword.interactor';
 import { ScaleAppealInteractor } from './appeal/use-cases/scaleAppeal.interactor';
+import { RefreshTokenInteractor } from './abstract/auth/use-cases/refreshToken.interactor';
 
 const SERVICES = [
   //AUTH
@@ -49,6 +50,7 @@ const SERVICES = [
   RecoverPasswordInteractor,
   VerifyEmailInteractor,
   ResendVerifyInteractor,
+  RefreshTokenInteractor,
   // AUTH - EVENT HANDLERS
   SendVerifyInteractor,
   // MAILTRAP
