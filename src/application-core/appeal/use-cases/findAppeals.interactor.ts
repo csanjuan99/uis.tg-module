@@ -70,8 +70,6 @@ export class FindAppealsInteractor {
       };
     }
 
-    console.log('Student Filter TOTAL:', JSON.stringify(studentFilter));
-
     const studentsInProgram = await this.userGateway.find(studentFilter, {
       _id: 1,
     });

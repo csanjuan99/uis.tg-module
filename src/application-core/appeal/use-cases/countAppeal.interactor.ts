@@ -64,8 +64,6 @@ export class CountAppealInteractor {
       };
     }
 
-    console.log('Student Filter:', JSON.stringify(studentFilter));
-
     const students = await this.userGateway.find(studentFilter, {
       _id: 1,
     });
