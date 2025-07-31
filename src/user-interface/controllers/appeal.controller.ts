@@ -39,6 +39,7 @@ import { OwnerInterceptor } from '../inteceptors/owner.interceptor';
 import { Request } from 'express';
 import { AppealInterceptor } from '../inteceptors/appeal.interceptor';
 import { ScaleAppealInteractor } from '../../application-core/appeal/use-cases/scaleAppeal.interactor';
+import { StudentShift } from 'src/infrastructure/persistence/schema/user.schema';
 
 @ApiTags('Solicitudes')
 @Controller('appeal')
@@ -80,8 +81,11 @@ export class AppealController {
   @ApiQuery({ name: 'skip', required: false, example: 0 })
   @ApiQuery({ name: 'sort', required: false, example: 'asc' })
   @ApiQuery({ name: 'sortBy', required: false, example: 'createdAt' })
-  @ApiQuery({ name: 'year', required: false, example: 2025 })
-  @ApiQuery({ name: 'term', required: false, example: 1 })
+  @ApiQuery({
+    name: 'shifts',
+    required: false,
+    example: [{ day: 'WEDNESDAY', time: 'AM' }],
+  })
   @ApiBearerAuth()
   @UseInterceptors(OwnerInterceptor)
   @Permission('*', 'read:appeal')
@@ -93,22 +97,9 @@ export class AppealController {
     @Query('sort') sort: 'asc' | 'desc' = 'asc',
     @Query('sortBy') sortBy: string = 'createdAt',
     @Req() req: Request,
-    @Query('year') year?: number,
-    @Query('term') term?: number,
+    @Query('shifts') shifts?: StudentShift[],
   ): Promise<AppealDocument[]> {
     const baseFilter = JSON.parse(filter || '{}');
-    // Filtro de período académico usando la nueva estructura
-    const periodFilter = {};
-
-    const hasValidYear = year !== undefined && year !== null && !isNaN(year);
-    const hasValidTerm = term !== undefined && term !== null && !isNaN(term);
-
-    if (hasValidYear) {
-      periodFilter['period.year'] = Number(year);
-    }
-    if (hasValidTerm) {
-      periodFilter['period.term'] = Number(term);
-    }
 
     const userFilter =
       req.user['kind'] !== 'ROOT'
@@ -119,7 +110,6 @@ export class AppealController {
 
     const finalFilter = {
       ...baseFilter,
-      ...(Object.keys(periodFilter).length > 0 ? periodFilter : {}),
       ...(Object.keys(userFilter).length > 0 ? userFilter : {}),
     };
 
@@ -142,6 +132,7 @@ export class AppealController {
             select: 'name lastname',
           },
         ],
+        shifts: shifts || [],
       },
     );
   }
@@ -158,21 +149,25 @@ export class AppealController {
   async count(
     @Query('filter') filter: string,
     @Req() req: Request,
+    @Query('shifts') shifts?: StudentShift[],
   ): Promise<number> {
-    return this.countAppealInteractor.execute({
-      ...JSON.parse(filter || '{}'),
-      [req.user['kind'] !== 'ROOT' ? '$or' : undefined]:
-        req.user['kind'] !== 'ROOT'
-          ? [
-              {
-                student: req.user['id'],
-              },
-              {
-                attended: req.user['id'],
-              },
-            ]
-          : undefined,
-    });
+    return this.countAppealInteractor.execute(
+      {
+        ...JSON.parse(filter || '{}'),
+        [req.user['kind'] !== 'ROOT' ? '$or' : undefined]:
+          req.user['kind'] !== 'ROOT'
+            ? [
+                {
+                  student: req.user['id'],
+                },
+                {
+                  attended: req.user['id'],
+                },
+              ]
+            : undefined,
+      },
+      { shifts: shifts || [] },
+    );
   }
 
   @ApiBearerAuth()

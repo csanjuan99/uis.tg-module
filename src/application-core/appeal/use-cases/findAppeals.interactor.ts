@@ -45,6 +45,9 @@ export class FindAppealsInteractor {
     options?: QueryOptions,
   ) {
     const sessionUserProgramId = this.request.user.program?.id;
+    const shifts = Array.isArray(options?.shifts)
+      ? options.shifts
+      : JSON.parse(options?.shifts || '[]');
 
     if (!sessionUserProgramId) {
       this.logger.warn(
@@ -53,10 +56,25 @@ export class FindAppealsInteractor {
       return [];
     }
 
-    const studentsInProgram = await this.userGateway.find(
-      { 'program.id': sessionUserProgramId },
-      { _id: 1 },
-    );
+    const studentFilter: FilterQuery<any> = {
+      'program.id': sessionUserProgramId,
+    };
+
+    // Si se proporcionan turnos, los agregamos al filtro de estudiantes
+    if (shifts.length > 0) {
+      studentFilter['shift'] = {
+        $in: shifts.map((shift) => ({
+          day: shift.day,
+          time: shift.time,
+        })),
+      };
+    }
+
+    console.log('Student Filter TOTAL:', JSON.stringify(studentFilter));
+
+    const studentsInProgram = await this.userGateway.find(studentFilter, {
+      _id: 1,
+    });
 
     const studentIds = studentsInProgram.map((student) => student._id);
 

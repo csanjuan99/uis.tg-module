@@ -1,3 +1,4 @@
+import { QueryOptions } from 'mongoose';
 /* eslint-disable prettier/prettier */
 import { Injectable, Scope, Inject, Logger } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
@@ -39,17 +40,36 @@ export class CountAppealInteractor {
     @Inject(REQUEST) private readonly request: AuthenticatedRequest,
   ) {}
 
-  async execute(payload?: FilterQuery<Appeal>) {
+  async execute(payload?: FilterQuery<Appeal>, options?: QueryOptions) {
     const sessionProgramId = this.request.user?.program?.id;
+    const shifts = Array.isArray(options?.shifts)
+      ? options.shifts
+      : JSON.parse(options?.shifts || '[]');
 
     if (!sessionProgramId) {
       return 0;
     }
 
-    const students = await this.userGateway.find(
-      { 'program.id': sessionProgramId },
-      { _id: 1 },
-    );
+    const studentFilter: FilterQuery<any> = {
+      'program.id': sessionProgramId,
+    };
+
+    // Si se proporcionan turnos, los agregamos al filtro de estudiantes
+    if (shifts.length > 0) {
+      studentFilter['shift'] = {
+        $in: shifts.map((shift) => ({
+          day: shift.day,
+          time: shift.time,
+        })),
+      };
+    }
+
+    console.log('Student Filter:', JSON.stringify(studentFilter));
+
+    const students = await this.userGateway.find(studentFilter, {
+      _id: 1,
+    });
+
     const studentIds = students.map((s) => s._id);
 
     const enhancedPayload: FilterQuery<Appeal> = {
