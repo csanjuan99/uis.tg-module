@@ -48,6 +48,9 @@ export class FindAppealsInteractor {
     const shifts = Array.isArray(options?.shifts)
       ? options.shifts
       : JSON.parse(options?.shifts || '[]');
+    const levels = Array.isArray(options?.levels)
+      ? options.levels
+      : JSON.parse(options?.levels || '[]');
 
     if (!sessionUserProgramId) {
       this.logger.warn(
@@ -68,6 +71,11 @@ export class FindAppealsInteractor {
           time: shift.time,
         })),
       };
+    }
+
+    // Si se proporcionan niveles, los agregamos al filtro de estudiantes
+    if (levels.length > 0) {
+      studentFilter['level'] = { $in: levels };
     }
 
     const studentsInProgram = await this.userGateway.find(studentFilter, {

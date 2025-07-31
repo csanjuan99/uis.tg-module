@@ -45,6 +45,9 @@ export class CountAppealInteractor {
     const shifts = Array.isArray(options?.shifts)
       ? options.shifts
       : JSON.parse(options?.shifts || '[]');
+    const levels = Array.isArray(options?.levels)
+      ? options.levels
+      : JSON.parse(options?.levels || '[]');
 
     if (!sessionProgramId) {
       return 0;
@@ -62,6 +65,11 @@ export class CountAppealInteractor {
           time: shift.time,
         })),
       };
+    }
+
+    // Si se proporcionan niveles, los agregamos al filtro de estudiantes
+    if (levels.length > 0) {
+      studentFilter['level'] = { $in: levels };
     }
 
     const students = await this.userGateway.find(studentFilter, {

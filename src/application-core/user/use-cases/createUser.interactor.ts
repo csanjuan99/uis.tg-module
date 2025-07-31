@@ -23,7 +23,7 @@ interface SessionUser {
   permissions: string[];
   kind: string;
   program: Program;
-  level?: number;
+  level?: string;
 }
 
 interface AuthenticatedRequest extends Request {

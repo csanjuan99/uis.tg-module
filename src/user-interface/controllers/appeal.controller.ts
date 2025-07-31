@@ -98,6 +98,7 @@ export class AppealController {
     @Query('sortBy') sortBy: string = 'createdAt',
     @Req() req: Request,
     @Query('shifts') shifts?: StudentShift[],
+    @Query('levels') levels?: string[],
   ): Promise<AppealDocument[]> {
     const baseFilter = JSON.parse(filter || '{}');
 
@@ -133,6 +134,7 @@ export class AppealController {
           },
         ],
         shifts: shifts || [],
+        levels: levels || [],
       },
     );
   }
@@ -150,6 +152,7 @@ export class AppealController {
     @Query('filter') filter: string,
     @Req() req: Request,
     @Query('shifts') shifts?: StudentShift[],
+    @Query('levels') levels?: string[],
   ): Promise<number> {
     return this.countAppealInteractor.execute(
       {
@@ -166,7 +169,7 @@ export class AppealController {
               ]
             : undefined,
       },
-      { shifts: shifts || [] },
+      { shifts: shifts || [], levels: levels || [] },
     );
   }
 

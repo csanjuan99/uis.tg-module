@@ -5,7 +5,6 @@ import {
   IsString,
   Matches,
   IsOptional,
-  IsNumber,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { StudentProgram } from '../../../../infrastructure/persistence/schema/user.schema';
@@ -98,16 +97,9 @@ export class RegisterRequest {
   })
   program: StudentProgram;
   @ApiPropertyOptional({
-    type: Number,
     description: 'Nivel del estudiante',
-    example: 1,
+    example: '1',
   })
   @IsOptional()
-  @IsNumber(
-    {},
-    {
-      message: 'El nivel debe ser un número',
-    },
-  )
-  level?: number;
+  level?: string;
 }

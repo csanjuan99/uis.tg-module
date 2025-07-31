@@ -101,9 +101,8 @@ export class User {
   program?: StudentProgram;
   @Prop({
     required: false,
-    type: Number,
   })
-  level?: number;
+  level?: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

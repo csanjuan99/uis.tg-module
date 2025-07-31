@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsOptional, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsString, IsOptional } from 'class-validator';
 import { StudentProgram } from 'src/infrastructure/persistence/schema/user.schema';
 
 export class UserResponse {
@@ -41,11 +41,10 @@ export class UserResponse {
   })
   permissions: string[];
   @ApiPropertyOptional({
-    type: Number,
     description: 'Nivel del estudiante',
-    example: 1,
+    example: '1',
   })
-  level?: number;
+  level?: string;
 }
 
 export class CreateUserRequest {
@@ -128,18 +127,11 @@ export class CreateUserRequest {
   })
   program: StudentProgram;
   @ApiPropertyOptional({
-    type: Number,
     description: 'Nivel del estudiante',
     example: 1,
   })
   @IsOptional()
-  @IsNumber(
-    {},
-    {
-      message: 'El nivel debe ser un número',
-    },
-  )
-  level?: number;
+  level?: string;
 }
 
 export class UpdateUserRequest extends PartialType(CreateUserRequest) {}
