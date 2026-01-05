@@ -1,20 +1,38 @@
 services:
   mongodb:
-      image: mongo:7.0
-      container_name: saam-mongodb
-      restart: always
-      environment:
-        MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
-        MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
-        MONGO_INITDB_DATABASE: ${MONGO_DATABASE}
-      ports:
-        - "${MONGO_PORT:-27018}:27018"
-      healthcheck:
-        test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
-        interval: 10s
-        timeout: 5s
-        retries: 5
-        start_period: 40s
+    image: mongo:latest
+    container_name: mongodb
+    restart: always
+    ports:
+      - "${MONGO_PORT:-27017}:27017"
+    healthcheck:
+         test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+         interval: 10s
+         timeout: 5s
+         retries: 5
+         start_period: 40s
+
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DATABASE}
+    volumes:
+      - mongodb_data:/data/db
+      - mongodb_config:/data/configdb
+
+  mongo-express:
+    image: mongo-express:latest
+    container_name: mongo-express
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_USERNAME}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_PASSWORD}
+      ME_CONFIG_MONGODB_URL: ${APP_DATABASE_URI}
+      ME_CONFIG_BASICAUTH: false
+    depends_on:
+      - mongodb
 
   backend-saam:
     image: saam-backend:latest
@@ -40,3 +58,7 @@ services:
       DAYJS_START: ${DAYJS_START}
       ACADEMIC_YEAR: ${ACADEMIC_YEAR}
       ACADEMIC_TERM: ${ACADEMIC_TERM}
+
+volumes:
+  mongodb_data:
+  mongodb_config:
