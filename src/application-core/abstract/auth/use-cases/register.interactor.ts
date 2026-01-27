@@ -49,6 +49,9 @@ export class RegisterInteractor {
       case 58:
         payload.program.name = 'MICROBIOLOGIA';
         break;
+      case 32:
+        payload.program.name = 'INGENIERIA DE PETROLEOS';
+        break;
       case 24:
         payload.program.name = 'INGENIERIA MECANICA';
         break;
