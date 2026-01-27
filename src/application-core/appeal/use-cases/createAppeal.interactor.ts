@@ -80,7 +80,7 @@ export class CreateAppealInteractor {
 
     // Obtener el período académico automáticamente de las variables de entorno
     const period = {
-      year: parseInt(this.configService.get<string>('ACADEMIC_YEAR', '2025')),
+      year: parseInt(this.configService.get<string>('ACADEMIC_YEAR', '2026')),
       term: parseInt(this.configService.get<string>('ACADEMIC_TERM', '1')),
     };
 

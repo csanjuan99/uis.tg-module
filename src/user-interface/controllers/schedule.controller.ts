@@ -86,7 +86,7 @@ export class ScheduleController {
   @ApiQuery({
     name: 'year',
     required: false,
-    example: 2025,
+    example: 2026,
   })
   @ApiQuery({
     name: 'term',

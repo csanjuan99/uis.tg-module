@@ -45,20 +45,20 @@ export class SubjectController {
     private readonly countSubjectsInteractor: CountSubjectsInteractor,
   ) {}
 
-  @Get('/')
   @ApiOperation({ summary: 'Listar y filtrar todas las materias' })
   @ApiOkResponse({
     type: SubjectResponse,
     isArray: true,
   })
+  @ApiBearerAuth()
   @ApiQuery({ name: 'filter', required: false, example: '{}' })
   @ApiQuery({ name: 'projection', required: false, example: '{}' })
   @ApiQuery({ name: 'limit', required: false, example: 10 })
   @ApiQuery({ name: 'skip', required: false, example: 0 })
   @ApiQuery({ name: 'sort', required: false, example: 'asc' })
   @ApiQuery({ name: 'sortBy', required: false, example: 'createdAt' })
-  @ApiBearerAuth()
   @Permission('*', 'read:subject')
+  @Get()
   async find(
     @Query('filter') filter: string,
     @Query('projection') projection: string,
@@ -68,7 +68,9 @@ export class SubjectController {
     @Query('sortBy') sortBy: string = 'level',
   ): Promise<SubjectDocument[]> {
     return this.findSubjectsInteractor.execute(
-      JSON.parse(filter || '{}'),
+      {
+        ...JSON.parse(filter || '{}'),
+      },
       JSON.parse(projection || '{}'),
       {
         limit,

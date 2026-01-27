@@ -42,7 +42,11 @@ export class StudentProgram {
       'QUIMICA',
       'MICROBIOLOGIA',
       'INGENIERIA DE PETROLEOS',
-      'QUIMICA',
+      'INGENIERIA MECANICA',
+      'INGENIERIA INDUSTRIAL',
+      'INGENIERIA QUIMICA',
+      'NUTRICION',
+      'INGENIERIA EN INTELIGENCIA ARTIFICIAL',
     ],
   })
   name?: string;
